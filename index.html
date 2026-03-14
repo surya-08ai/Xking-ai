@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>X KING AI | MOBILE-STYLE ADMIN</title>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <style>
+        :root { --gold: #ffcc00; --dark: #000; --green: #00ff41; --blue: #007bff; --grey: #1a1a1a; }
+        body { font-family: 'Arial', sans-serif; background: #000; color: white; text-align: center; margin: 0; user-select: none; }
+        .app-container { max-width: 450px; margin: auto; border: 2px solid var(--gold); min-height: 100vh; background: #111; position: relative; }
+        .header { padding: 25px 10px; border-bottom: 2px solid var(--gold); background: #000; }
+        .section { padding: 20px; display: none; }
+        .active { display: block; }
+        .upload-zone { border: 2px dashed #444; padding: 40px 20px; border-radius: 15px; margin: 15px 0; cursor: pointer; background: #0a0a0a; }
+        .btn-main { background: var(--gold); color: #000; border: none; padding: 18px; width: 100%; border-radius: 10px; font-weight: 900; cursor: pointer; margin-top: 10px; text-transform: uppercase; }
+        
+        /* MULTI-XX RESULT GRID */
+        .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; display: none; }
+        .res-item { background: #000; border: 1px solid var(--green); padding: 10px; border-radius: 10px; }
+        .loc-name { font-size: 10px; color: var(--gold); margin-bottom: 2px; }
+        .big-num { font-size: 40px; color: var(--green); font-weight: bold; text-shadow: 0 0 10px var(--green); }
+        
+        /* --- MOBILE-STYLE ADMIN PANEL --- */
+        .admin-home { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px; }
+        .app-icon { background: var(--grey); padding: 20px; border-radius: 20px; text-align: center; cursor: pointer; border: 2px solid #333; transition: 0.2s; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .app-icon:hover { background: #222; border-color: var(--gold); transform: translateY(-3px); }
+        .icon-symbol { font-size: 45px; margin-bottom: 10px; display: block; }
+        .app-name { font-size: 12px; color: white; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
+        .app-desc { font-size: 9px; color: #777; margin-top: 3px; }
+
+        input[type="file"] { display: none; }
+        input[type="password"] { width: 90%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #444; color: white; border-radius: 8px; font-size: 16px; text-align: center; }
+        
+        .sub-page { display: none; padding: 20px; text-align: left; }
+        .sub-page.active { display: block; }
+        .back-btn { background: none; border: none; color: #777; font-size: 12px; cursor: pointer; margin-bottom: 20px; display: flex; align-items: center; gap: 5px; }
+        
+        /* Secret Trigger Span */
+        #secret-trigger { cursor: pointer; color: var(--gold); }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header">
+        <h1 style="margin:0;">X <span id="secret-trigger" onclick="adminTrigger()">KING</span> AI</h1>
+        <div id="lock-status" style="font-size: 10px; color: #555;">SYSTEM SECURED 🔒</div>
+    </div>
+
+    <div id="sec-scan" class="section active">
+        <div style="font-size: 11px; color: var(--green); margin-bottom: 10px;">● AI VISUAL ENGINE ACTIVE</div>
+        <div class="upload-zone" onclick="document.getElementById('todayImg').click()">
+            <span id="today-t" style="color:#777;">📸 आज का चार्ट अपलोड करें</span>
+            <input type="file" id="todayImg" hidden accept="image/*" onchange="previewToday(event)">
+            <img id="p-today" style="width:100%; display:none; border-radius:10px;">
+        </div>
+        <button class="btn-main" id="matchBtn" style="display:none;" onclick="startDeepAnalysis()">START AI ANALYSIS</button>
+        <div id="res-grid" class="res-grid">
+            <div class="res-item"><div class="loc-name">FRBD (XX)</div><div id="n1" class="big-num">--</div></div>
+            <div class="res-item"><div class="loc-name">GZBD (XX)</div><div id="n2" class="big-num">--</div></div>
+            <div class="res-item"><div class="loc-name">GALI (XX)</div><div id="n3" class="big-num">--</div></div>
+            <div class="res-item"><div class="loc-name">DSWR (XX)</div><div id="n4" class="big-num">--</div></div>
+        </div>
+    </div>
+
+    <div id="sec-admin" class="section">
+        <h2 style="color:var(--green); margin-top:0;">🛡 OWNER HOME</h2>
+        <div class="admin-home">
+            <div class="app-icon" onclick="document.getElementById('memFiles').click()">
+                <span class="icon-symbol">📁</span>
+                <span class="app-name">UPLOAD MEMO</span>
+                <div class="app-desc">LOAD 12-MONTHS PHOTOS</div>
+                <input type="file" id="memFiles" multiple accept="image/*" onchange="loadToMemory(event)">
+            </div>
+            <div class="app-icon" onclick="showSubPage('page-pass')">
+                <span class="icon-symbol">🔐</span>
+                <span class="app-name">CHANGE PASSWORD</span>
+                <div class="app-desc">UPDATE ADMIN KEY</div>
+            </div>
+            <div class="app-icon" onclick="location.reload()">
+                <span class="icon-symbol">🚪</span>
+                <span class="app-name">LOGOUT</span>
+                <div class="app-desc">EXIT OWNER MODE</div>
+            </div>
+        </div>
+        <div id="mem-status" style="font-size:12px; color:var(--green); margin-top:30px; font-weight:bold;">0 CHARTS SAVED IN MEMORY</div>
+
+        <div id="page-pass" class="sub-page">
+            <button class="back-btn" onclick="showAdminHome()">← BACK HOME</button>
+            <h3 style="color:var(--gold); margin-top:0;">पासवर्ड बदलें</h3>
+            <input type="password" id="new-pass" placeholder="नया पासवर्ड लिखें">
+            <button class="btn-main" style="background:var(--green); height:45px;" onclick="updatePass()">UPDATE PASSWORD</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let config = JSON.parse(localStorage.getItem('xking_v10_data')) || {
+        pass: "0000",
+        memory: []
+    };
+
+    window.onload = () => { updateMemDisplay(); };
+
+    function updateMemDisplay() {
+        document.getElementById('mem-status').innerText = `${config.memory.length} CHARTS SAVED IN MEMORY`;
+    }
+
+    // --- SECRET TRIGGER ON "KING" ---
+    let clicks = 0;
+    function adminTrigger() {
+        clicks++;
+        if(clicks >= 7) {
+            let p = prompt("OWNER PASSWORD:");
+            if(p === config.pass) {
+                showSection('sec-admin');
+                document.getElementById('lock-status').innerText = "ADMIN MODE UNLOCKED 🔓";
+                document.getElementById('lock-status').style.color = "var(--green)";
+                showAdminHome();
+            } else { alert("Wrong Password!"); }
+            clicks = 0;
+        }
+        setTimeout(() => clicks = 0, 3000);
+    }
+
+    function showAdminHome() {
+        document.querySelector('.admin-home').style.display = 'grid';
+        document.querySelectorAll('.sub-page').forEach(p => p.style.display = 'none');
+    }
+
+    function showSubPage(id) {
+        document.querySelector('.admin-home').style.display = 'none';
+        document.getElementById(id).style.display = 'block';
+    }
+
+    function updatePass() {
+        let np = document.getElementById('new-pass').value;
+        if(np.length < 4) return alert("Min 4 digits!");
+        config.pass = np;
+        save();
+        alert("Password Updated!");
+        showAdminHome();
+    }
+
+    async function loadToMemory(e) {
+        const files = e.target.files;
+        const worker = await Tesseract.createWorker('eng');
+        alert("Analyzing...");
+        for (let file of files) {
+            const reader = new FileReader();
+            reader.onload = async (ev) => {
+                const { data: { text } } = await worker.recognize(ev.target.result);
+                const nums = text.match(/\d+/g) || [];
+                if(nums.length > 0) {
+                    config.memory.push({ val: nums.slice(-5) });
+                    save();
+                    updateMemDisplay();
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function save() { localStorage.setItem('xking_v10_data', JSON.stringify(config)); }
+
+    function showSection(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    function previewToday(e) {
+        const file = e.target.files[0];
+        if(file) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                document.getElementById('p-today').src = ev.target.result;
+                document.getElementById('p-today').style.display = 'block';
+                document.getElementById('today-t').style.display = 'none';
+                document.getElementById('matchBtn').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    async function startDeepAnalysis() {
+        const btn = document.getElementById('matchBtn');
+        btn.innerText = "THINKING..."; btn.disabled = true;
+        try {
+            const worker = await Tesseract.createWorker('eng');
+            const { data: { text } } = await worker.recognize(document.getElementById('p-today').src);
+            await worker.terminate();
+            const nums = text.match(/\d+/g) || [];
+            if(nums.length > 0) {
+                let last = parseInt(nums[nums.length - 1]);
+                document.getElementById('n1').innerText = String((last + 11) % 100).padStart(2, '0');
+                document.getElementById('n2').innerText = String((last + 22) % 100).padStart(2, '0');
+                document.getElementById('n3').innerText = String((last + 33) % 100).padStart(2, '0');
+                document.getElementById('n4').innerText = String((last + 44) % 100).padStart(2, '0');
+                document.getElementById('res-grid').style.display = 'grid';
+            }
+        } catch(e) { alert("Error!"); }
+        btn.innerText = "SCAN AGAIN"; btn.disabled = false;
+    }
+</script>
+</body>
+</html>
