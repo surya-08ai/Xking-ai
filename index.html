@@ -13,7 +13,7 @@
         .screen { width: 100vw; min-height: 100vh; display: none; flex-direction: column; align-items: center; background: var(--card); border: 2px solid var(--gold); box-sizing: border-box; }
         .active { display: flex; }
 
-        .header { text-align: center; padding: 25px 10px; border-bottom: 2px solid var(--gold); background: #000; width: 100%; }
+        .header { text-align: center; padding: 25px 10px; border-bottom: 2px solid var(--gold); background: #000; width: 100%; box-sizing: border-box; }
         .logo { font-size: 38px; color: var(--gold); text-shadow: 0 0 10px var(--gold); letter-spacing: 2px; }
         
         .admin-nav-btn { background: transparent; color: var(--green); border: 1px solid var(--green); padding: 8px 20px; border-radius: 20px; cursor: pointer; margin-top: 12px; font-weight: bold; }
@@ -79,13 +79,15 @@
             <button onclick="updateCode()" style="background:var(--green); border:none; padding:10px 15px; border-radius:5px; font-weight:bold; cursor:pointer; margin-left:5px;">SAVE</button>
         </div>
 
+        <button onclick="clearFullDatabase()" style="background:var(--red); color:white; border:none; padding:12px; width:100%; border-radius:8px; font-weight:bold; margin-bottom:15px;">DELETE ALL 99 PHOTOS</button>
+
         <div class="admin-box" style="border-style: dashed; text-align: center; cursor: pointer;" onclick="document.getElementById('multiF').click()">
             <i class="fa-solid fa-folder-plus" style="color:var(--green); font-size:25px;"></i><br>
             <small style="color:#888;">TAP TO ADD MEMORY (UP TO 99 PHOTOS)</small>
             <input type="file" id="multiF" hidden accept="image/*" multiple onchange="handleMulti(event)">
         </div>
 
-        <div id="admin-status" style="color:var(--green); margin-bottom:15px; font-size:12px;"></div>
+        <div id="admin-status" style="color:var(--green); margin-bottom:15px; font-size:12px;">STORAGE: 0/99 USED</div>
         <div id="memory-display-list" style="width:100%;"></div>
     </div>
 </div>
@@ -94,6 +96,18 @@
     let masterCode = localStorage.getItem('x_king_code') || "1234";
     let singleImg = null;
     let memoryImages = [];
+    let db;
+
+    // IndexedDB Setup for 99 Photos
+    const request = indexedDB.open("XKing99DB", 1);
+    request.onupgradeneeded = e => {
+        db = e.target.result;
+        db.createObjectStore("memory", { keyPath: "id" });
+    };
+    request.onsuccess = e => {
+        db = e.target.result;
+        loadMemoryFromDB();
+    };
 
     function verifyLogin() {
         const input = document.getElementById('access-code').value;
@@ -111,6 +125,15 @@
         document.getElementById(id).classList.add('active');
     }
 
+    function loadMemoryFromDB() {
+        const tx = db.transaction("memory", "readonly");
+        const store = tx.objectStore("memory");
+        store.getAll().onsuccess = e => {
+            memoryImages = e.target.result;
+            renderMemoryList();
+        };
+    }
+
     function handleSingle(e) {
         const file = e.target.files[0];
         const r = new FileReader();
@@ -125,27 +148,29 @@
 
     async function handleMulti(e) {
         const files = Array.from(e.target.files);
-        // अब 99 तक की लिमिट है
-        const availableSpace = 99 - memoryImages.length;
-        const uploadList = files.slice(0, availableSpace);
-        
-        if (availableSpace <= 0) { alert("Memory Full! (99/99)"); return; }
-
         const status = document.getElementById('admin-status');
         const worker = await Tesseract.createWorker('eng');
 
-        for (let file of uploadList) {
+        for (let file of files) {
+            if (memoryImages.length >= 99) { alert("Memory Full!"); break; }
+            
             status.innerText = "PROCESSING: " + (memoryImages.length + 1) + "/99";
-            const r = new FileReader();
             const dataUrl = await new Promise(res => {
-                r.onload = (ev) => res(ev.target.result);
+                const r = new FileReader();
+                r.onload = ev => res(ev.target.result);
                 r.readAsDataURL(file);
             });
 
             const { data: { text } } = await worker.recognize(dataUrl);
             const nums = (text.match(/\d+/g) || []).map(Number);
 
-            memoryImages.push({ id: Date.now() + Math.random(), img: dataUrl, data: nums });
+            const newItem = { id: Date.now() + Math.random(), img: dataUrl, data: nums };
+            
+            // Save to DB
+            const tx = db.transaction("memory", "readwrite");
+            tx.objectStore("memory").add(newItem);
+            
+            memoryImages.push(newItem);
             renderMemoryList();
         }
         await worker.terminate();
@@ -163,12 +188,23 @@
                     <button class="delete-btn" onclick="deleteMemory(${item.id})"><i class="fa-solid fa-trash-can"></i></button>
                 </div>`;
         });
+        document.getElementById('admin-status').innerText = "STORAGE: " + memoryImages.length + "/99 USED";
     }
 
     function deleteMemory(id) {
+        const tx = db.transaction("memory", "readwrite");
+        tx.objectStore("memory").delete(id);
         memoryImages = memoryImages.filter(item => item.id !== id);
         renderMemoryList();
-        document.getElementById('admin-status').innerText = "STORAGE: " + memoryImages.length + "/99 USED";
+    }
+
+    function clearFullDatabase() {
+        if(confirm("Confirm Delete All Photos?")) {
+            const tx = db.transaction("memory", "readwrite");
+            tx.objectStore("memory").clear();
+            memoryImages = [];
+            renderMemoryList();
+        }
     }
 
     async function analyzePattern() {
@@ -190,12 +226,16 @@
         let lastNum = parseInt(currentNums[currentNums.length - 1]);
         
         const markets = ["DESAWAR", "FARIDABAD", "GZBD", "GALI", "EXTRA-1", "EXTRA-2"];
+        
+        // Memory-based logic
         let allMemoryData = memoryImages.flatMap(item => item.data);
-        let base = (allMemoryData.length > 0) ? (allMemoryData.reduce((a,b)=>a+b,0)/allMemoryData.length) : (lastNum * 1.5);
+        let base = (allMemoryData.length > 0) 
+            ? (allMemoryData.reduce((a,b)=>a+b,0)/allMemoryData.length) 
+            : (lastNum * 1.5);
 
         if(xxCount === 0) { status.innerText = "XX NOT DETECTED"; return; }
 
-        for(let j=0; j < xxCount; j++) {
+        for(let j=0; j < Math.min(xxCount, 6); j++) {
             let pred = Math.floor(base + lastNum + (j * 23) + 5) % 100;
             container.innerHTML += `
                 <div class="res-card">
