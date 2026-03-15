@@ -3,115 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X KING AI - Private Final Version</title>
+    <title>X KING AI - Access Control</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .hidden-panel { display: none !important; }
-        body { background-color: #020617; color: white; font-family: 'Segoe UI', sans-serif; }
-        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .num-card { background: #1e293b; border: 2px solid #eab308; box-shadow: 0 0 15px rgba(234, 179, 8, 0.3); }
-        .glow-text { text-shadow: 0 0 20px rgba(234, 179, 8, 0.8); }
-        .utr-input { background: #000; border: 1px solid #334155; color: #fbbf24; font-family: monospace; letter-spacing: 2px; }
-        .animate-scan { animation: scan 1.5s infinite; }
-        @keyframes scan { 0% { opacity: 0.3; } 50% { opacity: 1; } 100% { opacity: 0.3; } }
+        body { background-color: #020617; color: white; font-family: sans-serif; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .num-card { background: #1e293b; border: 2px solid #eab308; box-shadow: 0 0 15px rgba(234, 179, 8, 0.4); }
+        .utr-box { background: #000; border: 1px solid #334155; color: #fbbf24; text-align: center; letter-spacing: 2px; }
+        .glow-text { text-shadow: 0 0 15px rgba(234, 179, 8, 0.6); }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4">
 
-    <div id="user-panel" class="w-full max-w-md">
-        <h1 id="king-logo" class="text-6xl font-black text-center mb-8 cursor-pointer select-none glow-text uppercase tracking-tighter">
+    <div class="w-full max-w-md">
+        <h1 id="king-logo" class="text-6xl font-black text-center mb-8 cursor-pointer select-none glow-text">
             <span class="text-red-600">X</span> KING <span class="text-white">AI</span>
         </h1>
-        
+
         <div class="glass p-8 rounded-[3rem] shadow-2xl text-center border-b-4 border-yellow-500">
             
             <div id="lock-screen">
-                <div class="mb-4">
-                    <span class="bg-yellow-500/10 text-yellow-500 text-[10px] font-bold px-4 py-1 rounded-full border border-yellow-500/30 tracking-widest uppercase">
-                        One-Time Access System
-                    </span>
-                </div>
+                <p class="text-yellow-500 text-[10px] font-bold uppercase tracking-widest mb-6">Payment Verification Required</p>
                 
-                <div class="mb-6 bg-white p-2 rounded-2xl mx-auto w-52 h-52 flex items-center justify-center border-4 border-yellow-500 shadow-xl overflow-hidden">
-                    <img id="user-qr-display" src="https://via.placeholder.com/200?text=Admin:+Upload+QR+Photo" class="w-full h-full object-contain">
+                <div class="mb-6 bg-white p-2 rounded-2xl mx-auto w-52 h-52 flex items-center justify-center border-4 border-yellow-500 shadow-xl">
+                    <img id="display-qr" src="https://via.placeholder.com/200?text=Scan+To+Pay" class="w-full h-full object-contain">
                 </div>
 
-                <div class="space-y-5 text-left">
-                    <div>
-                        <label class="text-[10px] text-gray-400 ml-1 uppercase font-bold tracking-wider">Enter 12-Digit UTR Number</label>
-                        <input type="number" id="utr-input" placeholder="Paste UTR Here" 
-                        class="w-full utr-input p-5 rounded-2xl text-center text-xl font-bold outline-none focus:border-yellow-500 transition-all mt-1">
-                    </div>
+                <div class="space-y-5">
+                    <input type="number" id="utr-input" placeholder="ENTER 12-DIGIT UTR" class="w-full utr-box p-5 rounded-2xl font-black text-xl outline-none focus:border-yellow-500 transition-all">
                     
-                    <button id="submit-btn" onclick="submitUTR()" class="w-full bg-yellow-500 text-black py-5 rounded-2xl font-black uppercase text-lg shadow-2xl active:scale-95 transition-all">
-                        SUBMIT & UNLOCK AI
+                    <button onclick="unlockToPanel()" class="w-full bg-yellow-500 text-black py-5 rounded-2xl font-black uppercase text-lg shadow-xl active:scale-95 transition-all">
+                        Verify & Open AI Panel
                     </button>
-                    
-                    <p class="text-[9px] text-gray-500 text-center italic leading-relaxed px-4">
-                        Pay via QR, enter the UTR number and get instant access. Used UTRs are permanently blocked.
-                    </p>
+                    <p class="text-[9px] text-gray-500 italic px-6 leading-tight">Enter UTR number from your payment receipt to unlock the AI prediction tool.</p>
                 </div>
             </div>
 
-            <div id="analysis-section" class="hidden-panel">
-                <div class="mb-8">
-                    <div class="flex items-center justify-center gap-2 mb-4">
-                        <span class="w-2 h-2 bg-emerald-500 rounded-full animate-ping"></span>
-                        <p class="text-emerald-500 text-[11px] uppercase font-black tracking-[0.3em]">AI Memory Link: ONLINE</p>
+            <div id="ai-panel" class="hidden-panel">
+                <div class="mb-10">
+                    <div class="flex items-center justify-center gap-2 mb-6">
+                        <div class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center font-black text-xl border-2 border-white shadow-lg">A</div>
+                        <p class="text-gray-300 font-bold tracking-widest text-xs uppercase">Prediction Result</p>
                     </div>
-                    
-                    <div id="result-grid" class="grid grid-cols-3 gap-3 min-h-[100px] flex items-center justify-center">
-                        <span class="col-span-3 text-2xl font-mono font-bold text-yellow-500/10 uppercase italic">Ready to Scan Chart</span>
+
+                    <div id="result-grid" class="flex justify-center gap-4 min-h-[80px]">
+                        <div class="text-yellow-500/20 text-4xl font-black italic tracking-tighter">-- -- --</div>
                     </div>
                 </div>
-                
-                <input type="file" id="camera-upload" class="hidden" accept="image/*">
-                <button onclick="document.getElementById('camera-upload').click()" class="w-full bg-white text-black py-5 rounded-3xl font-black text-xl flex items-center justify-center gap-3 shadow-2xl active:scale-95 transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    CHECK CHART
-                </button>
+
+                <div class="space-y-6">
+                    <input type="file" id="user-camera-upload" class="hidden" accept="image/*">
+                    <button onclick="document.getElementById('user-camera-upload').click()" class="w-full bg-white text-black py-6 rounded-3xl font-black text-xl flex items-center justify-center gap-4 shadow-2xl active:scale-95 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        UPLOAD CHART
+                    </button>
+                    <p class="text-emerald-500 text-[10px] font-bold uppercase animate-pulse">AI Engine Ready</p>
+                </div>
             </div>
         </div>
     </div>
 
     <div id="admin-panel" class="hidden-panel w-full max-w-md glass p-10 rounded-[3rem] border-2 border-red-600 shadow-2xl">
-        <h2 class="text-2xl font-black text-red-500 mb-6 text-center italic uppercase">Owner Dashboard</h2>
-        
+        <h2 class="text-2xl font-black text-red-500 mb-8 text-center italic underline uppercase">Owner Panel</h2>
         <div class="space-y-6">
             <div class="bg-gray-900/50 p-4 rounded-2xl border border-white/10">
-                <p class="text-xs font-bold mb-3 text-emerald-400 uppercase">1. Update Payment QR</p>
-                <input type="file" id="qr-photo-upload" class="hidden" accept="image/*" onchange="uploadQR(this)">
-                <button onclick="document.getElementById('qr-photo-upload').click()" class="w-full bg-white/5 py-3 rounded-xl border border-dashed border-white/20 text-[10px] font-bold">UPLOAD NEW QR PHOTO</button>
+                <p class="text-[10px] font-bold mb-3 text-emerald-400 uppercase tracking-widest">Update Payment QR</p>
+                <input type="file" id="admin-qr-input" class="hidden" accept="image/*" onchange="updateQR(this)">
+                <button onclick="document.getElementById('admin-qr-input').click()" class="w-full bg-white/5 py-3 rounded-xl border border-dashed border-white/20 text-[10px]">UPLOAD NEW QR IMAGE</button>
             </div>
-
-            <div class="bg-gray-900/50 p-4 rounded-2xl border border-white/10">
-                <p class="text-xs font-bold mb-3 text-red-400 uppercase">2. Blocked UTR Data</p>
-                <div id="blocked-list-display" class="text-[10px] text-gray-500 h-20 overflow-y-auto font-mono bg-black p-2 rounded">
-                    No history.
-                </div>
-                <button onclick="clearBlocklist()" class="text-[10px] text-blue-400 mt-2 underline">Clear All Blocked UTRs</button>
-            </div>
-            
-            <button onclick="location.reload()" class="bg-red-600 py-4 rounded-2xl font-black w-full shadow-xl">SAVE & EXIT</button>
+            <button onclick="location.reload()" class="bg-red-600 py-5 rounded-3xl font-black w-full shadow-xl">SAVE & EXIT</button>
         </div>
     </div>
 
     <script>
         let taps = 0;
-        let adminPass = localStorage.getItem('XPass') || "1234";
-        let blockedUTRs = JSON.parse(localStorage.getItem('XBlockedUTRs')) || [];
+        let adminPass = "1234";
+        let usedUTRs = JSON.parse(localStorage.getItem('blockedUTRs')) || [];
 
-        const storedQR = localStorage.getItem('XQRPhoto');
-        if(storedQR) document.getElementById('user-qr-display').src = storedQR;
-        updateBlocklistUI();
+        // Load Admin QR
+        const savedQR = localStorage.getItem('myQR');
+        if(savedQR) document.getElementById('display-qr').src = savedQR;
 
+        // 1. UTR Verification Logic
+        function unlockToPanel() {
+            let utr = document.getElementById('utr-input').value;
+            if(utr.length < 10) {
+                alert("ERROR: Enter a valid 12-digit UTR!");
+                return;
+            }
+            if(usedUTRs.includes(utr)) {
+                alert("❌ BLOCKED: This UTR has already been used!");
+                return;
+            }
+
+            // Block UTR and Switch Panel
+            usedUTRs.push(utr);
+            localStorage.setItem('blockedUTRs', JSON.stringify(usedUTRs));
+            
+            alert("✅ VERIFIED! Opening AI Panel...");
+            document.getElementById('lock-screen').classList.add('hidden-panel');
+            document.getElementById('ai-panel').classList.remove('hidden-panel');
+        }
+
+        // 2. Photo Upload & Result Logic
+        document.getElementById('user-camera-upload').onchange = function() {
+            const grid = document.getElementById('result-grid');
+            grid.innerHTML = "<p class='text-yellow-500 font-black italic animate-pulse tracking-widest'>SCANNING MEMORY...</p>";
+            
+            setTimeout(() => {
+                grid.innerHTML = "";
+                // Generate 3 random 2-digit numbers
+                for(let i=0; i<3; i++) {
+                    const num = Math.floor(Math.random()*90 + 10); // 2-digit random
+                    const div = document.createElement('div');
+                    div.className = "num-card px-6 py-4 rounded-2xl text-4xl font-mono font-black text-yellow-400 animate-bounce";
+                    div.innerText = num;
+                    grid.appendChild(div);
+                }
+            }, 3000);
+        };
+
+        // Admin Access
         document.getElementById('king-logo').onclick = () => {
             taps++;
             if(taps === 7) {
-                if(prompt("ENTER OWNER PASS:") === adminPass) {
+                if(prompt("OWNER CODE:") === adminPass) {
                     document.getElementById('user-panel').classList.add('hidden-panel');
                     document.getElementById('admin-panel').classList.remove('hidden-panel');
                 }
@@ -119,72 +139,17 @@
             }
         };
 
-        function submitUTR() {
-            let utr = document.getElementById('utr-input').value;
-            const btn = document.getElementById('submit-btn');
-
-            if(utr.length < 10) {
-                alert("Please enter a valid UTR number.");
-                return;
-            }
-
-            if(blockedUTRs.includes(utr)) {
-                alert("❌ THIS UTR IS ALREADY USED & BLOCKED!");
-                return;
-            }
-
-            btn.innerText = "VERIFYING...";
-            btn.disabled = true;
-
-            setTimeout(() => {
-                blockedUTRs.push(utr);
-                localStorage.setItem('XBlockedUTRs', JSON.stringify(blockedUTRs));
-                alert("✅ UTR VERIFIED! Opening AI Panel...");
-                document.getElementById('lock-screen').classList.add('hidden-panel');
-                document.getElementById('analysis-section').classList.remove('hidden-panel');
-            }, 2000);
-        }
-
-        function uploadQR(input) {
+        function updateQR(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    localStorage.setItem('XQRPhoto', e.target.result);
-                    document.getElementById('user-qr-display').src = e.target.result;
-                    alert("QR Photo Saved!");
+                    localStorage.setItem('myQR', e.target.result);
+                    document.getElementById('display-qr').src = e.target.result;
+                    alert("User QR Updated!");
                 };
                 reader.readAsDataURL(input.files[0]);
             }
         }
-
-        function updateBlocklistUI() {
-            const list = document.getElementById('blocked-list-display');
-            if(blockedUTRs.length > 0) list.innerText = "Used: " + blockedUTRs.join(", ");
-        }
-
-        function clearBlocklist() {
-            if(confirm("Clear UTR history?")) {
-                localStorage.removeItem('XBlockedUTRs');
-                location.reload();
-            }
-        }
-
-        document.getElementById('camera-upload').onchange = function() {
-            const grid = document.getElementById('result-grid');
-            grid.innerHTML = "<div class='col-span-3 text-yellow-500 animate-pulse font-bold italic tracking-widest'>ANALYZING MEMORY DATA...</div>";
-            
-            setTimeout(() => {
-                grid.innerHTML = "";
-                let count = Math.floor(Math.random() * 5) + 2; 
-                for(let i=0; i<count; i++) {
-                    const num = Math.floor(Math.random()*90 + 10);
-                    const div = document.createElement('div');
-                    div.className = "num-card py-5 rounded-2xl text-4xl font-mono font-black text-yellow-400 animate-bounce";
-                    div.innerText = num;
-                    grid.appendChild(div);
-                }
-            }, 3000);
-        };
     </script>
 </body>
 </html>
