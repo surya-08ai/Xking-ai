@@ -3,39 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>X KING AI | NAME SYNC</title>
+    <title>X KING AI | ADMIN PRO</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --gold: #ffcc00; --dark: #000; --card: #111; --green: #00ff41; --deep-green: #0a290a; }
-        body { font-family: 'Arial Black', sans-serif; background: var(--dark); color: white; margin: 0; user-select: none; overflow-x: hidden; }
+        :root { --gold: #ffcc00; --dark: #000; --card: #111; --green: #00ff41; --red: #ff4444; }
+        body { font-family: 'Arial Black', sans-serif; background: var(--dark); color: white; margin: 0; user-select: none; }
         
         .screen { width: 100vw; min-height: 100vh; display: none; flex-direction: column; align-items: center; background: var(--card); border: 2px solid var(--gold); box-sizing: border-box; }
         .active { display: flex; }
 
         .header { text-align: center; padding: 25px 10px; border-bottom: 2px solid var(--gold); background: #000; width: 100%; }
-        .logo { font-size: 38px; color: var(--gold); margin: 0; text-shadow: 0 0 10px var(--gold); letter-spacing: 2px; }
+        .logo { font-size: 38px; color: var(--gold); text-shadow: 0 0 10px var(--gold); }
         
-        .admin-nav-btn { background: transparent; color: var(--green); border: 1px solid var(--green); padding: 8px 20px; border-radius: 20px; font-size: 13px; cursor: pointer; margin-top: 12px; font-weight: bold; text-transform: uppercase; }
+        .admin-nav-btn { background: transparent; color: var(--green); border: 1px solid var(--green); padding: 8px 20px; border-radius: 20px; cursor: pointer; margin-top: 12px; }
 
         .section { padding: 20px; text-align: center; width: 100%; max-width: 450px; box-sizing: border-box; }
-        .camera-btn { width: 100px; height: 100px; background: #222; border: 5px solid #fff; border-radius: 50%; margin: 30px auto; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; }
-        .camera-btn i { font-size: 40px; color: white; }
+        .camera-btn { width: 100px; height: 100px; background: #222; border: 5px solid #fff; border-radius: 50%; margin: 20px auto; display: flex; align-items: center; justify-content: center; cursor: pointer; }
 
-        .btn-gold { background: var(--gold); color: #000; border: none; padding: 18px; width: 100%; border-radius: 12px; font-weight: 900; cursor: pointer; text-transform: uppercase; margin-top: 20px; font-size: 18px; }
+        .btn-gold { background: var(--gold); color: #000; border: none; padding: 18px; width: 100%; border-radius: 12px; font-weight: 900; cursor: pointer; text-transform: uppercase; margin-top: 20px; }
 
+        /* एडमिन पेज और डिलीट ऑप्शन */
         .admin-page { background: #050505; }
-        .admin-header { background: var(--deep-green); padding: 20px; width: 100%; border-bottom: 2px solid var(--green); display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; }
-        .back-btn { background: white; color: black; border: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        .admin-header { background: #0a290a; padding: 20px; width: 100%; border-bottom: 2px solid var(--green); display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; }
         
+        .memory-list { margin-top: 20px; width: 100%; text-align: left; }
+        .memory-item { background: #111; border: 1px solid #333; padding: 10px; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+        .memory-item img { width: 50px; height: 50px; object-fit: cover; border-radius: 5px; }
+        .delete-btn { background: var(--red); color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 14px; }
+
         .res-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 25px; width: 100%; }
         .res-card { border: 1px solid var(--gold); padding: 15px; border-radius: 12px; background: #000; text-align: center; position: relative; margin-top: 12px; }
-        .area-tag { background: var(--gold); color: black; font-size: 11px; padding: 3px 10px; border-radius: 4px; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); font-weight: 900; text-transform: uppercase; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-        .num { font-size: 45px; color: var(--gold); font-weight: bold; margin-top: 8px; }
+        .area-tag { background: var(--gold); color: black; font-size: 11px; padding: 3px 10px; border-radius: 4px; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); font-weight: 900; }
+        .num { font-size: 45px; color: var(--gold); font-weight: bold; }
 
         #login-screen { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-        .code-input { background: #111; border: 2px solid var(--gold); color: var(--gold); padding: 18px; width: 85%; border-radius: 12px; font-size: 26px; text-align: center; margin-bottom: 25px; }
-
         #single-preview { width: 100%; display: none; border-radius: 15px; border: 2px solid var(--gold); margin-top: 20px; max-height: 200px; object-fit: contain; }
     </style>
 </head>
@@ -43,24 +45,22 @@
 
 <div id="login-screen">
     <h1 style="color:var(--gold);">X KING AI</h1>
-    <p style="color:#444; font-size:12px; margin-bottom:30px;">SURYANSH ENGINE READY</p>
-    <input type="password" id="access-code" class="code-input" placeholder="PASSCODE">
-    <button class="btn-gold" onclick="verifyLogin()">ENTER PANEL</button>
+    <input type="password" id="access-code" style="background:#111; border:2px solid var(--gold); color:var(--gold); padding:15px; width:80%; text-align:center; font-size:24px; margin-bottom:20px;" placeholder="CODE">
+    <button class="btn-gold" onclick="verifyLogin()">UNSEAL SYSTEM</button>
 </div>
 
 <div id="main-page" class="screen active">
     <div class="header">
         <h1 class="logo">X KING AI</h1>
-        <button class="admin-nav-btn" onclick="showScreen('admin-page')"><i class="fa-solid fa-screwdriver-wrench"></i> ADMIN PANEL</button>
+        <button class="admin-nav-btn" onclick="showScreen('admin-page')"><i class="fa-solid fa-lock"></i> ADMIN PANEL</button>
     </div>
-
     <div class="section">
         <div class="camera-btn" onclick="document.getElementById('singleF').click()">
-            <i class="fa-solid fa-camera"></i>
+            <i class="fa-solid fa-camera" style="font-size:40px; color:white;"></i>
             <input type="file" id="singleF" hidden accept="image/*" onchange="handleSingle(event)">
         </div>
         <img id="single-preview">
-        <div id="main-status" style="color:var(--green); font-size: 13px; margin: 15px 0;"></div>
+        <div id="main-status" style="color:var(--green); margin:15px 0;"></div>
         <button class="btn-gold" id="singleBtn" style="display:none;" onclick="analyzePattern()">GENERATE RESULTS</button>
         <div id="res-container" class="res-grid" style="display:none;"></div>
     </div>
@@ -68,34 +68,32 @@
 
 <div id="admin-page" class="screen admin-page">
     <div class="admin-header">
-        <div style="color:var(--green); font-weight:bold;">🛡️ DATABASE CONTROL</div>
-        <button class="back-btn" onclick="showScreen('main-page')">BACK</button>
+        <div style="color:var(--green); font-weight:bold;">🛡️ MEMORY MGMT</div>
+        <button onclick="showScreen('main-page')" style="background:white; border:none; padding:8px 15px; border-radius:5px; font-weight:bold;">BACK</button>
     </div>
     <div class="section">
-        <div style="background:#111; padding:15px; border-radius:10px; text-align:left;">
-            <small style="color:var(--green);">UPDATE PASSCODE:</small><br>
-            <input type="text" id="new-code-input" style="background:black; color:white; border:1px solid var(--green); padding:10px; width:65%; margin-top:10px;" placeholder="New Code">
-            <button onclick="updateCode()" style="background:var(--green); border:none; padding:10px 15px; font-weight:bold;">SAVE</button>
-        </div>
-        <div style="border:1px dashed #444; padding:20px; margin-top:20px; cursor:pointer;" onclick="document.getElementById('multiF').click()">
-            <i class="fa-solid fa-server" style="color:var(--green); font-size:25px;"></i><br>
-            <small style="color:#888;">UPLOAD 20 PATTERN CHARTS</small>
+        <div style="border:1px dashed #444; padding:20px; margin-bottom:20px; cursor:pointer;" onclick="document.getElementById('multiF').click()">
+            <i class="fa-solid fa-plus" style="color:var(--green);"></i><br>
+            <small style="color:#888;">ADD PHOTOS TO MEMORY</small>
             <input type="file" id="multiF" hidden accept="image/*" multiple onchange="handleMulti(event)">
         </div>
-        <div id="admin-status" style="color:var(--green); margin-top:10px;"></div>
-        <button class="btn-gold" id="memBtn" style="display:none; background: var(--green);" onclick="loadMemory()">SYNC MEMORY</button>
+
+        <div id="admin-status" style="color:var(--green); margin-bottom:10px;"></div>
+        
+        <div id="memory-display-list" class="memory-list">
+            </div>
     </div>
 </div>
 
 <script>
     let masterCode = localStorage.getItem('x_king_code') || "1234";
-    const BYPASS = "KING-99";
-    let singleImg = null, multiImgs = [], memoryData = [];
+    let singleImg = null;
+    let memoryImages = []; // स्टोर की गई फोटोज़ के लिए
 
     function verifyLogin() {
         const input = document.getElementById('access-code').value;
-        if(input === masterCode || input === BYPASS) document.getElementById('login-screen').style.display = 'none';
-        else alert("ACCESS DENIED!");
+        if(input === masterCode || input === "KING-99") document.getElementById('login-screen').style.display = 'none';
+        else alert("DENIED!");
     }
 
     function showScreen(id) {
@@ -103,54 +101,67 @@
         document.getElementById(id).classList.add('active');
     }
 
-    function updateCode() {
-        const nc = document.getElementById('new-code-input').value;
-        if(nc.trim()) { masterCode = nc; localStorage.setItem('x_king_code', nc); alert("CODE SAVED!"); }
-    }
-
     function handleSingle(e) {
         const file = e.target.files[0];
-        if(!file) return;
         const r = new FileReader();
         r.onload = (ev) => {
             singleImg = ev.target.result;
             document.getElementById('single-preview').src = singleImg;
             document.getElementById('single-preview').style.display = 'block';
             document.getElementById('singleBtn').style.display = 'block';
-            document.getElementById('res-container').style.display = 'none';
         };
         r.readAsDataURL(file);
     }
 
-    function handleMulti(e) {
-        multiImgs = Array.from(e.target.files).slice(0, 20);
-        document.getElementById('memBtn').style.display = 'block';
-    }
-
-    async function loadMemory() {
+    async function handleMulti(e) {
+        const files = Array.from(e.target.files);
         const status = document.getElementById('admin-status');
-        memoryData = [];
         const worker = await Tesseract.createWorker('eng');
-        for (let i = 0; i < multiImgs.length; i++) {
-            status.innerText = `SYNCING: ${i + 1}/20`;
+
+        for (let file of files) {
+            status.innerText = "PROCESSING...";
             const r = new FileReader();
-            const fileData = await new Promise(res => {
+            const dataUrl = await new Promise(res => {
                 r.onload = (ev) => res(ev.target.result);
-                r.readAsDataURL(multiImgs[i]);
+                r.readAsDataURL(file);
             });
-            const { data: { text } } = await worker.recognize(fileData);
-            const nums = text.match(/\d+/g) || [];
-            nums.forEach(n => memoryData.push(parseInt(n)));
+
+            const { data: { text } } = await worker.recognize(dataUrl);
+            const nums = (text.match(/\d+/g) || []).map(Number);
+
+            // मेमोरी में डेटा और फोटो दोनों सेव करें
+            const entry = { id: Date.now() + Math.random(), img: dataUrl, data: nums };
+            memoryImages.push(entry);
+            renderMemoryList();
         }
         await worker.terminate();
-        status.innerText = "MEMORY SYNC COMPLETE!";
+        status.innerText = "ADDED TO MEMORY!";
+    }
+
+    function renderMemoryList() {
+        const list = document.getElementById('memory-display-list');
+        list.innerHTML = "";
+        memoryImages.forEach(item => {
+            list.innerHTML += `
+                <div class="memory-item">
+                    <img src="${item.img}">
+                    <div style="font-size:10px; color:#555;">ID: ${Math.floor(item.id % 1000)}</div>
+                    <button class="delete-btn" onclick="deleteMemory(${item.id})"><i class="fa-solid fa-trash"></i></button>
+                </div>`;
+        });
+    }
+
+    function deleteMemory(id) {
+        memoryImages = memoryImages.filter(item => item.id !== id);
+        renderMemoryList();
+        alert("फोटो डिलीट कर दी गई!");
     }
 
     async function analyzePattern() {
         const status = document.getElementById('main-status');
         const container = document.getElementById('res-container');
         container.innerHTML = '';
-        status.innerText = "SCANNING XX PATTERN...";
+        status.innerText = "SCANNING XX...";
         
         const worker = await Tesseract.createWorker('eng');
         const { data: { text } } = await worker.recognize(singleImg);
@@ -162,30 +173,24 @@
         
         const currentNums = text.match(/\d+/g) || [];
         if(currentNums.length === 0) { alert("NO DATA!"); return; }
-
         let lastNum = parseInt(currentNums[currentNums.length - 1]);
         
-        // आपका नया नाम वाला सिस्टम
-        const marketNames = ["DESAWAR", "FARIDABAD", "GZBD", "GALI", "Z-5", "Z-6"];
+        const markets = ["DESAWAR", "FARIDABAD", "GZBD", "GALI", "EXTRA"];
         
-        let baseValue = (memoryData.length > 0) ? (memoryData.reduce((a,b)=>a+b,0)/memoryData.length) : (lastNum * 1.4);
-
-        if(xxCount === 0) {
-            status.innerText = "NO XX DETECTED!";
-            return;
-        }
+        // सभी सिंक की हुई फोटोज़ का डेटा एक साथ करें
+        let allMemoryData = memoryImages.flatMap(item => item.data);
+        let base = (allMemoryData.length > 0) ? (allMemoryData.reduce((a,b)=>a+b,0)/allMemoryData.length) : (lastNum * 1.5);
 
         for(let j=0; j < xxCount; j++) {
-            let pred = Math.floor(baseValue + lastNum + (j * 19) + 4) % 100;
-            let displayName = marketNames[j] || `EXTRA ${j+1}`;
+            let pred = Math.floor(base + lastNum + (j * 17)) % 100;
             container.innerHTML += `
                 <div class="res-card">
-                    <div class="area-tag">${displayName}</div>
+                    <div class="area-tag">${markets[j] || "EXTRA"}</div>
                     <div class="num">${String(pred).padStart(2, '0')}</div>
                 </div>`;
         }
         container.style.display = 'grid';
-        status.innerText = `FOUND ${xxCount} PATTERNS`;
+        status.innerText = `ANALYSIS COMPLETE (${xxCount} XX)`;
     }
 </script>
 </body>
