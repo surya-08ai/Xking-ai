@@ -3,87 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>X KING AI | SURYANSH FINAL ADMIN</title>
+    <title>X KING AI | SURYANSH PREMIUM</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --gold: #ffcc00; --dark: #000; --card: #111; --green: #00ff41; --deep-green: #0a290a; }
         body { font-family: 'Arial Black', sans-serif; background: var(--dark); color: white; margin: 0; display: flex; justify-content: center; min-height: 100vh; user-select: none; }
         .x-app { width: 100%; max-width: 450px; background: var(--card); border: 2px solid var(--gold); position: relative; min-height: 100vh; display: flex; flex-direction: column; }
-        .header { text-align: center; padding: 25px 10px; border-bottom: 2px solid var(--gold); background: #000; }
-        .logo { font-size: 40px; color: var(--gold); margin: 0; text-shadow: 0 0 10px var(--gold); }
+        
+        /* हेडर और एडमिन बटन को लोगो के नीचे सेट किया */
+        .header { text-align: center; padding: 20px 10px; border-bottom: 2px solid var(--gold); background: #000; }
+        .logo { font-size: 38px; color: var(--gold); margin: 0; text-shadow: 0 0 10px var(--gold); letter-spacing: 2px; }
+        .admin-mini-btn { background: transparent; color: var(--green); border: 1px solid var(--green); padding: 5px 15px; border-radius: 20px; font-size: 12px; cursor: pointer; margin-top: 10px; font-weight: bold; text-transform: uppercase; transition: 0.3s; }
+        .admin-mini-btn:hover { background: var(--green); color: black; }
+
         .section { padding: 20px; text-align: center; }
         
-        /* लॉगिन स्क्रीन */
-        #login-screen { position: fixed; inset: 0; background: #000; z-index: 999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-        .code-input { background: #111; border: 2px solid var(--gold); color: var(--gold); padding: 15px; width: 80%; border-radius: 10px; font-size: 24px; text-align: center; outline: none; margin-bottom: 20px; }
+        /* कैमरा बटन स्टाइल */
+        .camera-container { width: 100px; height: 100px; background: #1a1a1a; border: 4px solid #fff; border-radius: 50%; margin: 30px auto; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; box-shadow: 0 0 20px rgba(255,255,255,0.2); transition: 0.2s; }
+        .camera-container:active { transform: scale(0.9); }
+        .camera-container i { font-size: 40px; color: white; }
+        .camera-ring { position: absolute; inset: -10px; border: 2px solid #555; border-radius: 50%; }
 
-        .btn-gold { background: var(--gold); color: #000; border: none; padding: 18px; width: 100%; border-radius: 10px; font-weight: 900; cursor: pointer; text-transform: uppercase; margin-top: 10px; font-size: 18px; }
-        
-        /* एडमिन बटन */
-        .btn-admin-green { background: var(--deep-green); color: var(--green); border: 2px solid var(--green); padding: 18px; width: 90%; border-radius: 15px; font-weight: 900; cursor: pointer; text-transform: uppercase; margin: 20px auto; font-size: 22px; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 0 15px rgba(0, 255, 65, 0.3); }
+        .btn-gold { background: var(--gold); color: #000; border: none; padding: 18px; width: 100%; border-radius: 10px; font-weight: 900; cursor: pointer; text-transform: uppercase; margin-top: 25px; font-size: 18px; box-shadow: 0 5px 15px rgba(255, 204, 0, 0.3); }
 
-        /* एडमिन पैनल एरिया */
-        #admin-panel { display: none; background: #050505; border: 1px dashed var(--green); padding: 15px; border-radius: 15px; margin-top: 10px; text-align: left; }
+        #admin-panel { display: none; background: #050505; border: 1px dashed var(--green); padding: 15px; border-radius: 15px; margin-top: 15px; text-align: left; }
         .admin-edit-box { background: #111; border: 1px solid #333; padding: 10px; border-radius: 8px; margin-top: 10px; }
-        .small-input { background: #000; border: 1px solid var(--green); color: white; padding: 8px; width: 60%; border-radius: 5px; margin-top: 5px; outline: none; }
+        .small-input { background: #000; border: 1px solid var(--green); color: white; padding: 8px; width: 60%; border-radius: 5px; outline: none; }
 
-        /* रिजल्ट कार्ड */
-        .res-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 20px; }
-        .res-card { border: 1px solid var(--gold); padding: 12px; border-radius: 10px; background: #000; }
-        .num { font-size: 38px; color: var(--gold); font-weight: bold; }
+        .res-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 25px; }
+        .res-card { border: 1px solid var(--gold); padding: 12px; border-radius: 10px; background: #000; position: relative; overflow: hidden; }
+        .res-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: var(--gold); }
+        .num { font-size: 42px; color: var(--gold); font-weight: bold; }
         
-        #single-preview { width: 100%; display: none; border-radius: 10px; border: 1px solid #333; margin-top: 10px; max-height: 150px; object-fit: contain; }
-        .preview-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 10px; max-height: 100px; overflow-y: auto; }
-        .preview-grid img { width: 100%; height: 35px; object-fit: cover; border-radius: 3px; }
-        .status-msg { color: var(--green); font-size: 11px; margin: 10px 0; font-family: sans-serif; }
+        #single-preview { width: 100%; display: none; border-radius: 15px; border: 2px solid var(--gold); margin-top: 20px; max-height: 200px; object-fit: contain; }
+        .preview-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 10px; }
+        .preview-grid img { width: 100%; height: 40px; object-fit: cover; border-radius: 5px; border: 1px solid #333; }
+        .status-msg { color: var(--green); font-size: 12px; margin: 15px 0; font-family: 'Courier New', monospace; text-transform: uppercase; }
+
+        #login-screen { position: fixed; inset: 0; background: #000; z-index: 999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .code-input { background: #111; border: 2px solid var(--gold); color: var(--gold); padding: 15px; width: 80%; border-radius: 10px; font-size: 24px; text-align: center; margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
 <div id="login-screen">
-    <h1 style="color:var(--gold); margin-bottom:5px; text-shadow: 0 0 10px var(--gold);">X KING AI</h1>
-    <p style="color:#444; font-size:11px; margin-bottom:30px; letter-spacing: 2px;">SURYANSH SECURE PANEL</p>
-    <input type="password" id="access-code" class="code-input" placeholder="ENTER CODE">
+    <h1 style="color:var(--gold); margin-bottom:5px;">X KING AI</h1>
+    <p style="color:#444; font-size:11px; margin-bottom:30px; letter-spacing: 2px;">SURYANSH SECURE LOGIN</p>
+    <input type="password" id="access-code" class="code-input" placeholder="ACCESS CODE">
     <button class="btn-gold" onclick="verifyLogin()">UNSEAL SYSTEM</button>
 </div>
 
 <div class="x-app">
     <div class="header">
-        <h1 class="logo">X KING</h1>
-        <div style="font-size: 9px; color: #444; letter-spacing: 2px;">PATTERN RECOGNITION</div>
+        <h1 class="logo">X KING AI</h1>
+        <button class="admin-mini-btn" onclick="toggleAdmin()"><i class="fa-solid fa-shield-halved"></i> ADMIN PANEL</button>
     </div>
 
     <div class="section">
         <div id="single-mode">
-            <div style="border:2px dashed #333; padding:25px; border-radius:15px; cursor:pointer; background: #080808;" onclick="document.getElementById('singleF').click()">
-                <span id="single-t" style="color:#888;">📸 अपलोड सिंगल चार्ट</span>
+            <p style="color: #666; font-size: 12px;">TAP CAMERA TO SCAN CHART</p>
+            
+            <div class="camera-container" onclick="document.getElementById('singleF').click()">
+                <div class="camera-ring"></div>
+                <i class="fa-solid fa-camera"></i>
                 <input type="file" id="singleF" hidden accept="image/*" onchange="handleSingle(event)">
-                <img id="single-preview">
             </div>
-            <button class="btn-gold" id="singleBtn" style="display:none; margin-top:15px;" onclick="analyzePattern()">ANALYZE & MATCH</button>
+
+            <img id="single-preview">
+            
+            <div id="main-status" class="status-msg"></div>
+            <button class="btn-gold" id="singleBtn" style="display:none;" onclick="analyzePattern()">START ANALYSIS</button>
         </div>
 
-        <button class="btn-admin-green" onclick="toggleAdmin()">🛡️ ADMIN PANEL 🛡️</button>
-
         <div id="admin-panel">
-            <div style="color:var(--green); font-size:11px; font-weight:bold;">🛡️ MASTER DATABASE CONTROL</div>
-            
+            <div style="color:var(--green); font-size:11px; font-weight:bold;">🛡️ DATABASE & MEMORY</div>
             <div class="admin-edit-box">
-                <small style="color:grey;">लॉगिन कोड बदलें:</small><br>
-                <input type="text" id="new-code-input" class="small-input" placeholder="नया कोड">
+                <small style="color:grey;">CHANGE CODE:</small><br>
+                <input type="text" id="new-code-input" class="small-input" placeholder="New Code">
                 <button onclick="updateCode()" style="background:var(--green); border:none; padding:8px 12px; border-radius:5px; font-weight:bold; cursor:pointer;">SAVE</button>
             </div>
-
             <hr style="border:0.5px solid #222; margin:15px 0;">
-            
-            <div style="border:1px dashed #444; padding:15px; border-radius:10px; text-align:center; cursor:pointer;" onclick="document.getElementById('multiF').click()">
-                <small style="color:#888;">अपलोड 20 मेमोरी फोटोज़ (डेटाबेस)</small>
+            <div style="border:1px dashed #444; padding:20px; border-radius:10px; text-align:center; cursor:pointer;" onclick="document.getElementById('multiF').click()">
+                <small style="color:#888;">MEMORY: UPLOAD 20 CHARTS</small>
                 <input type="file" id="multiF" hidden accept="image/*" multiple onchange="handleMulti(event)">
             </div>
             <div id="m-grid" class="preview-grid"></div>
-            
-            <div id="scan-status" class="status-msg"></div>
-            <button class="btn-gold" id="memBtn" style="display:none;" onclick="loadMemory()">SAVE TO MEMORY</button>
+            <button class="btn-gold" id="memBtn" style="display:none; background: var(--green);" onclick="loadMemory()">SAVE TO MEMORY</button>
         </div>
 
         <div id="res-container" class="res-grid" style="display:none;"></div>
@@ -99,14 +105,13 @@
 
     function verifyLogin() {
         const input = document.getElementById('access-code').value;
-        if(input === masterCode || input === BYPASS) {
-            document.getElementById('login-screen').style.display = 'none';
-        } else { alert("गलत कोड! पहुँच वर्जित।"); }
+        if(input === masterCode || input === BYPASS) document.getElementById('login-screen').style.display = 'none';
+        else alert("ACCESS DENIED!");
     }
 
     function updateCode() {
         const nc = document.getElementById('new-code-input').value;
-        if(nc.trim()) { masterCode = nc; localStorage.setItem('x_king_code', nc); alert("कोड सुरक्षित कर लिया गया है!"); }
+        if(nc.trim()) { masterCode = nc; localStorage.setItem('x_king_code', nc); alert("CODE SAVED!"); }
     }
 
     function toggleAdmin() {
@@ -122,9 +127,8 @@
             singleImg = ev.target.result;
             document.getElementById('single-preview').src = singleImg;
             document.getElementById('single-preview').style.display = 'block';
-            document.getElementById('single-t').style.display = 'none';
             document.getElementById('singleBtn').style.display = 'block';
-            document.getElementById('res-container').style.display = 'none';
+            document.querySelector('.camera-container').style.marginTop = '10px';
         };
         r.readAsDataURL(file);
     }
@@ -147,11 +151,11 @@
     }
 
     async function loadMemory() {
-        const status = document.getElementById('scan-status');
+        const status = document.getElementById('main-status');
         memoryData = [];
         const worker = await Tesseract.createWorker('eng');
         for (let i = 0; i < multiImgs.length; i++) {
-            status.innerText = `मेमोरी स्टोर हो रही है: ${i + 1}/${multiImgs.length}`;
+            status.innerText = `STORING: ${i + 1}/${multiImgs.length}`;
             const r = new FileReader();
             const fileData = await new Promise(res => {
                 r.onload = (ev) => res(ev.target.result);
@@ -162,48 +166,41 @@
             nums.forEach(n => memoryData.push(parseInt(n)));
         }
         await worker.terminate();
-        status.innerText = "मेमोरी सफलतापूर्वक स्टोर हो गई!";
-        alert("डेटाबेस अपडेट हो गया है। अब आप सिंगल फोटो स्कैन कर सकते हैं।");
+        status.innerText = "MEMORY SYNCED";
+        alert("20 चार्ट्स मेमोरी में सेव हो गए हैं!");
     }
 
     async function analyzePattern() {
-        if(memoryData.length === 0) {
-            alert("कृपया पहले एडमिन पैनल में जाकर मेमोरी सेव करें!");
-            return;
-        }
-        const status = document.getElementById('scan-status');
+        const status = document.getElementById('main-status');
         const container = document.getElementById('res-container');
         container.innerHTML = '';
+        status.innerText = "SURYANSH ENGINE SCANNING...";
         
         const worker = await Tesseract.createWorker('eng');
-        status.innerText = "मैचिंग पैटर्न...";
         const { data: { text } } = await worker.recognize(singleImg);
         await worker.terminate();
 
         const currentNums = text.match(/\d+/g) || [];
         const xxCount = (text.match(/XX/gi) || []).length;
         
-        if(currentNums.length === 0) {
-            alert("चार्ट में नंबर नहीं मिले!");
-            return;
-        }
+        if(currentNums.length === 0) { alert("NO DATA FOUND IN IMAGE!"); return; }
 
-        let memAvg = memoryData.reduce((a,b) => a+b, 0) / memoryData.length;
         let lastNum = parseInt(currentNums[currentNums.length - 1]);
         let finalCount = (xxCount > 0) ? xxCount : 2;
+        let baseValue = (memoryData.length > 0) ? (memoryData.reduce((a,b)=>a+b,0)/memoryData.length) : (lastNum * 1.2);
 
         for(let j=0; j < finalCount; j++) {
-            let pred = Math.floor(memAvg + lastNum + (j * 9)) % 100;
+            let pred = Math.floor(baseValue + lastNum + (j * 17) + 5) % 100;
             container.innerHTML += `
                 <div class="res-card">
-                    <small style="color:#444;">RESULT ${j+1}</small>
+                    <small style="color:#555; font-size:10px;">PATTERN DATA</small>
                     <div class="num">${String(pred).padStart(2, '0')}</div>
                 </div>`;
         }
         container.style.display = 'grid';
-        status.innerText = "पैटर्न मैच सफल!";
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        status.innerText = "ANALYSIS COMPLETE";
     }
 </script>
 </body>
 </html>
+   
