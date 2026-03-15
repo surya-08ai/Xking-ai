@@ -3,61 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Prediction Tool</title>
+    <title>AI Prediction Tool - Advanced</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         .hidden-panel { display: none; }
-        .active-panel { display: block; }
+        body { background-color: #0f172a; color: white; font-family: sans-serif; }
+        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        #qrcode img { margin: 0 auto; border: 5px solid white; border-radius: 10px; }
     </style>
 </head>
-<body class="bg-gray-900 text-white font-sans">
+<body class="flex items-center justify-center min-h-screen p-4">
 
-    <div id="user-panel" class="p-6 max-w-md mx-auto">
-        <h1 id="king-logo" class="text-4xl font-bold text-center mb-8 cursor-pointer select-none">KING</h1>
+    <div id="user-panel" class="w-full max-w-md">
+        <h1 id="king-logo" class="text-5xl font-black text-center mb-8 tracking-widest text-yellow-500 cursor-pointer select-none">KING</h1>
         
-        <div class="bg-gray-800 p-6 rounded-lg shadow-xl border border-yellow-500">
-            <div class="mb-6 text-center">
-                <p class="text-xl">Predicted Number: <span id="prediction-display" class="text-yellow-400 font-bold text-3xl">XX</span></p>
+        <div class="glass-card p-6 rounded-3xl shadow-2xl text-center border-t-4 border-yellow-500">
+            <div id="qr-section" class="mb-6 p-4 bg-white/10 rounded-2xl">
+                <p class="text-xs text-gray-400 mb-3 uppercase tracking-widest">Scan to Pay / Access</p>
+                <div id="qrcode" class="flex justify-center"></div>
+            </div>
+
+            <div class="mb-6">
+                <p class="text-gray-400 uppercase tracking-widest text-xs mb-1">AI Prediction Result</p>
+                <div id="prediction-display" class="text-6xl font-mono font-bold text-yellow-400">XX</div>
             </div>
             
-            <div class="flex flex-col gap-4">
+            <div class="space-y-3">
                 <input type="file" id="user-upload" class="hidden" accept="image/*">
-                <button onclick="document.getElementById('user-upload').click()" class="bg-yellow-600 hover:bg-yellow-700 p-3 rounded font-bold">Upload Photo</button>
-                <button onclick="analyzePhoto('user')" class="bg-blue-600 hover:bg-blue-700 p-3 rounded font-bold">Analyze & Generate</button>
+                <button onclick="document.getElementById('user-upload').click()" class="w-full bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-bold transition">Upload Photo</button>
+                <button onclick="analyzePhoto()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-black py-4 rounded-xl font-black text-lg shadow-lg transition uppercase">Analyze & Generate</button>
             </div>
         </div>
     </div>
 
-    <div id="admin-panel" class="hidden-panel p-6 max-w-md mx-auto">
-        <h2 class="text-2xl font-bold text-center mb-6 text-red-500">OWNER PANEL</h2>
-        <div class="bg-gray-800 p-6 rounded-lg border border-red-500 flex flex-col gap-4">
-            <button class="bg-green-600 p-3 rounded font-bold">SET PRICE</button>
+    <div id="admin-panel" class="hidden-panel w-full max-w-md">
+        <div class="glass-card p-6 rounded-3xl border-2 border-red-500 shadow-2xl">
+            <h2 class="text-2xl font-bold text-center mb-6 text-red-500">OWNER SETTINGS</h2>
             
-            <input type="file" id="memory-upload" class="hidden" multiple accept="image/*">
-            <button onclick="document.getElementById('memory-upload').click()" class="bg-purple-600 hover:bg-purple-700 p-3 rounded font-bold">Memory (Upload 20 Photos)</button>
-            
-            <input type="file" id="owner-single-upload" class="hidden" accept="image/*">
-            <button onclick="document.getElementById('owner-single-upload').click()" class="bg-indigo-600 hover:bg-indigo-700 p-3 rounded font-bold">Check Chart</button>
-            
-            <button onclick="analyzePhoto('owner')" class="bg-blue-600 p-3 rounded font-bold">Analyze (Owner)</button>
-            <button onclick="toggleAdmin()" class="bg-gray-600 p-3 rounded font-bold text-white">EXIT</button>
+            <div class="flex flex-col gap-3">
+                <input type="file" id="memory-upload" class="hidden" multiple accept="image/*">
+                <button onclick="document.getElementById('memory-upload').click()" class="bg-purple-600 hover:bg-purple-700 py-3 rounded-xl font-bold">MEMORY (20 PHOTOS)</button>
+                
+                <input type="file" id="owner-single-upload" class="hidden" accept="image/*">
+                <button onclick="document.getElementById('owner-single-upload').click()" class="bg-indigo-600 hover:bg-indigo-700 py-3 rounded-xl font-bold">CHECK CHART (SINGLE)</button>
+                
+                <hr class="border-gray-700 my-1">
+                
+                <button onclick="updateQRLink()" class="bg-green-600 hover:bg-green-700 py-3 rounded-xl font-bold transition">UPDATE QR LINK</button>
+                
+                <button onclick="changeAdminPassword()" class="bg-orange-600 hover:bg-orange-700 py-3 rounded-xl font-bold transition">CHANGE PASSWORD</button>
+                
+                <button onclick="toggleAdmin()" class="bg-red-600 hover:bg-red-700 py-3 rounded-xl font-bold mt-2">EXIT PANEL</button>
+            </div>
         </div>
     </div>
 
     <script>
         let clickCount = 0;
-        const secretCode = "1234"; // आप इसे बदल सकते हैं
+        let secretCode = localStorage.getItem('adminPass') || "1234";
+        let qrLink = localStorage.getItem('qrLink') || "https://example.com/pay"; // Default link
 
-        // Secret Admin Access (7 Taps)
+        // Initialize QR Code
+        const qrcodeContainer = document.getElementById("qrcode");
+        let qrcode = new QRCode(qrcodeContainer, {
+            text: qrLink,
+            width: 150,
+            height: 150,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+
+        // Admin Access Logic
         document.getElementById('king-logo').addEventListener('click', () => {
             clickCount++;
             if (clickCount === 7) {
                 let pass = prompt("Enter Admin Code:");
-                if (pass === secretCode) {
-                    toggleAdmin();
-                } else {
-                    alert("Wrong Code!");
-                }
+                if (pass === secretCode) toggleAdmin();
+                else alert("Unauthorized!");
                 clickCount = 0;
             }
         });
@@ -67,16 +91,159 @@
             document.getElementById('admin-panel').classList.toggle('hidden-panel');
         }
 
-        function analyzePhoto(type) {
+        // Function to update QR Code Link
+        function updateQRLink() {
+            let newLink = prompt("Paste your new QR Link or UPI ID here:", qrLink);
+            if (newLink && newLink.trim() !== "") {
+                qrLink = newLink;
+                localStorage.setItem('qrLink', newLink);
+                qrcode.clear(); 
+                qrcode.makeCode(newLink);
+                alert("QR Code updated successfully!");
+            }
+        }
+
+        function changeAdminPassword() {
+            let newPass = prompt("Enter New Password:");
+            if (newPass) {
+                secretCode = newPass;
+                localStorage.setItem('adminPass', newPass);
+                alert("Password Updated!");
+            }
+        }
+
+        function analyzePhoto() {
             const display = document.getElementById('prediction-display');
-            display.innerText = "Scanning...";
-            
-            // Artificial delay to mimic AI analysis
+            display.innerText = "SCANNING...";
             setTimeout(() => {
-                const randomNumber = Math.floor(Math.random() * 100);
-                display.innerText = randomNumber < 10 ? "0" + randomNumber : randomNumber;
-                alert("Analysis Complete based on Memory & Uploaded Chart.");
-            }, 2000);
+                const num = Math.floor(Math.random() * 100);
+                display.innerText = num < 10 ? "0" + num : num;
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Prediction Tool - Advanced</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        .hidden-panel { display: none; }
+        body { background-color: #0f172a; color: white; font-family: sans-serif; }
+        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        #qrcode img { margin: 0 auto; border: 5px solid white; border-radius: 10px; }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div id="user-panel" class="w-full max-w-md">
+        <h1 id="king-logo" class="text-5xl font-black text-center mb-8 tracking-widest text-yellow-500 cursor-pointer select-none">KING</h1>
+        
+        <div class="glass-card p-6 rounded-3xl shadow-2xl text-center border-t-4 border-yellow-500">
+            <div id="qr-section" class="mb-6 p-4 bg-white/10 rounded-2xl">
+                <p class="text-xs text-gray-400 mb-3 uppercase tracking-widest">Scan to Pay / Access</p>
+                <div id="qrcode" class="flex justify-center"></div>
+            </div>
+
+            <div class="mb-6">
+                <p class="text-gray-400 uppercase tracking-widest text-xs mb-1">AI Prediction Result</p>
+                <div id="prediction-display" class="text-6xl font-mono font-bold text-yellow-400">XX</div>
+            </div>
+            
+            <div class="space-y-3">
+                <input type="file" id="user-upload" class="hidden" accept="image/*">
+                <button onclick="document.getElementById('user-upload').click()" class="w-full bg-gray-700 hover:bg-gray-600 py-3 rounded-xl font-bold transition">Upload Photo</button>
+                <button onclick="analyzePhoto()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-black py-4 rounded-xl font-black text-lg shadow-lg transition uppercase">Analyze & Generate</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="admin-panel" class="hidden-panel w-full max-w-md">
+        <div class="glass-card p-6 rounded-3xl border-2 border-red-500 shadow-2xl">
+            <h2 class="text-2xl font-bold text-center mb-6 text-red-500">OWNER SETTINGS</h2>
+            
+            <div class="flex flex-col gap-3">
+                <input type="file" id="memory-upload" class="hidden" multiple accept="image/*">
+                <button onclick="document.getElementById('memory-upload').click()" class="bg-purple-600 hover:bg-purple-700 py-3 rounded-xl font-bold">MEMORY (20 PHOTOS)</button>
+                
+                <input type="file" id="owner-single-upload" class="hidden" accept="image/*">
+                <button onclick="document.getElementById('owner-single-upload').click()" class="bg-indigo-600 hover:bg-indigo-700 py-3 rounded-xl font-bold">CHECK CHART (SINGLE)</button>
+                
+                <hr class="border-gray-700 my-1">
+                
+                <button onclick="updateQRLink()" class="bg-green-600 hover:bg-green-700 py-3 rounded-xl font-bold transition">UPDATE QR LINK</button>
+                
+                <button onclick="changeAdminPassword()" class="bg-orange-600 hover:bg-orange-700 py-3 rounded-xl font-bold transition">CHANGE PASSWORD</button>
+                
+                <button onclick="toggleAdmin()" class="bg-red-600 hover:bg-red-700 py-3 rounded-xl font-bold mt-2">EXIT PANEL</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let clickCount = 0;
+        let secretCode = localStorage.getItem('adminPass') || "1234";
+        let qrLink = localStorage.getItem('qrLink') || "https://example.com/pay"; // Default link
+
+        // Initialize QR Code
+        const qrcodeContainer = document.getElementById("qrcode");
+        let qrcode = new QRCode(qrcodeContainer, {
+            text: qrLink,
+            width: 150,
+            height: 150,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+
+        // Admin Access Logic
+        document.getElementById('king-logo').addEventListener('click', () => {
+            clickCount++;
+            if (clickCount === 7) {
+                let pass = prompt("Enter Admin Code:");
+                if (pass === secretCode) toggleAdmin();
+                else alert("Unauthorized!");
+                clickCount = 0;
+            }
+        });
+
+        function toggleAdmin() {
+            document.getElementById('user-panel').classList.toggle('hidden-panel');
+            document.getElementById('admin-panel').classList.toggle('hidden-panel');
+        }
+
+        // Function to update QR Code Link
+        function updateQRLink() {
+            let newLink = prompt("Paste your new QR Link or UPI ID here:", qrLink);
+            if (newLink && newLink.trim() !== "") {
+                qrLink = newLink;
+                localStorage.setItem('qrLink', newLink);
+                qrcode.clear(); 
+                qrcode.makeCode(newLink);
+                alert("QR Code updated successfully!");
+            }
+        }
+
+        function changeAdminPassword() {
+            let newPass = prompt("Enter New Password:");
+            if (newPass) {
+                secretCode = newPass;
+                localStorage.setItem('adminPass', newPass);
+                alert("Password Updated!");
+            }
+        }
+
+        function analyzePhoto() {
+            const display = document.getElementById('prediction-display');
+            display.innerText = "SCANNING...";
+            setTimeout(() => {
+                const num = Math.floor(Math.random() * 100);
+                display.innerText = num < 10 ? "0" + num : num;
+            }, 1500);
         }
     </script>
 </body>
