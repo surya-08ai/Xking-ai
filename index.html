@@ -3,184 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>X KING AI | DIRECT ACCESS</title>
+    <title>X KING AI | ADMIN SECURE</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
         :root { --gold: #ffcc00; --dark: #000; --card: #111; --green: #00ff41; }
         body { font-family: 'Arial Black', sans-serif; background: var(--dark); color: white; margin: 0; display: flex; justify-content: center; min-height: 100vh; user-select: none; }
         .x-app { width: 100%; max-width: 450px; background: var(--card); border: 2px solid var(--gold); position: relative; min-height: 100vh; display: flex; flex-direction: column; }
-        .header { text-align: center; padding: 25px 10px; border-bottom: 2px solid var(--gold); background: #000; cursor: pointer; }
-        .logo { font-size: 40px; color: var(--gold); margin: 0; text-shadow: 0 0 10px var(--gold); pointer-events: none; }
-        .section { padding: 20px; display: none; text-align: center; animation: fadeIn 0.3s; }
-        .active { display: block; }
-        @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
-        .btn-gold { background: var(--gold); color: #000; border: none; padding: 18px; width: 95%; border-radius: 10px; font-weight: 900; cursor: pointer; text-transform: uppercase; margin-top: 10px; font-size: 16px; }
-        .input-box { background: #000; border: 1px solid #444; color: var(--gold); padding: 15px; width: 85%; border-radius: 8px; font-size: 18px; margin-bottom: 15px; text-align: center; outline: none; }
-        .qr-display { width: 220px; height: 220px; background: white; margin: 15px auto; border-radius: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 3px solid var(--gold); }
-        .qr-display img { width: 100%; height: 100%; object-fit: contain; }
-        .admin-panel { background: #1a1a1a; padding: 15px; border-radius: 10px; text-align: left; font-family: sans-serif; border: 1px solid var(--green); }
-        .admin-input { background: #000; border: 1px solid #333; color: #fff; width: 92%; padding: 10px; margin: 5px 0; border-radius: 5px; }
+        .header { text-align: center; padding: 25px 10px; border-bottom: 2px solid var(--gold); background: #000; }
+        .logo { font-size: 40px; color: var(--gold); margin: 0; text-shadow: 0 0 10px var(--gold); }
+        .section { padding: 20px; text-align: center; }
+        
+        /* Buttons */
+        .btn-gold { background: var(--gold); color: #000; border: none; padding: 18px; width: 95%; border-radius: 10px; font-weight: 900; cursor: pointer; text-transform: uppercase; margin-top: 10px; font-size: 18px; }
+        .btn-admin { background: transparent; color: var(--green); border: 1px solid var(--green); padding: 5px 10px; font-size: 10px; border-radius: 5px; cursor: pointer; margin-top: 20px; }
+
+        /* Admin Panel Area */
+        #admin-panel { display: none; background: #0a0a0a; border: 1px dashed var(--green); padding: 15px; border-radius: 15px; margin-top: 20px; }
+        
+        /* Result Card */
         .res-card { margin-top: 25px; border: 1px solid var(--gold); padding: 20px; border-radius: 15px; background: #000; }
         .num { font-size: 45px; color: var(--gold); font-weight: bold; }
+        
+        /* Image Previews */
+        .preview-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-top: 15px; max-height: 150px; overflow-y: auto; }
+        .preview-grid img { width: 100%; height: 45px; object-fit: cover; border-radius: 5px; border: 1px solid #333; }
+        .status-msg { color: var(--green); font-size: 11px; margin-top: 10px; font-family: sans-serif; height: 15px; }
     </style>
 </head>
 <body>
 
 <div class="x-app">
-    <div class="header" onclick="adminTrigger()">
+    <div class="header">
         <h1 class="logo">X KING</h1>
-        <div style="font-size: 9px; color: #444; letter-spacing: 2px;">AUTOMATED AI SYSTEM</div>
+        <div style="font-size: 9px; color: #444; letter-spacing: 2px;">SECURE AI SYSTEM</div>
     </div>
 
-    <div id="sec-pay" class="section active">
-        <h2 style="color:var(--gold); margin-bottom:5px;">PAY & START</h2>
-        <p style="font-size: 11px; color:#777;">QR स्कैन करें और पेमेंट के बाद UTR डालें</p>
-        
-        <div class="qr-display" id="qr-container">
-            <p style="color:black; font-size:10px; padding:20px;">Owner: Set QR URL in Admin Settings</p>
-        </div>
-        
-        <p style="font-size: 20px; font-weight: bold; margin: 5px 0;">FEE: <span id="display-price">₹99</span></p>
-        
-        <div style="background:#151515; padding:15px; border-radius:15px; border:1px solid #333; margin-top:10px;">
-            <input type="number" id="utr-input" class="input-box" placeholder="ENTER 12 DIGIT UTR NO.">
-            <button class="btn-gold" onclick="verifyUTR()">UNLOCK AI INSTANTLY</button>
-        </div>
-        <p style="font-size:9px; color:#444; margin-top:15px;">Note: गलत या पुराने UTR से लॉगिन नहीं होगा।</p>
-    </div>
+    <div class="section">
+        <div id="main-view">
+            <div style="color:var(--green); font-size:12px; margin-bottom:15px; text-align:left;">● SYSTEM STABLE</div>
+            
+            <div style="border:2px dashed #222; padding:40px; border-radius:15px; cursor:pointer;" onclick="document.getElementById('fIn').click()">
+                <span id="up-t" style="color:#666;">📸 UPLOAD CHART PHOTO</span>
+                <input type="file" id="fIn" hidden accept="image/*" multiple onchange="handleFiles(event)">
+            </div>
+            
+            <div id="p-grid" class="preview-grid"></div>
 
-    <div id="sec-ai" class="section">
-        <div style="color:var(--green); font-size:10px; margin-bottom:15px; text-align:left;">● SYSTEM ACTIVE [UNLOCKED]</div>
-        
-        <div style="border:2px dashed #333; padding:35px; border-radius:15px; cursor:pointer;" onclick="document.getElementById('fIn').click()">
-            <span id="up-t" style="color:#888;">📸 चार्ट फोटो अपलोड करें</span>
-            <input type="file" id="fIn" hidden accept="image/*" onchange="preview(event)">
-            <img id="p-img" style="width:100%; display:none; border-radius:10px;">
+            <button class="btn-admin" onclick="toggleAdmin()">🛡 OPEN ADMIN MEMORY</button>
+
+            <div id="admin-panel">
+                <div style="color:var(--green); font-size:10px; margin-bottom:10px;">ADMIN ACCESS: MEMORY ENGINE</div>
+                <div id="scan-status" class="status-msg"></div>
+                <button class="btn-gold" id="goBtn" style="display:none;" onclick="runDeepAI()">MEMORY</button>
+            </div>
         </div>
 
-        <button class="btn-gold" id="goBtn" style="display:none; margin-top:20px;" onclick="runAI()">SCAN DATA</button>
-        
         <div id="res-box" class="res-card" style="display:none;">
+            <div style="color:var(--gold); font-size:10px; margin-bottom:10px;">AI ANALYSIS COMPLETE</div>
             <div style="display:flex; justify-content:space-around;">
                 <div><small style="color:#555;">PRED A</small><div id="r1" class="num">--</div></div>
                 <div><small style="color:#555;">PRED B</small><div id="r2" class="num">--</div></div>
             </div>
         </div>
-        
-        <button id="admin-jump" onclick="showSec('sec-admin')" style="display:none; margin-top:30px; color:var(--green); background:none; border:1px solid var(--green); padding:5px 10px; border-radius:5px; font-size:9px;">ADMIN CONFIG</button>
-    </div>
-
-    <div id="sec-admin" class="section">
-        <h3 style="color:var(--green);">🛡 OWNER PANEL</h3>
-        <div class="admin-panel">
-            <label style="font-size:10px">Price:</label><input type="text" id="adm-price" class="admin-input">
-            <label style="font-size:10px">QR Image URL (from ImgBB):</label><input type="text" id="adm-qr" class="admin-input">
-            <label style="font-size:10px">Admin Bypass Code:</label><input type="password" id="adm-pass" class="admin-input">
-            <button class="btn-gold" style="margin-top:15px; height:45px; padding:0;" onclick="saveSettings()">SAVE SETTINGS</button>
-        </div>
-        <button onclick="location.reload()" style="margin-top:15px; color:grey; background:none; border:none;">BACK</button>
     </div>
 </div>
 
 <script>
-    let settings = JSON.parse(localStorage.getItem('x_king_config')) || {
-        qr: "", adminKey: "0000", price: "99"
-    };
+    let selectedImages = [];
 
-    window.onload = function() {
-        document.getElementById('display-price').innerText = "₹" + settings.price;
-        if(settings.qr) document.getElementById('qr-container').innerHTML = `<img src="${settings.qr}">`;
-    }
-
-    // --- UTR ANTI-FRAUD SYSTEM ---
-    function verifyUTR() {
-        let utr = document.getElementById('utr-input').value.trim();
-        
-        // चेक करें कि UTR कम से कम 10-12 अंकों का हो
-        if(utr.length < 10) {
-            alert("❌ कृपया सही 12-अंकों का UTR नंबर डालें।");
-            return;
+    // Toggle Admin View
+    function toggleAdmin() {
+        const panel = document.getElementById('admin-panel');
+        if (panel.style.display === "block") {
+            panel.style.display = "none";
+        } else {
+            panel.style.display = "block";
         }
-
-        // इस्तेमाल किए हुए UTR की लिस्ट चेक करना
-        let usedUTRs = JSON.parse(localStorage.getItem('used_utrs')) || [];
-        if(usedUTRs.includes(utr)) {
-            alert("⚠️ यह UTR नंबर पहले ही इस्तेमाल किया जा चुका है!");
-            return;
-        }
-
-        // UTR को इस्तेमाल की लिस्ट में डालना
-        usedUTRs.push(utr);
-        localStorage.setItem('used_utrs', JSON.stringify(usedUTRs));
-
-        alert("✅ UTR Verified! Dashboard Unlocked.");
-        showSec('sec-ai');
     }
 
-    // --- ADMIN TRIGGER (7 CLICKS) ---
-    let clicks = 0;
-    function adminTrigger() {
-        clicks++;
-        if(clicks >= 7) {
-            let p = prompt("OWNER CODE:");
-            if(p === settings.adminKey || p === "RESET-X-KING") {
-                showSec('sec-ai');
-                document.getElementById('admin-jump').style.display = 'inline-block';
-                document.getElementById('adm-qr').value = settings.qr;
-                document.getElementById('adm-price').value = settings.price;
-            }
-            clicks = 0;
-        }
-        setTimeout(() => { clicks = 0; }, 3000);
-    }
+    function handleFiles(e) {
+        const files = Array.from(e.target.files).slice(0, 20);
+        if (files.length === 0) return;
 
-    function saveSettings() {
-        settings.qr = document.getElementById('adm-qr').value;
-        settings.price = document.getElementById('adm-price').value;
-        let np = document.getElementById('adm-pass').value;
-        if(np.trim() !== "") settings.adminKey = np;
-        localStorage.setItem('x_king_config', JSON.stringify(settings));
-        alert("Settings Saved!"); location.reload();
-    }
+        selectedImages = [];
+        const grid = document.getElementById('p-grid');
+        grid.innerHTML = '';
 
-    function showSec(id) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-    }
-
-    // --- AI LOGIC ---
-    function preview(e) {
-        const file = e.target.files[0];
-        if(file) {
+        files.forEach(file => {
             const reader = new FileReader();
             reader.onload = (ev) => {
-                document.getElementById('p-img').src = ev.target.result;
-                document.getElementById('p-img').style.display = 'block';
-                document.getElementById('up-t').style.display = 'none';
-                document.getElementById('goBtn').style.display = 'block';
-                document.getElementById('res-box').style.display = 'none';
+                const img = document.createElement('img');
+                img.src = ev.target.result;
+                grid.appendChild(img);
+                selectedImages.push(ev.target.result);
             };
             reader.readAsDataURL(file);
-        }
+        });
+
+        document.getElementById('up-t').innerText = files.length + " PHOTOS LOADED";
+        document.getElementById('goBtn').style.display = 'block';
+        document.getElementById('res-box').style.display = 'none';
     }
 
-    async function runAI() {
+    async function runDeepAI() {
         const btn = document.getElementById('goBtn');
-        btn.innerText = "SCANNING..."; btn.disabled = true;
-        try {
-            const worker = await Tesseract.createWorker('eng');
-            const { data: { text } } = await worker.recognize(document.getElementById('p-img').src);
-            await worker.terminate();
-            const nums = text.match(/\d+/g) || [];
-            if(nums.length > 0) {
-                let last = parseInt(nums[nums.length - 1]);
-                document.getElementById('r1').innerText = String((last + 13) % 100).padStart(2, '0');
-                document.getElementById('r2').innerText = String((last + 21) % 100).padStart(2, '0');
-                document.getElementById('res-box').style.display = 'block';
-            } else { alert("Image Clear नहीं है!"); }
-        } catch(e) { alert("AI Busy"); }
-        btn.innerText = "SCAN AGAIN"; btn.disabled = false;
+        const status = document.getElementById('scan-status');
+        btn.disabled = true;
+        let allNumbers = [];
+
+        const worker = await Tesseract.createWorker('eng');
+
+        for (let i = 0; i < selectedImages.length; i++) {
+            status.innerText = `ADMIN SCANNING: ${i + 1}/${selectedImages.length}`;
+            try {
+                const { data: { text } } = await worker.recognize(selectedImages[i]);
+                const nums = text.match(/\d+/g) || [];
+                nums.forEach(n => allNumbers.push(parseInt(n)));
+            } catch (e) { console.error(e); }
+        }
+
+        await worker.terminate();
+
+        if (allNumbers.length > 0) {
+            let sum = allNumbers.reduce((a, b) => a + b, 0);
+            let avg = Math.floor(sum / allNumbers.length);
+
+            document.getElementById('r1').innerText = String((avg + 9) % 100).padStart(2, '0');
+            document.getElementById('r2').innerText = String((avg + 17) % 100).padStart(2, '0');
+            document.getElementById('res-box').style.display = 'block';
+            status.innerText = "DATA EXTRACTED SUCCESSFULLY";
+        } else {
+            alert("No numbers found!");
+            status.innerText = "";
+        }
+
+        btn.disabled = false;
+        btn.innerText = "MEMORY";
     }
 </script>
+
 </body>
 </html>
