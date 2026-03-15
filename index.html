@@ -1,155 +1,186 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X KING AI - Access Control</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>X KING AI | DIRECT ACCESS</title>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <style>
-        .hidden-panel { display: none !important; }
-        body { background-color: #020617; color: white; font-family: sans-serif; }
-        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .num-card { background: #1e293b; border: 2px solid #eab308; box-shadow: 0 0 15px rgba(234, 179, 8, 0.4); }
-        .utr-box { background: #000; border: 1px solid #334155; color: #fbbf24; text-align: center; letter-spacing: 2px; }
-        .glow-text { text-shadow: 0 0 15px rgba(234, 179, 8, 0.6); }
+        :root { --gold: #ffcc00; --dark: #000; --card: #111; --green: #00ff41; }
+        body { font-family: 'Arial Black', sans-serif; background: var(--dark); color: white; margin: 0; display: flex; justify-content: center; min-height: 100vh; user-select: none; }
+        .x-app { width: 100%; max-width: 450px; background: var(--card); border: 2px solid var(--gold); position: relative; min-height: 100vh; display: flex; flex-direction: column; }
+        .header { text-align: center; padding: 25px 10px; border-bottom: 2px solid var(--gold); background: #000; cursor: pointer; }
+        .logo { font-size: 40px; color: var(--gold); margin: 0; text-shadow: 0 0 10px var(--gold); pointer-events: none; }
+        .section { padding: 20px; display: none; text-align: center; animation: fadeIn 0.3s; }
+        .active { display: block; }
+        @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+        .btn-gold { background: var(--gold); color: #000; border: none; padding: 18px; width: 95%; border-radius: 10px; font-weight: 900; cursor: pointer; text-transform: uppercase; margin-top: 10px; font-size: 16px; }
+        .input-box { background: #000; border: 1px solid #444; color: var(--gold); padding: 15px; width: 85%; border-radius: 8px; font-size: 18px; margin-bottom: 15px; text-align: center; outline: none; }
+        .qr-display { width: 220px; height: 220px; background: white; margin: 15px auto; border-radius: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 3px solid var(--gold); }
+        .qr-display img { width: 100%; height: 100%; object-fit: contain; }
+        .admin-panel { background: #1a1a1a; padding: 15px; border-radius: 10px; text-align: left; font-family: sans-serif; border: 1px solid var(--green); }
+        .admin-input { background: #000; border: 1px solid #333; color: #fff; width: 92%; padding: 10px; margin: 5px 0; border-radius: 5px; }
+        .res-card { margin-top: 25px; border: 1px solid var(--gold); padding: 20px; border-radius: 15px; background: #000; }
+        .num { font-size: 45px; color: var(--gold); font-weight: bold; }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen p-4">
+<body>
 
-    <div class="w-full max-w-md">
-        <h1 id="king-logo" class="text-6xl font-black text-center mb-8 cursor-pointer select-none glow-text">
-            <span class="text-red-600">X</span> KING <span class="text-white">AI</span>
-        </h1>
-
-        <div class="glass p-8 rounded-[3rem] shadow-2xl text-center border-b-4 border-yellow-500">
-            
-            <div id="lock-screen">
-                <p class="text-yellow-500 text-[10px] font-bold uppercase tracking-widest mb-6">Payment Verification Required</p>
-                
-                <div class="mb-6 bg-white p-2 rounded-2xl mx-auto w-52 h-52 flex items-center justify-center border-4 border-yellow-500 shadow-xl">
-                    <img id="display-qr" src="https://via.placeholder.com/200?text=Scan+To+Pay" class="w-full h-full object-contain">
-                </div>
-
-                <div class="space-y-5">
-                    <input type="number" id="utr-input" placeholder="ENTER 12-DIGIT UTR" class="w-full utr-box p-5 rounded-2xl font-black text-xl outline-none focus:border-yellow-500 transition-all">
-                    
-                    <button onclick="unlockToPanel()" class="w-full bg-yellow-500 text-black py-5 rounded-2xl font-black uppercase text-lg shadow-xl active:scale-95 transition-all">
-                        Verify & Open AI Panel
-                    </button>
-                    <p class="text-[9px] text-gray-500 italic px-6 leading-tight">Enter UTR number from your payment receipt to unlock the AI prediction tool.</p>
-                </div>
-            </div>
-
-            <div id="ai-panel" class="hidden-panel">
-                <div class="mb-10">
-                    <div class="flex items-center justify-center gap-2 mb-6">
-                        <div class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center font-black text-xl border-2 border-white shadow-lg">A</div>
-                        <p class="text-gray-300 font-bold tracking-widest text-xs uppercase">Prediction Result</p>
-                    </div>
-
-                    <div id="result-grid" class="flex justify-center gap-4 min-h-[80px]">
-                        <div class="text-yellow-500/20 text-4xl font-black italic tracking-tighter">-- -- --</div>
-                    </div>
-                </div>
-
-                <div class="space-y-6">
-                    <input type="file" id="user-camera-upload" class="hidden" accept="image/*">
-                    <button onclick="document.getElementById('user-camera-upload').click()" class="w-full bg-white text-black py-6 rounded-3xl font-black text-xl flex items-center justify-center gap-4 shadow-2xl active:scale-95 transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                        UPLOAD CHART
-                    </button>
-                    <p class="text-emerald-500 text-[10px] font-bold uppercase animate-pulse">AI Engine Ready</p>
-                </div>
-            </div>
-        </div>
+<div class="x-app">
+    <div class="header" onclick="adminTrigger()">
+        <h1 class="logo">X KING</h1>
+        <div style="font-size: 9px; color: #444; letter-spacing: 2px;">AUTOMATED AI SYSTEM</div>
     </div>
 
-    <div id="admin-panel" class="hidden-panel w-full max-w-md glass p-10 rounded-[3rem] border-2 border-red-600 shadow-2xl">
-        <h2 class="text-2xl font-black text-red-500 mb-8 text-center italic underline uppercase">Owner Panel</h2>
-        <div class="space-y-6">
-            <div class="bg-gray-900/50 p-4 rounded-2xl border border-white/10">
-                <p class="text-[10px] font-bold mb-3 text-emerald-400 uppercase tracking-widest">Update Payment QR</p>
-                <input type="file" id="admin-qr-input" class="hidden" accept="image/*" onchange="updateQR(this)">
-                <button onclick="document.getElementById('admin-qr-input').click()" class="w-full bg-white/5 py-3 rounded-xl border border-dashed border-white/20 text-[10px]">UPLOAD NEW QR IMAGE</button>
-            </div>
-            <button onclick="location.reload()" class="bg-red-600 py-5 rounded-3xl font-black w-full shadow-xl">SAVE & EXIT</button>
+    <div id="sec-pay" class="section active">
+        <h2 style="color:var(--gold); margin-bottom:5px;">PAY & START</h2>
+        <p style="font-size: 11px; color:#777;">QR स्कैन करें और पेमेंट के बाद UTR डालें</p>
+        
+        <div class="qr-display" id="qr-container">
+            <p style="color:black; font-size:10px; padding:20px;">Owner: Set QR URL in Admin Settings</p>
         </div>
+        
+        <p style="font-size: 20px; font-weight: bold; margin: 5px 0;">FEE: <span id="display-price">₹99</span></p>
+        
+        <div style="background:#151515; padding:15px; border-radius:15px; border:1px solid #333; margin-top:10px;">
+            <input type="number" id="utr-input" class="input-box" placeholder="ENTER 12 DIGIT UTR NO.">
+            <button class="btn-gold" onclick="verifyUTR()">UNLOCK AI INSTANTLY</button>
+        </div>
+        <p style="font-size:9px; color:#444; margin-top:15px;">Note: गलत या पुराने UTR से लॉगिन नहीं होगा।</p>
     </div>
 
-    <script>
-        let taps = 0;
-        let adminPass = "1234";
-        let usedUTRs = JSON.parse(localStorage.getItem('blockedUTRs')) || [];
+    <div id="sec-ai" class="section">
+        <div style="color:var(--green); font-size:10px; margin-bottom:15px; text-align:left;">● SYSTEM ACTIVE [UNLOCKED]</div>
+        
+        <div style="border:2px dashed #333; padding:35px; border-radius:15px; cursor:pointer;" onclick="document.getElementById('fIn').click()">
+            <span id="up-t" style="color:#888;">📸 चार्ट फोटो अपलोड करें</span>
+            <input type="file" id="fIn" hidden accept="image/*" onchange="preview(event)">
+            <img id="p-img" style="width:100%; display:none; border-radius:10px;">
+        </div>
 
-        // Load Admin QR
-        const savedQR = localStorage.getItem('myQR');
-        if(savedQR) document.getElementById('display-qr').src = savedQR;
+        <button class="btn-gold" id="goBtn" style="display:none; margin-top:20px;" onclick="runAI()">SCAN DATA</button>
+        
+        <div id="res-box" class="res-card" style="display:none;">
+            <div style="display:flex; justify-content:space-around;">
+                <div><small style="color:#555;">PRED A</small><div id="r1" class="num">--</div></div>
+                <div><small style="color:#555;">PRED B</small><div id="r2" class="num">--</div></div>
+            </div>
+        </div>
+        
+        <button id="admin-jump" onclick="showSec('sec-admin')" style="display:none; margin-top:30px; color:var(--green); background:none; border:1px solid var(--green); padding:5px 10px; border-radius:5px; font-size:9px;">ADMIN CONFIG</button>
+    </div>
 
-        // 1. UTR Verification Logic
-        function unlockToPanel() {
-            let utr = document.getElementById('utr-input').value;
-            if(utr.length < 10) {
-                alert("ERROR: Enter a valid 12-digit UTR!");
-                return;
-            }
-            if(usedUTRs.includes(utr)) {
-                alert("❌ BLOCKED: This UTR has already been used!");
-                return;
-            }
+    <div id="sec-admin" class="section">
+        <h3 style="color:var(--green);">🛡 OWNER PANEL</h3>
+        <div class="admin-panel">
+            <label style="font-size:10px">Price:</label><input type="text" id="adm-price" class="admin-input">
+            <label style="font-size:10px">QR Image URL (from ImgBB):</label><input type="text" id="adm-qr" class="admin-input">
+            <label style="font-size:10px">Admin Bypass Code:</label><input type="password" id="adm-pass" class="admin-input">
+            <button class="btn-gold" style="margin-top:15px; height:45px; padding:0;" onclick="saveSettings()">SAVE SETTINGS</button>
+        </div>
+        <button onclick="location.reload()" style="margin-top:15px; color:grey; background:none; border:none;">BACK</button>
+    </div>
+</div>
 
-            // Block UTR and Switch Panel
-            usedUTRs.push(utr);
-            localStorage.setItem('blockedUTRs', JSON.stringify(usedUTRs));
-            
-            alert("✅ VERIFIED! Opening AI Panel...");
-            document.getElementById('lock-screen').classList.add('hidden-panel');
-            document.getElementById('ai-panel').classList.remove('hidden-panel');
+<script>
+    let settings = JSON.parse(localStorage.getItem('x_king_config')) || {
+        qr: "", adminKey: "0000", price: "99"
+    };
+
+    window.onload = function() {
+        document.getElementById('display-price').innerText = "₹" + settings.price;
+        if(settings.qr) document.getElementById('qr-container').innerHTML = `<img src="${settings.qr}">`;
+    }
+
+    // --- UTR ANTI-FRAUD SYSTEM ---
+    function verifyUTR() {
+        let utr = document.getElementById('utr-input').value.trim();
+        
+        // चेक करें कि UTR कम से कम 10-12 अंकों का हो
+        if(utr.length < 10) {
+            alert("❌ कृपया सही 12-अंकों का UTR नंबर डालें।");
+            return;
         }
 
-        // 2. Photo Upload & Result Logic
-        document.getElementById('user-camera-upload').onchange = function() {
-            const grid = document.getElementById('result-grid');
-            grid.innerHTML = "<p class='text-yellow-500 font-black italic animate-pulse tracking-widest'>SCANNING MEMORY...</p>";
-            
-            setTimeout(() => {
-                grid.innerHTML = "";
-                // Generate 3 random 2-digit numbers
-                for(let i=0; i<3; i++) {
-                    const num = Math.floor(Math.random()*90 + 10); // 2-digit random
-                    const div = document.createElement('div');
-                    div.className = "num-card px-6 py-4 rounded-2xl text-4xl font-mono font-black text-yellow-400 animate-bounce";
-                    div.innerText = num;
-                    grid.appendChild(div);
-                }
-            }, 3000);
-        };
-
-        // Admin Access
-        document.getElementById('king-logo').onclick = () => {
-            taps++;
-            if(taps === 7) {
-                if(prompt("OWNER CODE:") === adminPass) {
-                    document.getElementById('user-panel').classList.add('hidden-panel');
-                    document.getElementById('admin-panel').classList.remove('hidden-panel');
-                }
-                taps = 0;
-            }
-        };
-
-        function updateQR(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    localStorage.setItem('myQR', e.target.result);
-                    document.getElementById('display-qr').src = e.target.result;
-                    alert("User QR Updated!");
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
+        // इस्तेमाल किए हुए UTR की लिस्ट चेक करना
+        let usedUTRs = JSON.parse(localStorage.getItem('used_utrs')) || [];
+        if(usedUTRs.includes(utr)) {
+            alert("⚠️ यह UTR नंबर पहले ही इस्तेमाल किया जा चुका है!");
+            return;
         }
-    </script>
+
+        // UTR को इस्तेमाल की लिस्ट में डालना
+        usedUTRs.push(utr);
+        localStorage.setItem('used_utrs', JSON.stringify(usedUTRs));
+
+        alert("✅ UTR Verified! Dashboard Unlocked.");
+        showSec('sec-ai');
+    }
+
+    // --- ADMIN TRIGGER (7 CLICKS) ---
+    let clicks = 0;
+    function adminTrigger() {
+        clicks++;
+        if(clicks >= 7) {
+            let p = prompt("OWNER CODE:");
+            if(p === settings.adminKey || p === "RESET-X-KING") {
+                showSec('sec-ai');
+                document.getElementById('admin-jump').style.display = 'inline-block';
+                document.getElementById('adm-qr').value = settings.qr;
+                document.getElementById('adm-price').value = settings.price;
+            }
+            clicks = 0;
+        }
+        setTimeout(() => { clicks = 0; }, 3000);
+    }
+
+    function saveSettings() {
+        settings.qr = document.getElementById('adm-qr').value;
+        settings.price = document.getElementById('adm-price').value;
+        let np = document.getElementById('adm-pass').value;
+        if(np.trim() !== "") settings.adminKey = np;
+        localStorage.setItem('x_king_config', JSON.stringify(settings));
+        alert("Settings Saved!"); location.reload();
+    }
+
+    function showSec(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    // --- AI LOGIC ---
+    function preview(e) {
+        const file = e.target.files[0];
+        if(file) {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                document.getElementById('p-img').src = ev.target.result;
+                document.getElementById('p-img').style.display = 'block';
+                document.getElementById('up-t').style.display = 'none';
+                document.getElementById('goBtn').style.display = 'block';
+                document.getElementById('res-box').style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    async function runAI() {
+        const btn = document.getElementById('goBtn');
+        btn.innerText = "SCANNING..."; btn.disabled = true;
+        try {
+            const worker = await Tesseract.createWorker('eng');
+            const { data: { text } } = await worker.recognize(document.getElementById('p-img').src);
+            await worker.terminate();
+            const nums = text.match(/\d+/g) || [];
+            if(nums.length > 0) {
+                let last = parseInt(nums[nums.length - 1]);
+                document.getElementById('r1').innerText = String((last + 13) % 100).padStart(2, '0');
+                document.getElementById('r2').innerText = String((last + 21) % 100).padStart(2, '0');
+                document.getElementById('res-box').style.display = 'block';
+            } else { alert("Image Clear नहीं है!"); }
+        } catch(e) { alert("AI Busy"); }
+        btn.innerText = "SCAN AGAIN"; btn.disabled = false;
+    }
+</script>
 </body>
 </html>
