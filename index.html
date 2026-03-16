@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>X KING AI - SUPREME ANALYZER</title>
+    <title>X KING AI - NO LOGIN EDITION</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
     <style>
         :root { --gold: #ffcc00; --green: #00ff66; --red: #ff3333; --bg: #050505; --card: #121212; }
@@ -17,9 +17,6 @@
 
         .section { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid #222; margin-top: 15px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
         
-        /* इनपुट और बटन */
-        input { background: #000; color: #fff; border: 1px solid #333; padding: 15px; border-radius: 12px; width: 85%; margin-bottom: 15px; font-size: 1.1rem; text-align: center; outline: none; }
-        input:focus { border-color: var(--gold); }
         button { cursor: pointer; border-radius: 12px; font-weight: bold; border: none; padding: 16px; width: 100%; transition: 0.2s; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; }
         button:active { transform: scale(0.96); }
 
@@ -32,23 +29,15 @@
         /* इमेज और स्टेटस */
         .preview-img { width: 100%; border-radius: 15px; margin-top: 15px; display: none; border: 1px solid var(--gold); }
         .status { color: var(--gold); margin-top: 15px; font-weight: bold; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; }
+        
+        input[type="text"] { background: #000; color: #fff; border: 1px solid #333; padding: 15px; border-radius: 12px; width: 85%; margin-bottom: 15px; text-align: center; }
         hr { border: 0.5px solid #222; margin: 25px 0; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div id="scr_login" class="screen active">
-        <div class="section" style="margin-top: 80px; border: 2px solid var(--gold);">
-            <h1 style="color: var(--gold); letter-spacing: 5px; margin: 0; font-size: 2.5rem;">X KING AI</h1>
-            <p style="color: #444; font-size: 0.75rem; margin-bottom: 35px;">AUTHORIZED ACCESS ONLY</p>
-            <input type="password" id="login_input" placeholder="ENTER PASSCODE">
-            <button onclick="handleLogin()" style="background: var(--gold); color: #000;">UNLOCK SYSTEM</button>
-            <p style="color:#111; font-size: 8px; margin-top: 20px;">MASTER KEY: KING-99</p>
-        </div>
-    </div>
-
-    <div id="scr_main" class="screen">
+    <div id="scr_main" class="screen active">
         <div style="display:flex; justify-content: space-between; align-items: center; padding: 5px;">
             <h2 style="color:var(--gold); margin:0; letter-spacing: 2px;">X KING <span style="color:#fff;">AI</span></h2>
             <button onclick="navTo('scr_admin')" style="background:#222; color:var(--gold); padding:6px 15px; font-size:10px; border-radius:5px; border:1px solid #333; width:auto;">ADMIN PANEL</button>
@@ -73,11 +62,6 @@
             <button onclick="navTo('scr_main')" style="background:#333; color:#fff; width:80px; margin-bottom:20px; font-size:10px; padding:10px;">← BACK</button>
             <h3 style="color:var(--gold); margin:0;">ADMIN CONTROLS</h3>
             <hr>
-            <label style="color:#666; font-size:0.7rem; display:block; margin-bottom:5px;">CHANGE LOGIN CODE</label>
-            <input type="text" id="new_pass_val" placeholder="New Passcode">
-            <button onclick="saveNewPass()" style="background:var(--green); color:#000;">SAVE PASSWORD</button>
-            
-            <hr>
             <h3 style="color:var(--gold);">AI PATTERN TRAINING</h3>
             <div onclick="document.getElementById('multi_input').click()" style="border:2px dashed var(--gold); padding:25px; cursor:pointer; color:var(--gold); background:rgba(255,204,0,0.03); border-radius:15px;">
                 UPLOAD OLD CHARTS<br>
@@ -91,38 +75,16 @@
 </div>
 
 <script>
-    /* --- 1. सुरक्षा और नेविगेशन --- */
-    let currentPass = localStorage.getItem('xk_final_pass') || "1234";
-
-    function handleLogin() {
-        const val = document.getElementById('login_input').value.trim();
-        if (val === currentPass || val === "KING-99") {
-            navTo('scr_main');
-            document.getElementById('login_input').value = "";
-        } else {
-            alert("गलत पासवर्ड! हबीबी सही कोड डालें।");
-        }
-    }
-
+    /* --- 1. नेविगेशन --- */
     function navTo(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         window.scrollTo(0,0);
     }
 
-    function saveNewPass() {
-        const p = document.getElementById('new_pass_val').value.trim();
-        if(p) {
-            localStorage.setItem('xk_final_pass', p);
-            currentPass = p;
-            alert("पासवर्ड सुरक्षित कर लिया गया है!");
-            document.getElementById('new_pass_val').value = "";
-        }
-    }
-
     /* --- 2. डेटाबेस इंजन (IndexedDB) --- */
     let db, memoryRecords = [], aiWorker = null;
-    const request = indexedDB.open("XKingSupremeDB", 1);
+    const request = indexedDB.open("XKingNoLoginDB", 1);
     
     request.onupgradeneeded = e => {
         e.target.result.createObjectStore("history", { keyPath: "id" });
@@ -207,7 +169,6 @@
             const lastPattern = currentNums.slice(-8);
             msg.innerText = "✅ " + slotCount + " XX स्लॉट मिले। कैलकुलेटिंग...";
 
-            // एडमिन मेमोरी से सटीक नंबर निकालने का लॉजिक
             let probabilityMap = {};
             memoryRecords.forEach(record => {
                 for(let i=0; i < record.data.length; i++) {
@@ -223,4 +184,22 @@
                 }
             });
 
-            let sortedResults = Object.entries(probabilityMap).sort((a,b) => b[1] -
+            let sortedResults = Object.entries(probabilityMap).sort((a,b) => b[1] - a[1]);
+
+            for(let j=0; j < slotCount; j++) {
+                let prediction = sortedResults[j] ? sortedResults[j][0] : Math.floor(Math.random() * 100);
+                grid.innerHTML += `
+                    <div class="res-card">
+                        <small>XX SLOT ${j+1}</small>
+                        <div class="num">${String(prediction).padStart(2, '0')}</div>
+                    </div>`;
+            }
+            msg.innerText = "✅ स्कैन सफल: " + slotCount + " रिज़ल्ट";
+        } catch (err) {
+            msg.innerText = "❌ एरर! कृपया इमेज फिर से अपलोड करें।";
+        }
+    }
+
+    function wipeData() {
+        if(confirm("सावधान! क्या आप सारा डेटा डिलीट करना चाहते हैं?")) {
+            db
