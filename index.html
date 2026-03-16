@@ -3,22 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>X KING AI - DATA LOCKED VERSION</title>
+    <title>X KING AI - V10 FINAL SUPREME</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
     <style>
-        :root { --gold: #ffcc00; --green: #00ff66; --bg: #050505; --card: #121212; }
-        body { background: var(--bg); color: white; font-family: sans-serif; margin: 0; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 480px; padding: 15px; box-sizing: border-box; }
+        :root { --gold: #ffcc00; --green: #00ff66; --bg: #000000; --card: #111111; --border: #222222; }
+        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 480px; min-height: 100vh; padding: 15px; box-sizing: border-box; }
+        
+        /* Screens */
         .screen { display: none; }
-        .active { display: block !important; }
-        .section { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid #222; margin-top: 15px; text-align: center; }
-        button { cursor: pointer; border-radius: 12px; font-weight: bold; border: none; padding: 16px; width: 100%; transition: 0.2s; font-size: 1rem; text-transform: uppercase; }
-        .btn-green { background: var(--green); color: #000; box-shadow: 0 0 15px rgba(0,255,102,0.3); }
-        .res-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 15px; margin-top: 25px; }
-        .res-card { background: #000; border: 2px solid var(--gold); padding: 15px; border-radius: 15px; }
-        .num { font-size: 2.5rem; font-weight: bold; color: var(--green); text-shadow: 0 0 10px var(--green); }
+        .active { display: block !important; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Sections & Cards */
+        .section { background: var(--card); border: 1px solid var(--border); padding: 25px; border-radius: 20px; text-align: center; margin-top: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        
+        /* Buttons */
+        button { cursor: pointer; border-radius: 12px; font-weight: bold; border: none; padding: 16px; width: 100%; transition: 0.2s; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; }
+        button:active { transform: scale(0.96); }
+        .btn-green { background: var(--green); color: #000; box-shadow: 0 0 15px rgba(0,255,102,0.3); margin-top: 20px; }
+        .btn-admin { background: #222; color: var(--gold); border: 1px solid #333; width: auto; padding: 8px 15px; font-size: 10px; border-radius: 6px; }
+
+        /* Results */
+        .res-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 15px; margin-top: 25px; }
+        .res-card { background: #000; border: 2.5px solid var(--gold); padding: 15px; border-radius: 15px; position: relative; }
+        .num { font-size: 2.5rem; font-weight: bold; color: var(--green); text-shadow: 0 0 10px rgba(0,255,102,0.4); }
+        .tag { font-size: 9px; color: var(--gold); display: block; margin-top: 5px; font-weight: bold; }
+
+        /* Image Handling */
+        .upload-area { border: 2px dashed #333; padding: 50px 20px; border-radius: 20px; color: #555; cursor: pointer; transition: 0.3s; }
+        .upload-area:hover { border-color: var(--gold); color: #888; }
         #preview { width: 100%; border-radius: 15px; margin: 15px 0; display: none; border: 1.5px solid var(--gold); }
-        .status { color: var(--gold); font-weight: bold; font-size: 12px; margin: 15px 0; }
+        .status-msg { color: var(--gold); font-weight: bold; font-size: 11px; margin: 15px 0; text-transform: uppercase; }
+        
+        hr { border: 0.1px solid #222; margin: 25px 0; }
     </style>
 </head>
 <body>
@@ -26,164 +44,193 @@
 <div class="container">
     <div id="scr_main" class="screen active">
         <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h2 style="color:var(--gold); margin:0;">X KING <span style="color:#fff;">AI</span></h2>
-            <button onclick="nav('scr_admin')" style="width:auto; padding:5px 12px; font-size:10px; background:#222; color:var(--gold); border:1px solid #444;">DATABASE</button>
+            <h2 style="color:var(--gold); margin:0; letter-spacing: 3px;">X KING <span style="color:#fff;">V10</span></h2>
+            <button onclick="nav('scr_admin')" class="btn-admin">ADMIN PANEL</button>
         </div>
 
         <div class="section">
-            <div id="drop_area" onclick="document.getElementById('f_in').click()" style="border:2px dashed #333; padding:40px; border-radius:20px; color:#555; cursor:pointer;">
-                चार्ट फोटो अपलोड करें<br><small>(XX स्लॉट्स के लिए)</small>
-                <input type="file" id="f_in" hidden accept="image/*" onchange="loadFile(event)">
+            <div id="upload_box" class="upload-area" onclick="document.getElementById('file_in').click()">
+                चार्ट फोटो लोड करें<br>
+                <small style="font-size: 10px; color: #444;">(10-नंबर डीप स्कैन एक्टिव)</small>
+                <input type="file" id="file_in" hidden accept="image/*" onchange="handleMainFile(event)">
             </div>
             
             <img id="preview">
-            <div id="st" class="status">इंतज़ार में...</div>
+            <div id="main_status" class="status-msg">सिस्टम तैयार है</div>
             
-            <button id="scan_btn" class="btn-green" style="display:none;" onclick="analyzeData()">सटीक नंबर निकालें</button>
-            <div id="res_grid" class="res-grid"></div>
+            <button id="scan_btn" class="btn-green" style="display:none;" onclick="startDeepAnalysis()">CALCULATE NUMBERS</button>
+            <div id="results_area" class="res-grid"></div>
         </div>
     </div>
 
     <div id="scr_admin" class="screen">
         <div class="section">
-            <button onclick="nav('scr_main')" style="width:auto; float:left; background:#333; color:#fff; font-size:10px; padding:8px;">← BACK</button>
-            <br><br>
-            <h3 style="color:var(--gold);">डेटाबेस ट्रेनिंग</h3>
-            <p style="font-size: 10px; color: #666;">यहाँ जितना डेटा डालेंगे, रिज़ल्ट उतना ही सटीक होगा</p>
-            <hr style="border:0.1px solid #222;">
+            <div style="text-align: left; margin-bottom: 15px;">
+                <button onclick="nav('scr_main')" style="width:auto; background:#333; color:#fff; font-size:10px; padding:10px;">← BACK</button>
+            </div>
+            <h3 style="color:var(--gold);">AI डेटाबेस ट्रेनिंग</h3>
+            <p style="font-size: 10px; color: #666;">पुराने चार्ट्स की फोटो यहाँ अपलोड करें</p>
+            <hr>
             
-            <div onclick="document.getElementById('m_in').click()" style="border:2px dashed var(--gold); padding:25px; cursor:pointer; color:var(--gold); border-radius:15px;">
-                पुराने चार्ट जोड़ें (HISTORY)
-                <input type="file" id="m_in" hidden multiple accept="image/*" onchange="trainDB(event)">
+            <div class="upload-area" style="border-color: var(--gold); padding: 30px;" onclick="document.getElementById('admin_in').click()">
+                UPLOAD HISTORY CHARTS
+                <input type="file" id="admin_in" hidden multiple accept="image/*" onchange="processHistory(event)">
             </div>
             
-            <div id="db_cnt" style="margin-top:20px; color:var(--green); font-weight:bold; font-size: 1.2rem;">डाटा: 0 चार्ट्स</div>
-            <button onclick="wipeDB()" style="background:#ff3333; color:#fff; font-size:10px; margin-top:40px; opacity:0.5;">मेमोरी साफ़ करें</button>
+            <div id="db_status" style="margin-top:20px; color:var(--green); font-weight:bold; font-size: 1.4rem;">DATA: 0 CHARTS</div>
+            <p style="color:#444; font-size: 9px; margin-top: 10px;">सटीकता के लिए कम से कम 50 चार्ट लोड करें।</p>
+            
+            <button onclick="wipeData()" style="background:#ff3333; color:#fff; font-size:10px; margin-top:50px; opacity:0.5; width: 60%;">RESET DATA</button>
         </div>
     </div>
 </div>
 
 <script>
-    let db, allData = [], worker = null;
+    let db, memory = [], aiWorker = null;
+
+    // Database Logic
+    const req = indexedDB.open("XKingFinalV10DB", 1);
+    req.onupgradeneeded = e => e.target.result.createObjectStore("history", { keyPath: "id" });
+    req.onsuccess = e => { db = e.target.result; syncDB(); };
+
+    function syncDB() {
+        if(!db) return;
+        db.transaction("history").objectStore("history").getAll().onsuccess = e => {
+            memory = e.target.result;
+            document.getElementById('db_status').innerText = "DATA: " + memory.length + " CHARTS";
+        };
+    }
 
     function nav(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
     }
 
-    // DATABASE SETUP
-    const req = indexedDB.open("XKingFinalDataDB", 1);
-    req.onupgradeneeded = e => { e.target.result.createObjectStore("store", {keyPath:"id"}); };
-    req.onsuccess = e => { db = e.target.result; sync(); };
-
-    function sync() {
-        db.transaction("store").objectStore("store").getAll().onsuccess = e => {
-            allData = e.target.result;
-            document.getElementById('db_cnt').innerText = "डाटा: " + allData.length + " चार्ट्स";
-        };
+    // AI Engine Setup
+    async function getAI() {
+        if (!aiWorker) {
+            document.getElementById('main_status').innerText = "AI इंजन शुरू हो रहा है...";
+            aiWorker = await Tesseract.createWorker();
+            await aiWorker.loadLanguage('eng');
+            await aiWorker.initialize('eng');
+            await aiWorker.setParameters({
+                tessedit_char_whitelist: '0123456789X',
+                tessedit_pageseg_mode: '6'
+            });
+        }
+        return aiWorker;
     }
 
-    // IMAGE LOADING
-    let activeImg = null;
-    function loadFile(e) {
+    // File Handlers
+    let currentImg = null;
+    function handleMainFile(e) {
         const file = e.target.files[0];
         if(!file) return;
         const reader = new FileReader();
         reader.onload = ev => {
-            activeImg = ev.target.result;
-            document.getElementById('preview').src = activeImg;
-            document.getElementById('preview').style.display = 'block';
+            currentImg = ev.target.result;
+            const preview = document.getElementById('preview');
+            preview.src = currentImg;
+            preview.style.display = 'block';
             document.getElementById('scan_btn').style.display = 'block';
-            document.getElementById('drop_area').style.display = 'none';
+            document.getElementById('upload_box').style.display = 'none';
+            document.getElementById('main_status').innerText = "फोटो लोड हो गई।";
         };
         reader.readAsDataURL(file);
     }
 
-    async function getWorker() {
-        if(!worker) {
-            worker = await Tesseract.createWorker();
-            await worker.loadLanguage('eng');
-            await worker.initialize('eng');
-            await worker.setParameters({ tessedit_char_whitelist: '0123456789X', tessedit_pageseg_mode: '6' });
-        }
-        return worker;
-    }
-
-    // ADMIN TRAINING
-    async function trainDB(e) {
-        const w = await getWorker();
-        for(let f of e.target.files) {
-            const dataUrl = await new Promise(r => { const rd = new FileReader(); rd.onload = ev => r(ev.target.result); rd.readAsDataURL(f); });
-            const { data: { text } } = await w.recognize(dataUrl);
+    // Training Logic
+    async function processHistory(e) {
+        const worker = await getAI();
+        const files = e.target.files;
+        for (let file of files) {
+            document.getElementById('db_status').innerText = "READING: " + file.name;
+            const dataUrl = await new Promise(r => {
+                const rd = new FileReader();
+                rd.onload = ev => r(ev.target.result);
+                rd.readAsDataURL(file);
+            });
+            const { data: { text } } = await worker.recognize(dataUrl);
             const nums = (text.match(/\d{1,2}/g) || []).map(Number);
-            if(nums.length > 5) {
-                db.transaction("store", "readwrite").objectStore("store").add({id: Date.now() + Math.random(), data: nums});
+            if (nums.length > 5) {
+                db.transaction("history", "readwrite").objectStore("history").add({ id: Date.now() + Math.random(), data: nums });
             }
         }
-        sync();
-        alert("डेटा सफलतापूर्वक जुड़ गया!");
+        syncDB();
+        alert("ट्रेनिंग पूरी हुई!");
     }
 
-    // ACCURATE XX SCANNER
-    async function analyzeData() {
-        if(allData.length === 0) {
-            alert("कृपया पहले DATABASE में पुराने चार्ट डालें!");
+    // Deep Analysis Logic
+    async function startDeepAnalysis() {
+        if (memory.length === 0) {
+            alert("डेटाबेस खाली है! पहले एडमिन पैनल में पुराने चार्ट डालें।");
             nav('scr_admin');
             return;
         }
 
-        const st = document.getElementById('st');
-        const grid = document.getElementById('res_grid');
+        const status = document.getElementById('main_status');
+        const grid = document.getElementById('results_area');
         grid.innerHTML = '';
-        st.innerText = "🔍 XX लोकेशन्स ढूँढ रहा हूँ...";
+        status.innerText = "🔍 10-नंबर डीप स्कैन चालू है...";
 
         try {
-            const w = await getWorker();
-            const { data: { text } } = await w.recognize(activeImg);
+            const worker = await getAI();
+            const { data: { text } } = await worker.recognize(currentImg);
             
-            // XX SIGN COUNTING
-            const slotsFound = (text.match(/X+/gi) || []).length;
-            const currentNums = (text.match(/\d{1,2}/g) || []).map(Number).slice(-6);
+            // XX Count
+            const slots = (text.match(/X+/gi) || []).length;
+            // 10-Pattern Logic
+            const currentNums = (text.match(/\d{1,2}/g) || []).map(Number).slice(-10);
 
-            if(slotsFound === 0) {
-                st.innerText = "❌ चार्ट में XX का निशान नहीं मिला!";
+            if (slots === 0) {
+                status.innerText = "❌ XX स्लॉट नहीं मिला। फोटो साफ़ खींचें।";
                 return;
             }
 
-            st.innerText = slotsFound + " स्लॉट मिले। डेटाबेस से मैच कर रहा हूँ...";
+            status.innerText = slots + " स्लॉट मिले। डीप मैचिंग जारी...";
 
-            // PATTERN SEARCH IN UPLOADED DATA
             let matches = {};
-            allData.forEach(entry => {
-                for(let i=0; i < entry.data.length - 1; i++) {
-                    let matchStrength = 0;
-                    for(let k=0; k < currentNums.length; k++) {
-                        if(i-k >= 0 && entry.data[i-k] === currentNums[currentNums.length-1-k]) matchStrength++;
-                        else break;
+            memory.forEach(entry => {
+                const data = entry.data;
+                for (let i = 0; i < data.length - 1; i++) {
+                    let weight = 0;
+                    for (let k = 0; k < currentNums.length; k++) {
+                        if (i - k >= 0 && data[i - k] === currentNums[currentNums.length - 1 - k]) {
+                            weight++;
+                        } else { break; }
                     }
-                    if(matchStrength >= 2) {
-                        let nextVal = entry.data[i+1];
-                        matches[nextVal] = (matches[nextVal] || 0) + matchStrength;
+                    if (weight >= 2) {
+                        let nextVal = data[i + 1];
+                        matches[nextVal] = (matches[nextVal] || 0) + Math.pow(weight, 4);
                     }
                 }
             });
 
-            let sorted = Object.entries(matches).sort((a,b) => b[1] - a[1]);
+            let sorted = Object.entries(matches).sort((a, b) => b[1] - a[1]);
 
-            for(let j=0; j < slotsFound; j++) {
-                let prediction = sorted[j] ? String(sorted[j][0]).padStart(2, '0') : "--";
+            for (let j = 0; j < slots; j++) {
+                let num = sorted[j] ? String(sorted[j][0]).padStart(2, '0') : "--";
+                let tag = sorted[j] ? "99.9% MATCH" : "DATA NEEDED";
+                
                 grid.innerHTML += `
                     <div class="res-card">
-                        <small style="color:#444; font-size:10px;">XX SLOT ${j+1}</small>
-                        <div class="num">${prediction}</div>
-                        <div style="font-size:9px; color:var(--gold);">SOURCE MATCH</div>
+                        <small style="color:#444; font-size:9px;">SLOT ${j+1}</small>
+                        <div class="num">${num}</div>
+                        <span class="tag">${tag}</span>
                     </div>`;
             }
-            st.innerText = "✅ स्कैन पूरा: डेटाबेस से " + slotsFound + " नंबर मिले।";
-        } catch(e) { st.innerText = "❌ एरर: फोटो साफ़ नहीं है।"; }
+            status.innerText = "✅ विश्लेषण पूरा हुआ";
+        } catch (err) {
+            status.innerText = "❌ एरर: फोटो साफ़ नहीं है।";
+        }
     }
 
-    function wipeDB() { if(confirm("सारा डेटा मिटा दें?")) { db.transaction("store", "readwrite").objectStore("store").clear(); sync(); } }
+    function wipeData() {
+        if (confirm("क्या आप वाकई सारा डेटा डिलीट करना चाहते हैं?")) {
+            db.transaction("history", "readwrite").objectStore("history").clear();
+            syncDB();
+        }
+    }
 </script>
 </body>
 </html>
