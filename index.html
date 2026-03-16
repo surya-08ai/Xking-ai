@@ -3,35 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>X KING AI - THE COMPLETE MASTER</title>
+    <title>X KING AI - SUPREME ANALYZER</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
     <style>
-        :root { --gold: #ffcc00; --green: #00ff66; --red: #ff3333; --bg: #050505; --card: #121212; --border: #222; }
-        body { background: var(--bg); color: white; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 480px; min-height: 100vh; padding: 15px; box-sizing: border-box; }
+        :root { --gold: #ffcc00; --green: #00ff66; --red: #ff3333; --bg: #050505; --card: #121212; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; justify-content: center; overflow-x: hidden; }
+        .container { width: 100%; max-width: 480px; padding: 15px; box-sizing: border-box; min-height: 100vh; }
         
-        /* स्क्रीन मैनेजमेंट - पक्का वाला हाइड/शो */
+        /* स्क्रीन मैनेजमेंट */
         .screen { display: none !important; }
-        .screen.active { display: block !important; }
+        .active { display: block !important; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .section { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid var(--border); margin-top: 15px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
+        .section { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid #222; margin-top: 15px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
         
-        input { background: #000; color: #fff; border: 1px solid #333; padding: 15px; border-radius: 12px; width: 85%; margin-bottom: 15px; font-size: 1.1rem; text-align: center; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--gold); box-shadow: 0 0 10px rgba(255, 204, 0, 0.2); }
-        
+        /* इनपुट और बटन */
+        input { background: #000; color: #fff; border: 1px solid #333; padding: 15px; border-radius: 12px; width: 85%; margin-bottom: 15px; font-size: 1.1rem; text-align: center; outline: none; }
+        input:focus { border-color: var(--gold); }
         button { cursor: pointer; border-radius: 12px; font-weight: bold; border: none; padding: 16px; width: 100%; transition: 0.2s; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; }
         button:active { transform: scale(0.96); }
 
-        /* रिज़ल्ट ग्रिड */
-        .res-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 12px; margin-top: 25px; }
-        .res-card { background: #1a1a1a; padding: 15px; border-radius: 15px; border: 1.5px solid var(--gold); }
-        .res-card small { font-size: 0.6rem; color: #888; display: block; margin-bottom: 5px; }
-        .num { font-size: 2.2rem; font-weight: bold; color: var(--green); text-shadow: 0 0 15px rgba(0,255,102,0.4); }
+        /* रिज़ल्ट कार्ड्स */
+        .res-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 15px; margin-top: 25px; }
+        .res-card { background: #1a1a1a; padding: 15px; border-radius: 18px; border: 2.5px solid var(--gold); box-shadow: 0 0 15px rgba(255,204,0,0.1); }
+        .res-card small { font-size: 0.7rem; color: var(--gold); display: block; margin-bottom: 5px; font-weight: bold; }
+        .num { font-size: 2.5rem; font-weight: bold; color: var(--green); text-shadow: 0 0 10px rgba(0,255,102,0.4); }
         
-        .preview-img { width: 100%; border-radius: 15px; margin-top: 15px; display: none; border: 2px solid var(--gold); }
-        .status-text { color: var(--gold); margin-top: 15px; font-weight: bold; font-size: 0.85rem; text-transform: uppercase; }
-        hr { border: 0; border-top: 1px solid #222; margin: 25px 0; }
-        .admin-btn { background: #222; color: var(--gold); width: auto; padding: 8px 18px; font-size: 11px; border: 1px solid #333; border-radius: 8px; }
+        /* इमेज और स्टेटस */
+        .preview-img { width: 100%; border-radius: 15px; margin-top: 15px; display: none; border: 1px solid var(--gold); }
+        .status { color: var(--gold); margin-top: 15px; font-weight: bold; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; }
+        hr { border: 0.5px solid #222; margin: 25px 0; }
     </style>
 </head>
 <body>
@@ -39,29 +40,29 @@
 <div class="container">
     <div id="scr_login" class="screen active">
         <div class="section" style="margin-top: 80px; border: 2px solid var(--gold);">
-            <h1 style="color: var(--gold); letter-spacing: 6px; margin: 0; font-size: 2.5rem;">X KING AI</h1>
-            <p style="color: #666; font-size: 0.75rem; margin-bottom: 35px; letter-spacing: 3px;">AUTHORIZED ACCESS ONLY</p>
-            <input type="password" id="pass_input" placeholder="ENTER PASSCODE">
+            <h1 style="color: var(--gold); letter-spacing: 5px; margin: 0; font-size: 2.5rem;">X KING AI</h1>
+            <p style="color: #444; font-size: 0.75rem; margin-bottom: 35px;">AUTHORIZED ACCESS ONLY</p>
+            <input type="password" id="login_input" placeholder="ENTER PASSCODE">
             <button onclick="handleLogin()" style="background: var(--gold); color: #000;">UNLOCK SYSTEM</button>
-            <p style="color:#222; font-size: 9px; margin-top: 20px;">KEY: KING-99</p>
+            <p style="color:#111; font-size: 8px; margin-top: 20px;">MASTER KEY: KING-99</p>
         </div>
     </div>
 
     <div id="scr_main" class="screen">
-        <div style="display:flex; justify-content: space-between; align-items: center; padding: 10px 5px;">
+        <div style="display:flex; justify-content: space-between; align-items: center; padding: 5px;">
             <h2 style="color:var(--gold); margin:0; letter-spacing: 2px;">X KING <span style="color:#fff;">AI</span></h2>
-            <button onclick="goto('scr_admin')" class="admin-btn">ADMIN CONTROL</button>
+            <button onclick="navTo('scr_admin')" style="background:#222; color:var(--gold); padding:6px 15px; font-size:10px; border-radius:5px; border:1px solid #333; width:auto;">ADMIN PANEL</button>
         </div>
         
         <div class="section">
-            <div id="drop_zone" onclick="document.getElementById('file_input').click()" style="border:2px dashed #333; padding:45px; cursor:pointer; color:#666; border-radius:20px; background: rgba(255,255,255,0.02);">
-                चार्ट की फोटो अपलोड करें<br>
-                <small style="font-size: 0.7rem;">(SCREENSHOT WORKS BEST)</small>
-                <input type="file" id="file_input" hidden accept="image/*" onchange="handleSingleFile(event)">
+            <div id="drop_area" onclick="document.getElementById('file_input').click()" style="border:2px dashed #333; padding:45px; cursor:pointer; color:#666; border-radius:20px; background: rgba(255,255,255,0.01);">
+                चार्ट फोटो अपलोड करें<br>
+                <small style="font-size: 0.7rem;">(केवल XX स्लॉट्स का रिज़ल्ट दिखेगा)</small>
+                <input type="file" id="file_input" hidden accept="image/*" onchange="previewImage(event)">
             </div>
-            <img id="img_preview" class="preview-img">
-            <button id="btn_scan" onclick="startAnalysis()" style="display:none; background:var(--green); color:#000; margin-top:25px;">RUN AI SCAN</button>
-            <div id="main_status" class="status-text">SYSTEM STANDBY</div>
+            <img id="main_preview" class="preview-img">
+            <button id="btn_scan" onclick="startExactAnalysis()" style="display:none; background:var(--green); color:#000; margin-top:25px;">RUN XX ANALYZER</button>
+            <div id="main_status" class="status">SYSTEM READY</div>
             
             <div id="results_grid" class="res-grid"></div>
         </div>
@@ -69,77 +70,79 @@
 
     <div id="scr_admin" class="screen">
         <div class="section">
-            <button onclick="goto('scr_main')" style="background:#333; color:#fff; width:80px; margin-bottom:20px; font-size: 11px; padding: 10px;">← BACK</button>
-            <h3 style="color:var(--gold); margin-top: 0;">SYSTEM SETTINGS</h3>
-            
-            <label style="color:#888; font-size:0.8rem; display:block; margin-bottom:5px;">CHANGE LOGIN CODE</label>
-            <input type="text" id="new_code" placeholder="New Passcode">
-            <button onclick="saveCode()" style="background:var(--green); color:#000;">SAVE NEW CODE</button>
+            <button onclick="navTo('scr_main')" style="background:#333; color:#fff; width:80px; margin-bottom:20px; font-size:10px; padding:10px;">← BACK</button>
+            <h3 style="color:var(--gold); margin:0;">ADMIN CONTROLS</h3>
+            <hr>
+            <label style="color:#666; font-size:0.7rem; display:block; margin-bottom:5px;">CHANGE LOGIN CODE</label>
+            <input type="text" id="new_pass_val" placeholder="New Passcode">
+            <button onclick="saveNewPass()" style="background:var(--green); color:#000;">SAVE PASSWORD</button>
             
             <hr>
-            
-            <h3 style="color:var(--gold);">AI MEMORY TRAINING</h3>
-            <div onclick="document.getElementById('multi_file').click()" style="border:2px dashed var(--gold); padding:30px; cursor:pointer; text-align:center; color:var(--gold); background: rgba(255,204,0,0.03); border-radius: 15px;">
+            <h3 style="color:var(--gold);">AI PATTERN TRAINING</h3>
+            <div onclick="document.getElementById('multi_input').click()" style="border:2px dashed var(--gold); padding:25px; cursor:pointer; color:var(--gold); background:rgba(255,204,0,0.03); border-radius:15px;">
                 UPLOAD OLD CHARTS<br>
-                <small style="font-size:0.7rem;">(TRAIN AI WITH HISTORY DATA)</small>
-                <input type="file" id="multi_file" hidden accept="image/*" multiple onchange="handleMultiFile(event)">
+                <small style="font-size:0.6rem;">(AI पुराने डेटा से मैच करना सीखेगा)</small>
+                <input type="file" id="multi_input" hidden multiple accept="image/*" onchange="trainFromHistory(event)">
             </div>
-            <div id="db_status" style="text-align:center; margin-top:15px; color:var(--green); font-weight: bold; font-size:0.9rem;">MEMORY: 0 CHARTS LOADED</div>
-            <button onclick="clearAllData()" style="background:var(--red); color:#fff; margin-top:30px; font-size: 0.75rem; opacity: 0.7;">WIPE ALL DATABASE</button>
+            <div id="db_status" style="margin-top:15px; color:var(--green); font-weight:bold;">LOADED: 0 CHARTS</div>
+            <button onclick="wipeData()" style="background:var(--red); color:#fff; margin-top:35px; font-size:10px; opacity:0.6;">RESET ALL MEMORY</button>
         </div>
     </div>
 </div>
 
 <script>
-    /* --- 1. CORE AUTH & NAVIGATION --- */
-    let currentPass = localStorage.getItem('xk_auth_code') || "1234";
+    /* --- 1. सुरक्षा और नेविगेशन --- */
+    let currentPass = localStorage.getItem('xk_final_pass') || "1234";
 
     function handleLogin() {
-        const input = document.getElementById('pass_input').value.trim();
-        if (input === currentPass || input === "KING-99") {
-            goto('scr_main');
-            document.getElementById('pass_input').value = "";
+        const val = document.getElementById('login_input').value.trim();
+        if (val === currentPass || val === "KING-99") {
+            navTo('scr_main');
+            document.getElementById('login_input').value = "";
         } else {
-            alert("ACCESS DENIED! Use Correct Passcode.");
+            alert("गलत पासवर्ड! हबीबी सही कोड डालें।");
         }
     }
 
-    function goto(id) {
+    function navTo(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         window.scrollTo(0,0);
     }
 
-    function saveCode() {
-        const val = document.getElementById('new_code').value.trim();
-        if(val) {
-            localStorage.setItem('xk_auth_code', val);
-            currentPass = val;
-            alert("PASSCODE UPDATED SUCCESSFULLY");
-            document.getElementById('new_code').value = "";
+    function saveNewPass() {
+        const p = document.getElementById('new_pass_val').value.trim();
+        if(p) {
+            localStorage.setItem('xk_final_pass', p);
+            currentPass = p;
+            alert("पासवर्ड सुरक्षित कर लिया गया है!");
+            document.getElementById('new_pass_val').value = "";
         }
     }
 
-    /* --- 2. DATABASE (IndexedDB) LOGIC --- */
+    /* --- 2. डेटाबेस इंजन (IndexedDB) --- */
     let db, memoryRecords = [], aiWorker = null;
-
-    const dbReq = indexedDB.open("XKingFinalCompleteDB", 1);
-    dbReq.onupgradeneeded = e => { e.target.result.createObjectStore("history", { keyPath: "id" }); };
-    dbReq.onsuccess = e => { 
-        db = e.target.result; 
-        updateMemoryDisplay(); 
+    const request = indexedDB.open("XKingSupremeDB", 1);
+    
+    request.onupgradeneeded = e => {
+        e.target.result.createObjectStore("history", { keyPath: "id" });
     };
 
-    function updateMemoryDisplay() {
+    request.onsuccess = e => {
+        db = e.target.result;
+        refreshDBDisplay();
+    };
+
+    function refreshDBDisplay() {
         if(!db) return;
         db.transaction("history","readonly").objectStore("history").getAll().onsuccess = ev => {
             memoryRecords = ev.target.result;
-            document.getElementById('db_status').innerText = "MEMORY: " + memoryRecords.length + " CHARTS LOADED";
+            document.getElementById('db_status').innerText = "LOADED: " + memoryRecords.length + " CHARTS";
         };
     }
 
-    /* --- 3. AI ENGINE & ANALYZER --- */
-    async function getWorker() {
+    /* --- 3. AI और XX स्लॉट डिटेक्शन लॉजिक --- */
+    async function getAI() {
         if (!aiWorker) {
             aiWorker = await Tesseract.createWorker();
             await aiWorker.loadLanguage('eng');
@@ -152,94 +155,72 @@
         return aiWorker;
     }
 
-    let singleImgData = null;
-    function handleSingleFile(e) {
+    let activeImageData = null;
+    function previewImage(e) {
         const reader = new FileReader();
         reader.onload = ev => {
-            singleImgData = ev.target.result;
-            const preview = document.getElementById('img_preview');
-            preview.src = singleImgData;
-            preview.style.display = 'block';
+            activeImageData = ev.target.result;
+            document.getElementById('main_preview').src = activeImageData;
+            document.getElementById('main_preview').style.display = 'block';
             document.getElementById('btn_scan').style.display = 'block';
-            document.getElementById('drop_zone').style.display = 'none';
+            document.getElementById('drop_area').style.display = 'none';
         };
         reader.readAsDataURL(e.target.files[0]);
     }
 
-    async function handleMultiFile(e) {
-        const worker = await getWorker();
+    async function trainFromHistory(e) {
+        const worker = await getAI();
         const status = document.getElementById('db_status');
         for (let file of e.target.files) {
-            status.innerText = "TRAINING: " + file.name;
-            const dataUrl = await new Promise(res => { const r = new FileReader(); r.onload = ev => res(ev.target.result); r.readAsDataURL(file); });
+            status.innerText = "READING: " + file.name;
+            const dataUrl = await new Promise(r => { const rd = new FileReader(); rd.onload = ev => r(ev.target.result); rd.readAsDataURL(file); });
             const { data: { text } } = await worker.recognize(dataUrl);
             const nums = (text.match(/\d{1,2}/g) || []).map(Number);
             if(nums.length > 0) {
                 db.transaction("history", "readwrite").objectStore("history").add({ id: Date.now() + Math.random(), data: nums });
             }
         }
-        updateMemoryDisplay();
-        alert("Training Finished!");
+        refreshDBDisplay();
+        alert("Training Complete!");
     }
 
-    async function startAnalysis() {
-        const status = document.getElementById('main_status');
+    async function startExactAnalysis() {
+        const msg = document.getElementById('main_status');
         const grid = document.getElementById('results_grid');
         grid.innerHTML = '';
-        status.innerText = "🔍 AI SCANNING XX SLOTS...";
+        msg.innerText = "🔍 XX स्लॉट्स की तलाश जारी है...";
         
         try {
-            const worker = await getWorker();
-            const { data: { text } } = await worker.recognize(singleImgData);
+            const worker = await getAI();
+            const { data: { text } } = await worker.recognize(activeImageData);
             
-            // XX SLOT DETECTION LOGIC
+            // XX DETECTION (जितने XX मिलेंगे उतने ही बॉक्स बनेंगे)
             const xxMatches = (text.match(/X+/gi) || []);
-            const slotCount = xxMatches.length > 0 ? xxMatches.length : 4; 
-            
-            // PATTERN EXTRACTION
-            const detectedNums = (text.match(/\d{1,2}/g) || []).map(Number);
-            const lastPattern = detectedNums.slice(-8);
+            const slotCount = xxMatches.length;
 
-            status.innerText = "✅ FOUND " + slotCount + " SLOTS. ANALYZING...";
+            if(slotCount === 0) {
+                msg.innerText = "❌ कोई 'XX' स्लॉट नहीं मिला! साफ फोटो डालें।";
+                return;
+            }
 
-            let weightMap = {};
+            const currentNums = (text.match(/\d{1,2}/g) || []).map(Number);
+            const lastPattern = currentNums.slice(-8);
+            msg.innerText = "✅ " + slotCount + " XX स्लॉट मिले। कैलकुलेटिंग...";
+
+            // एडमिन मेमोरी से सटीक नंबर निकालने का लॉजिक
+            let probabilityMap = {};
             memoryRecords.forEach(record => {
                 for(let i=0; i < record.data.length; i++) {
-                    let matchScore = 0;
+                    let score = 0;
                     for(let k=0; k < lastPattern.length; k++) {
-                        if(i-k >= 0 && record.data[i-k] === lastPattern[lastPattern.length-1-k]) matchScore++;
+                        if(i-k >= 0 && record.data[i-k] === lastPattern[lastPattern.length-1-k]) score++;
                         else break;
                     }
-                    if(matchScore >= 2 && i+1 < record.data.length) {
+                    if(score >= 2 && i+1 < record.data.length) {
                         let nextVal = record.data[i+1];
-                        weightMap[nextVal] = (weightMap[nextVal] || 0) + Math.pow(matchScore, 3);
+                        probabilityMap[nextVal] = (probabilityMap[nextVal] || 0) + Math.pow(score, 3);
                     }
                 }
             });
 
-            let sorted = Object.entries(weightMap).sort((a,b) => b[1] - a[1]);
-
-            for(let j=0; j < slotCount; j++) {
-                let prediction = sorted[j] ? sorted[j][0] : Math.floor(Math.random() * 100);
-                grid.innerHTML += `
-                    <div class="res-card">
-                        <small>PREDICTION ${j+1}</small>
-                        <div class="num">${String(prediction).padStart(2, '0')}</div>
-                    </div>`;
-            }
-            grid.style.display = 'grid';
-            status.innerText = "✅ SCAN COMPLETE FOR " + slotCount + " SLOTS";
-        } catch (err) {
-            status.innerText = "❌ ERROR: CLEAR IMAGE REQUIRED";
-        }
-    }
-
-    function clearAllData() {
-        if(confirm("DANGER! Wipe all AI memory data?")) {
-            db.transaction("history", "readwrite").objectStore("history").clear();
-            updateMemoryDisplay();
-        }
-    }
-</script>
-</body>
-</html>
+            let sortedResults = Object.entries(probabilityMap).sort((a,b) => b[1] -
