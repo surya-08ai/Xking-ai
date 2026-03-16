@@ -3,22 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI TABLE ANALYZER PRO</title>
-    <script src="https://unpkg.com/tesseract.js@v2.1.0/dist/tesseract.min.js"></script>
+    <title>AI CHART ANALYZER SECURE</title>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
     <style>
         :root { --bg: #0a0a0a; --gold: #ffcc00; --green: #00ff66; --red: #ff3333; --card: #151515; }
-        body { background: var(--bg); color: white; font-family: sans-serif; margin: 0; display: flex; justify-content: center; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; justify-content: center; }
         .container { width: 100%; max-width: 480px; padding: 15px; }
         .screen { display: none; }
         .screen.active { display: block; }
         .section { background: var(--card); padding: 20px; border-radius: 15px; border: 1px solid #333; margin-top: 15px; }
-        input { background: #000; color: #fff; border: 1px solid #444; padding: 12px; border-radius: 8px; width: 92%; margin-bottom: 10px; }
-        button { cursor: pointer; border-radius: 8px; font-weight: bold; border: none; padding: 12px; width: 100%; transition: 0.2s; }
-        .res-card { background: #202020; padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #333; }
-        .vip-card { border: 1.5px solid var(--gold); background: rgba(255, 204, 0, 0.05); }
-        .num { font-size: 2.8rem; font-weight: bold; color: var(--green); margin: 5px 0; }
-        .preview-img { width: 100%; border-radius: 10px; margin-top: 15px; display: none; border: 1px solid var(--gold); }
+        input { background: #000; color: #fff; border: 1px solid #444; padding: 12px; border-radius: 8px; width: 92%; margin-bottom: 10px; outline: none; }
+        input:focus { border-color: var(--gold); }
+        button { cursor: pointer; border-radius: 8px; font-weight: bold; border: none; padding: 14px; width: 100%; margin-top: 10px; transition: 0.2s; }
+        button:active { transform: scale(0.98); }
         #res-container { display: none; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+        .res-card { background: #202020; padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #333; }
+        .num { font-size: 2.5rem; font-weight: bold; color: var(--green); margin: 5px 0; }
+        .preview-img { width: 100%; border-radius: 10px; margin-top: 15px; display: none; border: 1px solid var(--gold); }
+        .status-text { color: var(--gold); margin-top: 15px; font-weight: bold; font-size: 0.9rem; text-align: center; }
     </style>
 </head>
 <body>
@@ -26,42 +28,47 @@
 <div class="container">
     <div id="login-screen" class="screen active">
         <div class="section" style="text-align: center; margin-top: 60px;">
-            <h2 style="color: var(--gold);">SYSTEM LOCK</h2>
-            <input type="password" id="access-code" placeholder="ENTER CODE (1234)">
-            <button onclick="verifyLogin()" style="background: var(--gold); margin-top: 10px;">UNLOCK</button>
+            <h2 style="color: var(--gold); letter-spacing: 2px;">SYSTEM LOCK</h2>
+            <p style="color: #666; font-size: 0.8rem; margin-bottom: 20px;">ENTER AUTHORIZATION CODE</p>
+            <input type="password" id="access-code" placeholder="••••••••" onkeypress="if(event.key==='Enter') verifyLogin()">
+            <button onclick="verifyLogin()" style="background: var(--gold); color: #000;">UNLOCK SYSTEM</button>
         </div>
     </div>
 
     <div id="main-page" class="screen">
         <div style="display:flex; justify-content: space-between; align-items: center;">
-            <h3 style="color:var(--gold);">CHART ANALYZER</h3>
-            <button onclick="showScreen('admin-page')" style="background:#333; color:#fff; width:70px; font-size:10px;">ADMIN</button>
+            <h3 style="color:var(--gold); margin:0;">CHART SCANNER</h3>
+            <button onclick="showScreen('admin-page')" style="background:#333; color:#fff; width:70px; padding:5px; font-size:10px; border-radius: 5px;">ADMIN</button>
         </div>
         <div class="section" style="text-align: center;">
-            <div onclick="document.getElementById('singleF').click()" style="border:2px dashed #444; padding:30px; cursor:pointer; color:#777;">
-                चार्ट वाली फोटो अपलोड करें
+            <div onclick="document.getElementById('singleF').click()" style="border:2px dashed #444; padding:30px; cursor:pointer; color:#777; border-radius:10px;">
+                UPLOAD CHART PHOTO
                 <input type="file" id="singleF" hidden accept="image/*" onchange="handleSingle(event)">
             </div>
             <img id="single-preview" class="preview-img">
-            <button id="scanBtn" onclick="deepScan()" style="display:none; background:var(--green); margin-top:15px; color:#000;">START CHART SCAN</button>
-            <div id="main-status" style="color:var(--gold); margin-top:10px; font-size:12px;">READY</div>
+            <button id="scanBtn" onclick="deepScan()" style="display:none; background:var(--green); color:#000;">START ANALYSIS</button>
+            <div id="main-status" class="status-text">SYSTEM READY</div>
             <div id="res-container"></div>
         </div>
     </div>
 
     <div id="admin-page" class="screen">
         <div class="section">
-            <button onclick="showScreen('main-page')" style="background:#333; color:#fff; width:60px; margin-bottom:10px;">BACK</button>
-            <h4 style="color:var(--gold);">ADMIN SETTINGS</h4>
-            <input type="text" id="new-code-input" placeholder="New Password">
-            <button onclick="updateCode()" style="background:var(--green); color:#000;">SAVE PASSCODE</button>
-            <hr style="border:0.5px solid #333; margin:20px 0;">
-            <div onclick="document.getElementById('multiF').click()" style="border:2px dashed var(--gold); padding:20px; cursor:pointer; text-align:center; color:var(--gold);">
-                ADD OLD CHARTS (HISTORY)
+            <button onclick="showScreen('main-page')" style="background:#333; color:#fff; width:60px; margin-bottom:15px; padding: 5px; font-size: 12px;">← BACK</button>
+            <h4 style="color:var(--gold); margin-top: 0;">ADMIN SETTINGS</h4>
+            <small style="color: #888;">NEW PASSCODE:</small>
+            <input type="text" id="new-code-input" placeholder="Set New Code">
+            <button onclick="updateCode()" style="background:var(--green); color:#000;">SAVE NEW PASSWORD</button>
+            
+            <hr style="border:0.5px solid #333; margin:25px 0;">
+            
+            <h4 style="color:var(--gold);">DATABASE MANAGEMENT</h4>
+            <div onclick="document.getElementById('multiF').click()" style="border:2px dashed var(--gold); padding:20px; cursor:pointer; text-align:center; color:var(--gold); background: rgba(255,204,0,0.02);">
+                UPLOAD OLD CHARTS
                 <input type="file" id="multiF" hidden accept="image/*" multiple onchange="handleMulti(event)">
             </div>
-            <div id="admin-status" style="text-align:center; margin-top:10px; color:var(--green);">0 LOADED</div>
-            <button onclick="clearFullDatabase()" style="background:var(--red); color:#fff; margin-top:20px;">WIPE DATABASE</button>
+            <div id="admin-status" style="text-align:center; margin-top:10px; color:var(--green); font-weight: bold;">0 LOADED</div>
+            <button onclick="clearFullDatabase()" style="background:var(--red); color:#fff; margin-top:20px;">WIPE ALL DATA</button>
         </div>
     </div>
 </div>
@@ -71,16 +78,21 @@
     let singleImg = null;
     let memoryImages = [];
     let db;
-    let worker;
+    let worker = null;
 
-    const request = indexedDB.open("ChartScannerDB", 1);
+    // Database Initialization
+    const request = indexedDB.open("FinalSecureScanner", 1);
     request.onupgradeneeded = e => { e.target.result.createObjectStore("memory", { keyPath: "id" }); };
     request.onsuccess = e => { db = e.target.result; loadMemory(); };
 
     function verifyLogin() {
-        const input = document.getElementById('access-code').value;
-        if(input === masterCode || input === "KING-99") showScreen('main-page');
-        else alert("WRONG CODE");
+        const input = document.getElementById('access-code').value.trim();
+        if(input === masterCode || input === "KING-99") {
+            showScreen('main-page');
+            document.getElementById('access-code').value = ""; // Clear password after login
+        } else {
+            alert("गलत पासवर्ड!");
+        }
     }
 
     function showScreen(id) {
@@ -92,42 +104,42 @@
         if(!db) return;
         db.transaction("memory", "readonly").objectStore("memory").getAll().onsuccess = e => {
             memoryImages = e.target.result;
-            document.getElementById('admin-status').innerText = memoryImages.length + " CHARTS LOADED";
+            document.getElementById('admin-status').innerText = "DATABASE: " + memoryImages.length;
         };
+    }
+
+    async function getWorker() {
+        if (worker) return worker;
+        worker = await Tesseract.createWorker();
+        await worker.loadLanguage('eng');
+        await worker.initialize('eng');
+        await worker.setParameters({
+            tessedit_char_whitelist: '0123456789',
+            tessedit_pageseg_mode: '6',
+        });
+        return worker;
     }
 
     function handleSingle(e) {
         const r = new FileReader();
         r.onload = ev => {
             singleImg = ev.target.result;
-            document.getElementById('single-preview').src = singleImg;
-            document.getElementById('single-preview').style.display = 'block';
+            const preview = document.getElementById('single-preview');
+            preview.src = singleImg;
+            preview.style.display = 'block';
             document.getElementById('scanBtn').style.display = 'block';
         };
         r.readAsDataURL(e.target.files[0]);
     }
 
-    // --- फिक्स किया हुआ OCR इंजन (Table Recognition) ---
-    async function extractNumbersFromImage(imageUrl) {
-        if(!worker) {
-            worker = await Tesseract.createWorker('eng');
-            // टेबल के लिए विशेष सेटिंग्स
-            await worker.setParameters({
-                tessedit_char_whitelist: '0123456789', // केवल नंबर पढ़ें
-                preserve_interword_spaces: '1' // नंबरों के बीच की जगह बनाए रखें
-            });
-        }
-        const { data: { text } } = await worker.recognize(imageUrl);
-        // नंबरों को क्लीन करें और 2-डिजिट पैटर्न निकालें
-        return (text.match(/\b\d{1,2}\b/g) || []).map(Number);
-    }
-
     async function handleMulti(e) {
+        const w = await getWorker();
         const status = document.getElementById('admin-status');
         for (let file of e.target.files) {
             status.innerText = "READING CHART...";
             const dataUrl = await new Promise(res => { const r = new FileReader(); r.onload = ev => res(ev.target.result); r.readAsDataURL(file); });
-            const nums = await extractNumbersFromImage(dataUrl);
+            const { data: { text } } = await w.recognize(dataUrl);
+            const nums = (text.match(/\d{1,2}/g) || []).map(Number);
             const newItem = { id: Date.now() + Math.random(), img: dataUrl, data: nums };
             db.transaction("memory", "readwrite").objectStore("memory").add(newItem);
             memoryImages.push(newItem);
@@ -139,58 +151,20 @@
         const status = document.getElementById('main-status');
         const container = document.getElementById('res-container');
         container.innerHTML = '';
-        status.innerText = "🔍 ANALYZING CHART DATA...";
+        status.innerText = "🔍 ANALYZING CHART...";
 
         try {
-            const currentNums = await extractNumbersFromImage(singleImg);
-            if(currentNums.length < 5) { alert("चार्ट स्पष्ट नहीं है! कृपया साफ फोटो डालें।"); return; }
+            const w = await getWorker();
+            const { data: { text } } = await w.recognize(singleImg);
+            let currentNums = (text.match(/\d{1,2}/g) || []).map(Number);
+            
+            if(currentNums.length < 3) {
+                status.innerText = "❌ ERROR: CLEAR SCREENSHOT UPLOAD KAREIN";
+                return;
+            }
 
-            // आखिरी 10 नंबरों का उपयोग करें
-            const targetSeq = currentNums.slice(-10);
+            const lastNums = currentNums.slice(-10);
             let weightMap = {};
 
             memoryImages.forEach(item => {
-                for(let i = 0; i < item.data.length; i++) {
-                    let match = 0;
-                    for(let k = 0; k < targetSeq.length; k++) {
-                        if(i-k >= 0 && item.data[i-k] === targetSeq[targetSeq.length-1-k]) match++;
-                        else break;
-                    }
-                    if(match >= 2 && i+1 < item.data.length) {
-                        let nextVal = item.data[i+1];
-                        weightMap[nextVal] = (weightMap[nextVal] || 0) + Math.pow(match, 3);
-                    }
-                }
-            });
-
-            let sorted = Object.entries(weightMap).sort((a,b) => b[1] - a[1]);
-
-            for(let j=0; j < 4; j++) {
-                let finalNum = sorted[j] ? sorted[j][0] : (targetSeq[targetSeq.length-1] + (j*13) + 5) % 100;
-                let isVIP = j < 2;
-                container.innerHTML += `
-                    <div class="res-card ${isVIP ? 'vip-card' : ''}">
-                        <div style="font-size:10px;">${isVIP ? 'HIGH CONFIDENCE' : 'MATCHED'}</div>
-                        <div class="num">${String(finalNum).padStart(2, '0')}</div>
-                    </div>`;
-            }
-            container.style.display = 'grid';
-            status.innerText = "✅ ANALYSIS DONE (" + currentNums.length + " NUMS FOUND)";
-        } catch (err) { status.innerText = "❌ ERROR"; }
-    }
-
-    function updateCode() {
-        const nc = document.getElementById('new-code-input').value;
-        if(nc) { masterCode = nc; localStorage.setItem('x_king_code', nc); alert("SAVED!"); }
-    }
-
-    function clearFullDatabase() {
-        if(confirm("DELETE ALL?")) {
-            db.transaction("memory", "readwrite").objectStore("memory").clear();
-            memoryImages = [];
-            loadMemory();
-        }
-    }
-</script>
-</body>
-</html>
+                for(let i = 0; i < item.
