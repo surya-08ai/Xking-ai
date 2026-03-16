@@ -6,44 +6,21 @@
     <title>AI PATTERN ANALYZER PRO-10</title>
     <script src="https://unpkg.com/tesseract.js@v2.1.0/dist/tesseract.min.js"></script>
     <style>
-        :root {
-            --bg: #0a0a0a;
-            --gold: #ffcc00;
-            --green: #00ff66;
-            --red: #ff3333;
-            --card: #151515;
-        }
-        body {
-            background: var(--bg);
-            color: white;
-            font-family: 'Segoe UI', sans-serif;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-        }
+        :root { --bg: #0a0a0a; --gold: #ffcc00; --green: #00ff66; --red: #ff3333; --card: #151515; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; justify-content: center; }
         .container { width: 100%; max-width: 480px; padding: 15px; }
         .screen { display: none; }
         .screen.active { display: block; }
-
-        /* UI Styling */
         .section { background: var(--card); padding: 20px; border-radius: 15px; border: 1px solid #333; margin-top: 15px; }
-        input { 
-            background: #000; color: #fff; border: 1px solid #444; 
-            padding: 12px; border-radius: 8px; width: 85%; margin-bottom: 10px;
-        }
-        button { 
-            cursor: pointer; border-radius: 8px; font-weight: bold; border: none; 
-            transition: 0.2s; padding: 12px;
-        }
+        input { background: #000; color: #fff; border: 1px solid #444; padding: 12px; border-radius: 8px; width: 90%; margin-bottom: 10px; outline: none; }
+        input:focus { border-color: var(--gold); }
+        button { cursor: pointer; border-radius: 8px; font-weight: bold; border: none; transition: 0.2s; padding: 12px; }
         button:active { transform: scale(0.95); }
-
-        /* Prediction Cards */
         #res-container { display: none; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
         .res-card { background: #202020; padding: 15px; border-radius: 12px; text-align: center; border: 1px solid #333; }
         .vip-card { border: 1.5px solid var(--gold); background: rgba(255, 204, 0, 0.05); }
         .num { font-size: 2.8rem; font-weight: bold; color: var(--green); margin: 5px 0; }
         .vip-num { color: var(--gold); text-shadow: 0 0 10px rgba(255,204,0,0.3); }
-        
         .preview-img { width: 100%; border-radius: 10px; margin-top: 15px; display: none; border: 1px solid var(--gold); }
         .status-text { font-size: 0.85rem; color: var(--gold); margin-top: 10px; text-align: center; }
     </style>
@@ -55,15 +32,15 @@
         <div class="section" style="text-align: center; margin-top: 60px;">
             <h2 style="color: var(--gold); letter-spacing: 2px;">SYSTEM LOCK</h2>
             <p style="color: #666; font-size: 0.8rem;">ENTER AUTHORIZATION CODE</p>
-            <input type="password" id="access-code" placeholder="••••">
-            <button onclick="verifyLogin()" style="background: var(--gold); width: 93%; margin-top: 10px;">UNLOCK</button>
+            <input type="password" id="access-code" placeholder="••••" onkeypress="if(event.key==='Enter') verifyLogin()">
+            <button onclick="verifyLogin()" style="background: var(--gold); width: 100%; margin-top: 10px;">UNLOCK SYSTEM</button>
         </div>
     </div>
 
     <div id="main-page" class="screen">
         <div style="display:flex; justify-content: space-between; align-items: center;">
             <h3 style="color:var(--gold); margin:0;">10-SEQ <span style="color:#fff;">ANALYZER</span></h3>
-            <button onclick="showScreen('admin-page')" style="background:#333; color:#fff; padding:5px 15px; font-size: 0.7rem;">ADMIN</button>
+            <button onclick="showScreen('admin-page')" style="background:#333; color:#fff; padding:5px 15px; font-size: 0.7rem;">ADMIN PANEL</button>
         </div>
 
         <div class="section" style="text-align: center;">
@@ -74,7 +51,6 @@
             <img id="single-preview" class="preview-img">
             <button id="scanBtn" onclick="deepScan()" style="display:none; background:var(--green); width:100%; padding:15px; margin-top:15px; color:#000;">START AI SCAN</button>
             <div id="main-status" class="status-text">READY FOR ANALYSIS</div>
-            
             <div id="res-container"></div>
         </div>
     </div>
@@ -83,51 +59,57 @@
         <div class="header">
             <button onclick="showScreen('main-page')" style="background:#333; color:#fff; width: 80px; margin-bottom: 10px;">← BACK</button>
         </div>
-        
         <div class="section">
             <h4 style="margin:0 0 10px 0; color: var(--gold);">CHANGE PASSCODE</h4>
             <input type="text" id="new-code-input" placeholder="Enter New Code">
-            <button onclick="updateCode()" style="background:var(--green); color:#000; width: 93%;">UPDATE PASSWORD</button>
+            <button onclick="updateCode()" style="background:var(--green); color:#000; width: 100%;">SAVE PASSWORD</button>
         </div>
-
         <div class="section">
-            <h4 style="margin:0 0 10px 0; color: var(--gold);">MEMORY STORAGE (HISTORY)</h4>
-            <div onclick="document.getElementById('multiF').click()" style="border:2px dashed var(--gold); padding:20px; cursor:pointer; text-align:center; color:var(--gold); background: rgba(255,204,0,0.02);">
+            <h4 style="margin:0 0 10px 0; color: var(--gold);">HISTORY MEMORY</h4>
+            <div onclick="document.getElementById('multiF').click()" style="border:2px dashed var(--gold); padding:20px; cursor:pointer; text-align:center; color:var(--gold);">
                 ADD HISTORY PHOTOS
                 <input type="file" id="multiF" hidden accept="image/*" multiple onchange="handleMulti(event)">
             </div>
-            <div id="admin-status" style="margin:15px 0; color:var(--green); font-weight: bold; text-align: center;">0/30 DATA LOADED</div>
+            <div id="admin-status" style="margin:15px 0; color:var(--green); font-weight: bold; text-align: center;">0/30 LOADED</div>
             <div id="memory-display-list" style="display:flex; flex-wrap:wrap; gap:6px; justify-content:center;"></div>
-            
-            <button onclick="clearFullDatabase()" style="background:var(--red); width:100%; padding:12px; margin-top:25px; color:#fff;">WIPE ALL DATABASE</button>
+            <button onclick="clearFullDatabase()" style="background:var(--red); width:100%; padding:12px; margin-top:25px; color:#fff;">WIPE ALL DATA</button>
         </div>
     </div>
 </div>
 
 <script>
+    // Variables initialize correctly
     let masterCode = localStorage.getItem('x_king_code') || "1234";
     let singleImg = null;
     let memoryImages = [];
-    let db;
-    let worker;
+    let db = null;
+    let worker = null;
 
-    // Database Setup
-    const request = indexedDB.open("FinalAI_DB", 1);
+    // Database initialization with safety
+    const request = indexedDB.open("FinalAI_DB_Pro", 1);
     request.onupgradeneeded = e => { e.target.result.createObjectStore("memory", { keyPath: "id" }); };
-    request.onsuccess = e => { db = e.target.result; loadMemory(); };
+    request.onsuccess = e => { 
+        db = e.target.result; 
+        console.log("DB Loaded");
+        loadMemory(); 
+    };
 
     function verifyLogin() {
-        const input = document.getElementById('access-code').value;
-        if(input === masterCode || input === "KING-99") showScreen('main-page');
-        else alert("ACCESS DENIED!");
+        const input = document.getElementById('access-code').value.trim();
+        // Master code and custom code check
+        if(input === masterCode || input === "KING-99") { 
+            showScreen('main-page');
+        } else { 
+            alert("गलत पासवर्ड! (Try KING-99)"); 
+        }
     }
 
     function updateCode() {
-        const nc = document.getElementById('new-code-input').value;
-        if(nc.trim()) { 
+        const nc = document.getElementById('new-code-input').value.trim();
+        if(nc) { 
             masterCode = nc; 
             localStorage.setItem('x_king_code', nc); 
-            alert("पासवर्ड बदल दिया गया है!"); 
+            alert("पासवर्ड सफलतापूर्वक बदल गया: " + nc); 
             document.getElementById('new-code-input').value = "";
         }
     }
@@ -139,7 +121,9 @@
 
     function loadMemory() {
         if(!db) return;
-        db.transaction("memory", "readonly").objectStore("memory").getAll().onsuccess = e => {
+        const tx = db.transaction("memory", "readonly");
+        const store = tx.objectStore("memory");
+        store.getAll().onsuccess = e => {
             memoryImages = e.target.result;
             document.getElementById('admin-status').innerText = memoryImages.length + "/30 PHOTOS LOADED";
             renderList();
@@ -148,7 +132,7 @@
 
     function renderList() {
         document.getElementById('memory-display-list').innerHTML = memoryImages.map(item => 
-            `<img src="${item.img}" style="width:42px;height:42px;border-radius:4px;object-fit:cover;border:1px solid #444;">`
+            `<img src="${item.img}" style="width:40px;height:40px;border-radius:4px;object-fit:cover;border:1px solid #444;">`
         ).join('');
     }
 
@@ -180,12 +164,11 @@
         loadMemory();
     }
 
-    // --- ADVANCED 10-SEQ LOGIC ---
     async function deepScan() {
         const status = document.getElementById('main-status');
         const container = document.getElementById('res-container');
         container.innerHTML = '';
-        status.innerText = "🔍 AI ANALYZING 10-SEQ PATTERN...";
+        status.innerText = "🔍 AI ANALYSIS STARTED...";
 
         try {
             if(!worker) worker = await Tesseract.createWorker('eng');
@@ -193,6 +176,55 @@
             let currentNums = (text.match(/\d+/g) || []).map(Number).filter(n => n < 100);
             
             if(currentNums.length < 2) { alert("फोटो में नंबर नहीं मिल रहे!"); return; }
-            if(currentNums.length > 10) currentNums = currentNums.slice(-10); // आखिरी 10 नंबर
+            if(currentNums.length > 10) currentNums = currentNums.slice(-10);
 
-            let weight
+            let weightMap = {};
+            const lastNum = currentNums[currentNums.length - 1];
+
+            memoryImages.forEach(item => {
+                for(let i = 0; i < item.data.length; i++) {
+                    let matchScore = 0;
+                    for(let k = 0; k < currentNums.length; k++) {
+                        if(i-k >= 0 && item.data[i-k] === currentNums[currentNums.length - 1 - k]) {
+                            matchScore++;
+                        } else { break; }
+                    }
+                    if(matchScore >= 2 && i + 1 < item.data.length) {
+                        let candidate = item.data[i + 1];
+                        weightMap[candidate] = (weightMap[candidate] || 0) + Math.pow(matchScore, 2.5);
+                    }
+                }
+            });
+
+            let sorted = Object.entries(weightMap).sort((a,b) => b[1] - a[1]);
+
+            for(let j=0; j < 4; j++) {
+                let finalNum = sorted[j] ? sorted[j][0] : (lastNum + (j * 11) + 7) % 100;
+                let isVIP = j < 2;
+                let confidence = sorted[j] ? Math.round(sorted[j][1]) : "CALC";
+                
+                container.innerHTML += `
+                    <div class="res-card ${isVIP ? 'vip-card' : ''}">
+                        <div class="tag">${isVIP ? 'HIGH PROB' : 'TREND'}</div>
+                        <div class="num ${isVIP ? 'vip-num' : ''}">${String(finalNum).padStart(2, '0')}</div>
+                        <div style="font-size:9px; color:#555;">POWER: ${confidence}</div>
+                    </div>`;
+            }
+            container.style.display = 'grid';
+            status.innerText = "✅ DONE (" + currentNums.length + " NUMS ANALYZED)";
+        } catch (err) { 
+            status.innerText = "❌ ERROR"; 
+            console.error(err);
+        }
+    }
+
+    function clearFullDatabase() {
+        if(confirm("DELETE EVERYTHING?")) {
+            db.transaction("memory", "readwrite").objectStore("memory").clear();
+            memoryImages = [];
+            loadMemory();
+        }
+    }
+</script>
+</body>
+</html>
