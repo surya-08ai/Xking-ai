@@ -3,39 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>X KING AI V11 - FULL FINAL</title>
+    <title>X KING AI - V13 FINAL COMPLETE</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
     <style>
         :root { --gold: #ffcc00; --green: #00ff66; --bg: #000000; --card: #111111; --border: #222222; }
-        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; justify-content: center; }
+        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; justify-content: center; overflow-x: hidden; }
         .container { width: 100%; max-width: 480px; min-height: 100vh; padding: 15px; box-sizing: border-box; }
         
-        /* स्क्रीन मैनेजमेंट */
         .screen { display: none; }
         .active { display: block !important; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* कार्ड और सेक्शन */
         .section { background: var(--card); border: 1px solid var(--border); padding: 25px; border-radius: 20px; text-align: center; margin-top: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
         
-        /* बटन स्टाइल */
         button { cursor: pointer; border-radius: 12px; font-weight: bold; border: none; padding: 16px; width: 100%; transition: 0.2s; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; }
         button:active { transform: scale(0.96); }
         .btn-green { background: var(--green); color: #000; box-shadow: 0 0 15px rgba(0,255,102,0.3); margin-top: 20px; }
         .btn-admin { background: #222; color: var(--gold); border: 1px solid #333; width: auto; padding: 8px 15px; font-size: 10px; border-radius: 6px; }
 
-        /* रिज़ल्ट ग्रिड */
         .res-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 15px; margin-top: 25px; }
         .res-card { background: #000; border: 2.5px solid var(--gold); padding: 15px; border-radius: 15px; position: relative; }
         .num { font-size: 2.5rem; font-weight: bold; color: var(--green); text-shadow: 0 0 10px rgba(0,255,102,0.4); }
         .tag { font-size: 9px; color: var(--gold); display: block; margin-top: 5px; font-weight: bold; }
 
-        /* अपलोड एरिया */
         .upload-area { border: 2px dashed #333; padding: 50px 20px; border-radius: 20px; color: #555; cursor: pointer; transition: 0.3s; }
         .upload-area:hover { border-color: var(--gold); color: #888; }
         #preview { width: 100%; border-radius: 15px; margin: 15px 0; display: none; border: 1.5px solid var(--gold); }
         .status-msg { color: var(--gold); font-weight: bold; font-size: 11px; margin: 15px 0; text-transform: uppercase; }
-        
         hr { border: 0.1px solid #222; margin: 25px 0; }
     </style>
 </head>
@@ -44,21 +38,21 @@
 <div class="container">
     <div id="scr_main" class="screen active">
         <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h2 style="color:var(--gold); margin:0; letter-spacing: 3px;">X KING <span style="color:#fff;">V11</span></h2>
-            <button onclick="nav('scr_admin')" class="btn-admin">डेटाबेस (Admin)</button>
+            <h2 style="color:var(--gold); margin:0; letter-spacing: 3px;">X KING <span style="color:#fff;">V13</span></h2>
+            <button onclick="nav('scr_admin')" class="btn-admin">डेटाबेस (ADMIN)</button>
         </div>
 
         <div class="section">
             <div id="upload_box" class="upload-area" onclick="document.getElementById('file_in').click()">
-                करंट चार्ट फोटो अपलोड करें<br>
-                <small style="font-size: 10px; color: #444;">(6-नंबर पैटर्न मैचिंग)</small>
+                करंट चार्ट फोटो लोड करें<br>
+                <small style="font-size: 10px; color: #444;">(3-6 पैटर्न मैचिंग एक्टिव)</small>
                 <input type="file" id="file_in" hidden accept="image/*" onchange="handleMainFile(event)">
             </div>
             
             <img id="preview">
             <div id="main_status" class="status-msg">सिस्टम तैयार है</div>
             
-            <button id="scan_btn" class="btn-green" style="display:none;" onclick="startStrictAnalysis()">पैटर्न मैच करें</button>
+            <button id="scan_btn" class="btn-green" style="display:none;" onclick="startDeepAnalysis()">पैटर्न मैच करें</button>
             <div id="results_area" class="res-grid"></div>
         </div>
     </div>
@@ -66,20 +60,21 @@
     <div id="scr_admin" class="screen">
         <div class="section">
             <div style="text-align: left; margin-bottom: 15px;">
-                <button onclick="nav('scr_main')" style="width:auto; background:#333; color:#fff; font-size:10px; padding:10px;">← वापस</button>
+                <button onclick="nav('scr_main')" style="width:auto; background:#333; color:#fff; font-size:10px; padding:10px;">← पीछे</button>
             </div>
             <h3 style="color:var(--gold);">Strict Database</h3>
-            <p style="font-size: 10px; color: #666;">जितना डेटा यहाँ डालेंगे, रिजल्ट उतना ही सटीक होगा</p>
+            <p style="font-size: 10px; color: #666;">पुराने चार्ट यहाँ लोड करें</p>
             <hr>
             
             <div class="upload-area" style="border-color: var(--gold); padding: 30px;" onclick="document.getElementById('admin_in').click()">
-                पुराने चार्ट लोड करें (History)
+                UPLOAD HISTORY CHARTS
                 <input type="file" id="admin_in" hidden multiple accept="image/*" onchange="processHistory(event)">
             </div>
             
-            <div id="db_status" style="margin-top:20px; color:var(--green); font-weight:bold; font-size: 1.4rem;">डाटा: 0 चार्ट्स</div>
+            <div id="db_status" style="margin-top:20px; color:var(--green); font-weight:bold; font-size: 1.4rem;">DATA: 0</div>
+            <p style="color:#444; font-size: 9px; margin-top: 10px;">कम से कम 10-20 चार्ट लोड करें।</p>
             
-            <button onclick="wipeData()" style="background:#ff3333; color:#fff; font-size:10px; margin-top:50px; opacity:0.5; width: 60%;">डेटा साफ़ करें</button>
+            <button onclick="wipeData()" style="background:#ff3333; color:#fff; font-size:10px; margin-top:50px; opacity:0.5; width: 60%;">Reset All Data</button>
         </div>
     </div>
 </div>
@@ -87,8 +82,8 @@
 <script>
     let db, memory = [], aiWorker = null;
 
-    // डेटाबेस सेटअप
-    const req = indexedDB.open("XKingFullFinalDB", 1);
+    // Database Setup
+    const req = indexedDB.open("XKingFinalV13", 1);
     req.onupgradeneeded = e => e.target.result.createObjectStore("history", { keyPath: "id" });
     req.onsuccess = e => { db = e.target.result; syncDB(); };
 
@@ -96,7 +91,7 @@
         if(!db) return;
         db.transaction("history").objectStore("history").getAll().onsuccess = e => {
             memory = e.target.result;
-            document.getElementById('db_status').innerText = "डाटा: " + memory.length + " चार्ट्स";
+            document.getElementById('db_status').innerText = "DATA: " + memory.length + " CHARTS";
         };
     }
 
@@ -105,10 +100,9 @@
         document.getElementById(id).classList.add('active');
     }
 
-    // AI इंजन
     async function getAI() {
         if (!aiWorker) {
-            document.getElementById('main_status').innerText = "AI इंजन लोड हो रहा है...";
+            document.getElementById('main_status').innerText = "AI LOADING...";
             aiWorker = await Tesseract.createWorker();
             await aiWorker.loadLanguage('eng');
             await aiWorker.initialize('eng');
@@ -120,7 +114,6 @@
         return aiWorker;
     }
 
-    // फाइल हैंडलिंग
     let currentImg = null;
     function handleMainFile(e) {
         const file = e.target.files[0];
@@ -128,21 +121,20 @@
         const reader = new FileReader();
         reader.onload = ev => {
             currentImg = ev.target.result;
-            document.getElementById('preview').src = currentImg;
-            document.getElementById('preview').style.display = 'block';
+            const preview = document.getElementById('preview');
+            preview.src = currentImg;
+            preview.style.display = 'block';
             document.getElementById('scan_btn').style.display = 'block';
             document.getElementById('upload_box').style.display = 'none';
-            document.getElementById('main_status').innerText = "फोटो लोड हो गई";
+            document.getElementById('main_status').innerText = "फोटो लोड हो गई।";
         };
         reader.readAsDataURL(file);
     }
 
-    // एडमिन ट्रेनिंग
     async function processHistory(e) {
         const worker = await getAI();
-        const files = e.target.files;
-        for (let file of files) {
-            document.getElementById('db_status').innerText = "पढ़ रहा हूँ...";
+        for (let file of e.target.files) {
+            document.getElementById('db_status').innerText = "READING...";
             const dataUrl = await new Promise(r => {
                 const rd = new FileReader();
                 rd.onload = ev => r(ev.target.result);
@@ -158,10 +150,9 @@
         alert("डेटाबेस अपडेट हो गया!");
     }
 
-    // मुख्य विश्लेषण (6-नंबर पैटर्न)
-    async function startStrictAnalysis() {
+    async function startDeepAnalysis() {
         if (memory.length === 0) {
-            alert("पहले डेटाबेस में पुराने चार्ट लोड करें!");
+            alert("डेटाबेस खाली है! पहले ADMIN पैनल में पुराने चार्ट लोड करें।");
             nav('scr_admin');
             return;
         }
@@ -169,37 +160,34 @@
         const status = document.getElementById('main_status');
         const grid = document.getElementById('results_area');
         grid.innerHTML = '';
-        status.innerText = "🔍 पैटर्न मैचिंग चालू है...";
+        status.innerText = "🔍 पैटर्न सर्च चालू है...";
 
         try {
             const worker = await getAI();
             const { data: { text } } = await worker.recognize(currentImg);
             
-            // XX और नंबर डिटेक्शन
             const slots = (text.match(/X+/gi) || []).length;
-            const currentPattern = (text.match(/\d{1,2}/g) || []).map(Number).slice(-6); // 6 नंबर का मिलान
+            const allDetected = (text.match(/\d{1,2}/g) || []).map(Number);
+            const currentNums = allDetected.slice(-6);
 
             if (slots === 0) {
-                status.innerText = "❌ XX स्लॉट नहीं मिला!";
+                status.innerText = "❌ XX स्लॉट नहीं मिला।";
                 return;
             }
-
-            status.innerText = slots + " स्लॉट मिले। सर्च जारी...";
 
             let matches = {};
             memory.forEach(entry => {
                 const data = entry.data;
                 for (let i = 0; i < data.length - 1; i++) {
-                    let weight = 0;
-                    // 6-नंबर डीप सर्च
-                    for (let k = 0; k < currentPattern.length; k++) {
-                        if (i - k >= 0 && data[i - k] === currentPattern[currentPattern.length - 1 - k]) {
-                            weight++;
+                    let score = 0;
+                    for (let k = 0; k < currentNums.length; k++) {
+                        if (i - k >= 0 && data[i - k] === currentNums[currentNums.length - 1 - k]) {
+                            score++;
                         } else { break; }
                     }
-                    if (weight >= 2) { 
+                    if (score >= 3) {
                         let nextVal = data[i + 1];
-                        matches[nextVal] = (matches[nextVal] || 0) + Math.pow(weight, 5);
+                        matches[nextVal] = (matches[nextVal] || 0) + Math.pow(score, 6);
                     }
                 }
             });
@@ -208,23 +196,21 @@
 
             for (let j = 0; j < slots; j++) {
                 let num = sorted[j] ? String(sorted[j][0]).padStart(2, '0') : "--";
-                let tag = sorted[j] ? "MATCH FOUND" : "NO DATA";
-                
                 grid.innerHTML += `
                     <div class="res-card">
                         <small style="color:#444; font-size:9px;">SLOT ${j+1}</small>
                         <div class="num">${num}</div>
-                        <span class="tag">${tag}</span>
+                        <span class="tag">${sorted[j] ? 'CONFIRMED' : 'NO DATA'}</span>
                     </div>`;
             }
-            status.innerText = "✅ विश्लेषण पूरा हुआ";
+            status.innerText = "✅ पूर्ण";
         } catch (err) {
-            status.innerText = "❌ एरर: फोटो साफ़ नहीं है";
+            status.innerText = "❌ एरर!";
         }
     }
 
     function wipeData() {
-        if (confirm("सारा डेटा मिटा दें?")) {
+        if (confirm("सारा डेटा डिलीट करें?")) {
             db.transaction("history", "readwrite").objectStore("history").clear();
             syncDB();
         }
