@@ -68,20 +68,37 @@
 </div>
 
 <script>
-    // --- 1. CORE NAVIGATION & AUTH ---
-    let masterCode = localStorage.getItem('x_king_code') || "1234";
+    // --- 1. CORE NAVIGATION & AUTH (FIXED) ---
     function verifyLogin() {
+        let masterCode = localStorage.getItem('x_king_code') || "1234";
         const input = document.getElementById('access-code').value.trim();
-        if(input === masterCode || input === "KING-99") showScreen('main-page');
-        else alert("WRONG CODE!");
+        
+        if(input === masterCode || input === "KING-99") {
+            showScreen('main-page');
+            document.getElementById('access-code').value = "";
+        } else {
+            alert("WRONG CODE!");
+        }
     }
+
     function showScreen(id) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
+        // सारी स्क्रीन्स को छुपाओ
+        document.getElementById('login-screen').classList.remove('active');
+        document.getElementById('main-page').classList.remove('active');
+        document.getElementById('admin-page').classList.remove('active');
+        
+        // जो मांगी है उसे दिखाओ
+        const target = document.getElementById(id);
+        if(target) target.classList.add('active');
     }
+
     function updateCode() {
         const nc = document.getElementById('new-code-input').value.trim();
-        if(nc) { masterCode = nc; localStorage.setItem('x_king_code', nc); alert("CODE UPDATED!"); }
+        if(nc) { 
+            localStorage.setItem('x_king_code', nc); 
+            alert("CODE UPDATED TO: " + nc); 
+            document.getElementById('new-code-input').value = ""; 
+        }
     }
 
     // --- 2. DATABASE (INDEXED DB) ---
@@ -151,11 +168,9 @@
             const w = await getWorker();
             const { data: { text } } = await w.recognize(singleImg);
             
-            // XX DETECTION: चार्ट में कितने 'X' वाले ब्लॉक हैं
             const xxMatches = (text.match(/X+/gi) || []);
             const produceCount = xxMatches.length > 0 ? xxMatches.length : 4;
 
-            // मौजूदा नंबर निकालना
             let currentNums = (text.match(/\d{1,2}/g) || []).map(Number);
             if(currentNums.length < 2) { status.innerText = "❌ ERROR: IMAGE NOT CLEAR"; return; }
 
@@ -180,4 +195,11 @@
 
             let sorted = Object.entries(weights).sort((a,b) => b[1] - a[1]);
 
-            for(let j=0; j < produceCount
+            for(let j=0; j < produceCount; j++) {
+                let finalVal = sorted[j] ? sorted[j][0] : Math.floor(Math.random() * 100);
+                container.innerHTML += `<div class="res-card"><div class="num">${String(finalVal).padStart(2, '0')}</div></div>`;
+            }
+            container.style.display = 'grid';
+            status.innerText = "✅ SUCCESS: " + produceCount + " RESULTS";
+        } catch (e) {
+            status.innerText = "❌ SYSTEM
