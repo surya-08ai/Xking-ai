@@ -2,204 +2,246 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X KING AI - ULTIMATE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>X KING AI ANALYZER v4.0</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
     <style>
-        :root { --gold: #ffcc00; --green: #00ff66; --bg: #050505; --card: #111; }
-        body { background: var(--bg); color: white; font-family: sans-serif; margin: 0; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 450px; padding: 15px; }
-        .screen { display: none; }
-        .screen.active { display: block !important; }
-        .section { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid #222; margin-top: 15px; text-align: center; }
-        input { background: #000; color: #fff; border: 1px solid #333; padding: 15px; border-radius: 12px; width: 88%; margin-bottom: 15px; font-size: 1.1rem; text-align: center; outline: none; }
-        button { cursor: pointer; border-radius: 12px; font-weight: bold; border: none; padding: 16px; width: 100%; transition: 0.3s; font-size: 1rem; text-transform: uppercase; }
-        .res-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 12px; margin-top: 20px; }
-        .res-card { background: #1a1a1a; padding: 15px; border-radius: 15px; border: 1px solid var(--gold); }
-        .num { font-size: 2rem; font-weight: bold; color: var(--green); }
-        .preview-img { width: 100%; border-radius: 12px; margin-top: 15px; display: none; border: 1px solid var(--gold); }
-        .status { color: var(--gold); margin-top: 15px; font-size: 0.8rem; font-weight: bold; }
+        :root { --gold: #ffcc00; --green: #00ff66; --red: #ff3333; --bg: #050505; --card: #121212; --border: #222; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', Roboto, sans-serif; margin: 0; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 480px; padding: 15px; min-height: 100vh; }
+        
+        /* Navigation / Screens */
+        .screen { display: none !important; animation: fadeIn 0.3s ease-in-out; }
+        .active-screen { display: block !important; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Sections */
+        .section { background: var(--card); padding: 25px; border-radius: 20px; border: 1px solid var(--border); margin-top: 15px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.8); }
+        
+        /* UI Elements */
+        input { background: #000; color: #fff; border: 1px solid #333; padding: 15px; border-radius: 12px; width: 85%; margin-bottom: 15px; font-size: 1.2rem; text-align: center; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--gold); }
+        button { cursor: pointer; border-radius: 12px; font-weight: bold; border: none; padding: 16px; width: 100%; transition: 0.2s; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; }
+        button:active { transform: scale(0.96); }
+
+        /* Analysis Results */
+        .res-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 12px; margin-top: 25px; }
+        .res-card { background: #1a1a1a; padding: 15px; border-radius: 15px; border: 1.5px solid var(--gold); box-shadow: 0 0 15px rgba(255,204,0,0.1); }
+        .res-card span { font-size: 0.6rem; color: #888; display: block; margin-bottom: 5px; }
+        .num { font-size: 2.2rem; font-weight: bold; color: var(--green); text-shadow: 0 0 10px rgba(0,255,102,0.3); }
+        
+        /* Utils */
+        .preview-img { width: 100%; border-radius: 15px; margin-top: 15px; display: none; border: 2px solid var(--gold); }
+        .status-msg { color: var(--gold); margin-top: 15px; font-weight: bold; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; }
+        hr { border: 0; border-top: 1px solid #222; margin: 25px 0; }
+        .small-btn { background: #222; color: var(--gold); width: auto; padding: 8px 15px; font-size: 10px; border: 1px solid #333; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div id="login-screen" class="screen active">
-        <div class="section" style="margin-top: 60px; border: 2px solid var(--gold);">
-            <h1 style="color: var(--gold); letter-spacing: 5px; margin: 0;">X KING AI</h1>
-            <p style="color: #666; font-size: 0.7rem; margin-bottom: 25px;">DYNAMIC SYSTEM</p>
-            <input type="password" id="access-code" placeholder="ENTER CODE">
-            <button onclick="verifyLogin()" style="background: var(--gold); color: #000;">UNLOCK ACCESS</button>
+    <div id="scr_login" class="screen active-screen">
+        <div class="section" style="margin-top: 80px; border: 2.5px solid var(--gold);">
+            <h1 style="color: var(--gold); letter-spacing: 5px; margin: 0; font-size: 2.5rem;">X KING AI</h1>
+            <p style="color: #666; font-size: 0.7rem; margin-bottom: 35px; letter-spacing: 2px;">SECURE ANALYZER ACCESS</p>
+            <input type="password" id="pass_input" placeholder="ENTER ACCESS CODE">
+            <button onclick="handleLogin()" style="background: var(--gold); color: #000;">LOG IN</button>
+            <p style="color:#222; font-size: 9px; margin-top: 15px;">M-KEY: KING-99</p>
         </div>
     </div>
 
-    <div id="main-page" class="screen">
+    <div id="scr_main" class="screen">
         <div style="display:flex; justify-content: space-between; align-items: center; padding: 5px;">
-            <h2 style="color:var(--gold); margin:0;">X KING AI</h2>
-            <button onclick="showScreen('admin-page')" style="background:#222; color:var(--gold); border:1px solid #333; padding:5px 12px; font-size:10px; border-radius:5px;">ADMIN</button>
+            <h2 style="color:var(--gold); margin:0; letter-spacing: 2px;">X KING <span style="color:#fff;">AI</span></h2>
+            <button onclick="navTo('scr_admin')" class="small-btn" style="border-radius: 8px;">ADMIN PANEL</button>
         </div>
+        
         <div class="section">
-            <div onclick="document.getElementById('singleF').click()" style="border:2px dashed #333; padding:40px; cursor:pointer; color:#777; border-radius:15px;">
-                UPLOAD CHART PHOTO
-                <input type="file" id="singleF" hidden accept="image/*" onchange="handleSingle(event)">
+            <div id="upload_area" onclick="document.getElementById('file_input').click()" style="border:2px dashed #333; padding:45px; cursor:pointer; color:#777; border-radius:20px; background: rgba(255,255,255,0.01);">
+                चार्ट की फोटो यहाँ अपलोड करें<br>
+                <small style="font-size: 0.7rem;">(साफ स्क्रीनशॉट अपलोड करें)</small>
+                <input type="file" id="file_input" hidden accept="image/*" onchange="processImage(event)">
             </div>
-            <img id="single-preview" class="preview-img">
-            <button id="scanBtn" onclick="deepScan()" style="display:none; background:var(--green); color:#000; margin-top:20px;">ANALYZE NOW</button>
-            <div id="main-status" class="status">READY</div>
-            <div id="res-container" class="res-grid"></div>
+            <img id="img_preview" class="preview-img">
+            <button id="btn_analyze" onclick="runAnalysis()" style="display:none; background:var(--green); color:#000; margin-top:25px; box-shadow: 0 5px 15px rgba(0,255,102,0.2);">START DYNAMIC SCAN</button>
+            <div id="main_status" class="status-msg">SYSTEM STANDBY</div>
+            
+            <div id="result_container" class="res-grid"></div>
         </div>
     </div>
 
-    <div id="admin-page" class="screen">
+    <div id="scr_admin" class="screen">
         <div class="section">
-            <button onclick="showScreen('main-page')" style="background:#333; color:#fff; width:70px; margin-bottom:15px; font-size:10px;">BACK</button>
-            <h3 style="color:var(--gold);">ADMIN SETTINGS</h3>
-            <input type="text" id="new-code-input" placeholder="New Passcode">
-            <button onclick="updateCode()" style="background:var(--green); color:#000;">SAVE CODE</button>
-            <hr style="border:0.5px solid #222; margin:20px 0;">
-            <div onclick="document.getElementById('multiF').click()" style="border:2px dashed var(--gold); padding:20px; cursor:pointer; color:var(--gold);">
-                ADD MEMORY (UPLOAD CHARTS)
-                <input type="file" id="multiF" hidden accept="image/*" multiple onchange="handleMulti(event)">
+            <button onclick="navTo('scr_main')" style="background:#333; color:#fff; width:80px; margin-bottom:20px; font-size:10px; padding:10px;">← BACK</button>
+            <h3 style="color:var(--gold); margin:0;">ADMIN SETTINGS</h3>
+            <hr>
+            
+            <label style="color:#888; font-size:0.7rem; display:block; margin-bottom:5px;">CHANGE LOGIN PASSCODE</label>
+            <input type="text" id="new_code_val" placeholder="New Code">
+            <button onclick="updatePass()" style="background:var(--green); color:#000;">SAVE PASSCODE</button>
+            
+            <hr>
+            
+            <h3 style="color:var(--gold);">AI MEMORY TRAINING</h3>
+            <div onclick="document.getElementById('multi_input').click()" style="border:2px dashed var(--gold); padding:25px; cursor:pointer; color:var(--gold); background:rgba(255,204,0,0.02); border-radius:15px;">
+                UPLOAD HISTORY CHARTS<br>
+                <small style="font-size:0.6rem;">(AI पुराने चार्ट्स से सीखेगा)</small>
+                <input type="file" id="multi_input" hidden accept="image/*" multiple onchange="trainFromHistory(event)">
             </div>
-            <div id="admin-status" style="margin-top:10px; color:var(--green); font-weight:bold;">LOADED: 0</div>
-            <button onclick="clearDB()" style="background:var(--red); color:#fff; margin-top:30px; font-size:10px;">RESET ALL</button>
+            <div id="memory_status" style="margin-top:15px; color:var(--green); font-weight:bold;">LOADED: 0 CHARTS</div>
+            <button onclick="clearSystemData()" style="background:var(--red); color:#fff; margin-top:35px; font-size:10px; opacity:0.6;">WIPE SYSTEM MEMORY</button>
         </div>
     </div>
 </div>
 
 <script>
-    // --- 1. CORE NAVIGATION & AUTH (FIXED) ---
-    function verifyLogin() {
-        let masterCode = localStorage.getItem('x_king_code') || "1234";
-        const input = document.getElementById('access-code').value.trim();
-        
-        if(input === masterCode || input === "KING-99") {
-            showScreen('main-page');
-            document.getElementById('access-code').value = "";
+    /* --- 1. SECURITY & NAVIGATION --- */
+    function handleLogin() {
+        const input = document.getElementById('pass_input').value.trim();
+        const correct = localStorage.getItem('xk_auth') || "1234";
+
+        if (input === correct || input === "KING-99") {
+            navTo('scr_main');
+            document.getElementById('pass_input').value = "";
         } else {
-            alert("WRONG CODE!");
+            alert("ACCESS DENIED: Wrong Passcode!");
         }
     }
 
-    function showScreen(id) {
-        // सारी स्क्रीन्स को छुपाओ
-        document.getElementById('login-screen').classList.remove('active');
-        document.getElementById('main-page').classList.remove('active');
-        document.getElementById('admin-page').classList.remove('active');
-        
-        // जो मांगी है उसे दिखाओ
-        const target = document.getElementById(id);
-        if(target) target.classList.add('active');
+    function navTo(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
+        document.getElementById(screenId).classList.add('active-screen');
+        window.scrollTo(0,0);
     }
 
-    function updateCode() {
-        const nc = document.getElementById('new-code-input').value.trim();
-        if(nc) { 
-            localStorage.setItem('x_king_code', nc); 
-            alert("CODE UPDATED TO: " + nc); 
-            document.getElementById('new-code-input').value = ""; 
+    function updatePass() {
+        const val = document.getElementById('new_code_val').value.trim();
+        if(val) {
+            localStorage.setItem('xk_auth', val);
+            alert("SUCCESS: New Passcode is " + val);
+            document.getElementById('new_code_val').value = "";
         }
     }
 
-    // --- 2. DATABASE (INDEXED DB) ---
-    let db, memoryData = [], worker = null;
-    const req = indexedDB.open("XKingDynamicDB", 1);
-    req.onupgradeneeded = e => { e.target.result.createObjectStore("memory", { keyPath: "id" }); };
-    req.onsuccess = e => { 
-        db = e.target.result; 
-        updateMemoryList();
+    /* --- 2. DATABASE & MEMORY --- */
+    let xDB, historyMemory = [], tWorker = null;
+    
+    const dbReq = indexedDB.open("XKingMasterDB", 1);
+    dbReq.onupgradeneeded = e => { e.target.result.createObjectStore("patterns", { keyPath: "id" }); };
+    dbReq.onsuccess = e => { 
+        xDB = e.target.result; 
+        loadMemory(); 
     };
 
-    function updateMemoryList() {
-        if(!db) return;
-        db.transaction("memory","readonly").objectStore("memory").getAll().onsuccess = ev => {
-            memoryData = ev.target.result;
-            document.getElementById('admin-status').innerText = "LOADED: " + memoryData.length + " CHARTS";
+    function loadMemory() {
+        if(!xDB) return;
+        xDB.transaction("patterns","readonly").objectStore("patterns").getAll().onsuccess = ev => {
+            historyMemory = ev.target.result;
+            document.getElementById('memory_status').innerText = "LOADED: " + historyMemory.length + " CHARTS TRAINED";
         };
     }
 
-    // --- 3. AI ENGINE & SCANNING ---
-    async function getWorker() {
-        if (!worker) {
-            worker = await Tesseract.createWorker();
-            await worker.loadLanguage('eng');
-            await worker.initialize('eng');
-            await worker.setParameters({ 
+    /* --- 3. AI SCANNING CORE --- */
+    async function initAI() {
+        if (!tWorker) {
+            tWorker = await Tesseract.createWorker();
+            await tWorker.loadLanguage('eng');
+            await tWorker.initialize('eng');
+            await tWorker.setParameters({ 
                 tessedit_char_whitelist: '0123456789X', 
                 tessedit_pageseg_mode: '6' 
             });
         }
-        return worker;
+        return tWorker;
     }
 
-    let singleImg = null;
-    function handleSingle(e) {
-        const r = new FileReader();
-        r.onload = ev => {
-            singleImg = ev.target.result;
-            document.getElementById('single-preview').src = singleImg;
-            document.getElementById('single-preview').style.display = 'block';
-            document.getElementById('scanBtn').style.display = 'block';
+    let currentChart = null;
+    function processImage(e) {
+        const reader = new FileReader();
+        reader.onload = ev => {
+            currentChart = ev.target.result;
+            document.getElementById('img_preview').src = currentChart;
+            document.getElementById('img_preview').style.display = 'block';
+            document.getElementById('btn_analyze').style.display = 'block';
+            document.getElementById('upload_area').style.display = 'none';
+            document.getElementById('main_status').innerText = "PHOTO LOADED. READY FOR SCAN.";
         };
-        r.readAsDataURL(e.target.files[0]);
+        reader.readAsDataURL(e.target.files[0]);
     }
 
-    async function handleMulti(e) {
-        const w = await getWorker();
+    async function trainFromHistory(e) {
+        const worker = await initAI();
+        const status = document.getElementById('memory_status');
         for (let file of e.target.files) {
-            const dataUrl = await new Promise(res => { const r = new FileReader(); r.onload = ev => res(ev.target.result); r.readAsDataURL(file); });
-            const { data: { text } } = await w.recognize(dataUrl);
-            const nums = (text.match(/\d{1,2}/g) || []).map(Number);
-            if(nums.length > 0) {
-                db.transaction("memory", "readwrite").objectStore("memory").add({ id: Date.now() + Math.random(), data: nums });
+            status.innerText = "READING: " + file.name;
+            const dataUrl = await new Promise(r => { const rd = new FileReader(); rd.onload = ev => r(ev.target.result); rd.readAsDataURL(file); });
+            const { data: { text } } = await worker.recognize(dataUrl);
+            const numbersFound = (text.match(/\d{1,2}/g) || []).map(Number);
+            if(numbersFound.length > 0) {
+                xDB.transaction("patterns", "readwrite").objectStore("patterns").add({ id: Date.now() + Math.random(), data: numbersFound });
             }
         }
-        updateMemoryList();
-        alert("Memory Updated!");
+        loadMemory();
+        alert("Training Complete!");
     }
 
-    async function deepScan() {
-        const status = document.getElementById('main-status');
-        const container = document.getElementById('res-container');
-        container.innerHTML = '';
-        status.innerText = "🔍 DETECTING XX SLOTS...";
+    async function runAnalysis() {
+        const status = document.getElementById('main_status');
+        const resultsArea = document.getElementById('result_container');
+        resultsArea.innerHTML = '';
+        status.innerText = "🔍 AI SCANNING XX SLOTS...";
         
         try {
-            const w = await getWorker();
-            const { data: { text } } = await w.recognize(singleImg);
+            const worker = await initAI();
+            const { data: { text } } = await worker.recognize(currentChart);
             
+            // XX DETECTION LOGIC
             const xxMatches = (text.match(/X+/gi) || []);
-            const produceCount = xxMatches.length > 0 ? xxMatches.length : 4;
+            const slotCount = xxMatches.length > 0 ? xxMatches.length : 4; 
+            
+            const currentNumbers = (text.match(/\d{1,2}/g) || []).map(Number);
+            status.innerText = "✅ DETECTED " + slotCount + " SLOTS. ANALYZING PATTERN...";
 
-            let currentNums = (text.match(/\d{1,2}/g) || []).map(Number);
-            if(currentNums.length < 2) { status.innerText = "❌ ERROR: IMAGE NOT CLEAR"; return; }
+            const lastDigits = currentNumbers.slice(-8);
+            let probabilityMap = {};
 
-            status.innerText = "✅ FOUND " + produceCount + " SLOTS. ANALYZING...";
-
-            const lastNums = currentNums.slice(-10);
-            let weights = {};
-
-            memoryData.forEach(item => {
-                for(let i = 0; i < item.data.length; i++) {
-                    let m = 0;
-                    for(let k = 0; k < lastNums.length; k++) {
-                        if(i-k >= 0 && item.data[i-k] === lastNums[lastNums.length-1-k]) m++;
+            historyMemory.forEach(item => {
+                for(let i=0; i < item.data.length; i++) {
+                    let matches = 0;
+                    for(let k=0; k < lastDigits.length; k++) {
+                        if(i-k >= 0 && item.data[i-k] === lastDigits[lastDigits.length-1-k]) matches++;
                         else break;
                     }
-                    if(m >= 2 && i+1 < item.data.length) {
-                        let n = item.data[i+1];
-                        weights[n] = (weights[n] || 0) + Math.pow(m, 3);
+                    if(matches >= 2 && i+1 < item.data.length) {
+                        let nextVal = item.data[i+1];
+                        probabilityMap[nextVal] = (probabilityMap[nextVal] || 0) + Math.pow(matches, 3);
                     }
                 }
             });
 
-            let sorted = Object.entries(weights).sort((a,b) => b[1] - a[1]);
+            let sortedNums = Object.entries(probabilityMap).sort((a,b) => b[1] - a[1]);
 
-            for(let j=0; j < produceCount; j++) {
-                let finalVal = sorted[j] ? sorted[j][0] : Math.floor(Math.random() * 100);
-                container.innerHTML += `<div class="res-card"><div class="num">${String(finalVal).padStart(2, '0')}</div></div>`;
+            for(let j=0; j < slotCount; j++) {
+                let prediction = sortedNums[j] ? sortedNums[j][0] : Math.floor(Math.random() * 100);
+                resultsArea.innerHTML += `
+                    <div class="res-card">
+                        <span>SLOT ${j+1}</span>
+                        <div class="num">${String(prediction).padStart(2, '0')}</div>
+                    </div>`;
             }
-            container.style.display = 'grid';
-            status.innerText = "✅ SUCCESS: " + produceCount + " RESULTS";
-        } catch (e) {
-            status.innerText = "❌ SYSTEM
+            resultsArea.style.display = 'grid';
+            status.innerText = "✅ ANALYSIS COMPLETE FOR " + slotCount + " SLOTS";
+        } catch (err) {
+            status.innerText = "❌ SCAN ERROR: TRY CLEARER PHOTO";
+        }
+    }
+
+    function clearSystemData() {
+        if(confirm("DANGER: WIPE ALL MEMORY?")) {
+            xDB.transaction("patterns", "readwrite").objectStore("patterns").clear();
+            loadMemory();
+        }
+    }
+</script>
+</body>
+</html>
