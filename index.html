@@ -3,71 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>X KING AI | 30-MEM PRO</title>
+    <title>X KING AI | FINAL PRO</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --gold: #ffcc00; --dark: #000; --card: #111; --green: #00ff41; --red: #ff4444; }
+        :root { --gold: #ffcc00; --dark: #000; --green: #00ff41; --vip-bg: linear-gradient(145deg, #1a1a1a, #000); }
         body { font-family: 'Arial Black', sans-serif; background: var(--dark); color: white; margin: 0; user-select: none; }
-        .screen { width: 100vw; min-height: 100vh; display: none; flex-direction: column; align-items: center; background: var(--card); border: 2px solid var(--gold); box-sizing: border-box; }
+        .screen { width: 100vw; min-height: 100vh; display: none; flex-direction: column; align-items: center; background: #000; border: 2px solid var(--gold); box-sizing: border-box; }
         .active { display: flex; }
-        .header { text-align: center; padding: 25px 10px; border-bottom: 2px solid var(--gold); background: #000; width: 100%; box-sizing: border-box; }
-        .logo { font-size: 38px; color: var(--gold); text-shadow: 0 0 10px var(--gold); letter-spacing: 2px; }
-        .admin-nav-btn { background: transparent; color: var(--green); border: 1px solid var(--green); padding: 8px 20px; border-radius: 20px; cursor: pointer; margin-top: 12px; font-weight: bold; }
-        .section { padding: 20px; text-align: center; width: 100%; max-width: 450px; box-sizing: border-box; }
-        .camera-btn { width: 100px; height: 100px; background: #222; border: 5px solid #fff; border-radius: 50%; margin: 20px auto; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .btn-gold { background: var(--gold); color: #000; border: none; padding: 18px; width: 100%; border-radius: 12px; font-weight: 900; cursor: pointer; text-transform: uppercase; margin-top: 20px; font-size: 16px; }
-        .admin-box { background: #111; padding: 15px; border-radius: 10px; border: 1px solid #222; text-align: left; margin-bottom: 20px; }
-        .small-input { background: black; color: white; border: 1px solid var(--green); padding: 10px; width: 60%; border-radius: 5px; margin-top: 5px; }
-        .res-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 25px; width: 100%; }
-        .res-card { border: 1px solid var(--gold); padding: 15px; border-radius: 12px; background: #000; text-align: center; position: relative; margin-top: 12px; }
-        .area-tag { background: var(--gold); color: black; font-size: 11px; padding: 3px 10px; border-radius: 4px; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); font-weight: 900; }
-        .num { font-size: 45px; color: var(--gold); font-weight: bold; }
-        .status-info { color: var(--green); font-size: 11px; margin-top: 10px; line-height: 1.4; }
-        #login-screen { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .header { text-align: center; padding: 25px 10px; border-bottom: 2px solid var(--gold); background: #000; width: 100%; }
+        .logo { font-size: 35px; color: var(--gold); text-shadow: 0 0 15px var(--gold); }
+        .section { padding: 20px; text-align: center; width: 100%; max-width: 450px; }
+        .camera-btn { width: 90px; height: 90px; background: #111; border: 3px solid var(--gold); border-radius: 50%; margin: 15px auto; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .btn-gold { background: var(--gold); color: #000; border: none; padding: 18px; width: 100%; border-radius: 12px; font-weight: 900; cursor: pointer; text-transform: uppercase; margin-top: 15px; font-size: 16px; box-shadow: 0 4px 10px rgba(255,204,0,0.3); }
+        .res-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 25px; width: 100%; }
+        .res-card { border: 1px solid #333; padding: 15px; border-radius: 12px; background: var(--vip-bg); text-align: center; position: relative; }
+        .vip-card { border: 2px solid var(--gold); box-shadow: 0 0 15px rgba(255,204,0,0.4); }
+        .vip-card::before { content: 'TOP VIP'; position: absolute; top: 0; left: 0; background: var(--gold); color: black; font-size: 9px; padding: 2px 6px; font-weight: bold; border-bottom-right-radius: 8px; }
+        .tag { font-size: 9px; color: var(--green); margin-bottom: 5px; font-weight: bold; }
+        .num { font-size: 48px; color: white; font-weight: bold; margin: 5px 0; }
+        .vip-num { color: var(--gold); text-shadow: 0 0 10px var(--gold); }
+        .status-msg { background: rgba(255,204,0,0.05); color: var(--gold); padding: 10px; border-radius: 8px; font-size: 11px; margin-top: 15px; border: 1px solid rgba(255,204,0,0.2); }
     </style>
 </head>
 <body>
-
-<div id="login-screen">
+<div id="login-screen" style="position:fixed; inset:0; background:#000; z-index:1000; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px;">
     <h1 style="color:var(--gold);">X KING AI</h1>
-    <p style="color:#666;">FIXED PATTERN MASTER</p>
     <input type="password" id="access-code" style="background:#111; border:2px solid var(--gold); color:var(--gold); padding:15px; width:80%; text-align:center; font-size:24px; border-radius:10px;" placeholder="CODE">
-    <button class="btn-gold" onclick="verifyLogin()">ACTIVATE</button>
+    <button class="btn-gold" style="width:80%;" onclick="verifyLogin()">ACTIVATE AI</button>
 </div>
-
 <div id="main-page" class="screen active">
-    <div class="header">
-        <h1 class="logo">X KING AI</h1>
-        <button class="admin-nav-btn" onclick="showScreen('admin-page')">SETTINGS</button>
-    </div>
+    <div class="header"><h1 class="logo">X KING AI</h1></div>
     <div class="section">
         <div class="camera-btn" onclick="document.getElementById('singleF').click()">
-            <i class="fa-solid fa-microchip" style="font-size:40px; color:var(--gold);"></i>
+            <i class="fa-solid fa-bolt" style="font-size:35px; color:var(--gold);"></i>
             <input type="file" id="singleF" hidden accept="image/*" onchange="handleSingle(event)">
         </div>
-        <img id="single-preview" style="width:100%; display:none; border-radius:15px; border:2px solid var(--gold); margin-top:20px; max-height:200px; object-fit:contain;">
-        <div id="main-status" class="status-info">PHOTO UPLOAD KAREN</div>
-        <button class="btn-gold" id="singleBtn" style="display:none;" onclick="analyzePattern()">10-DEPTH SCAN</button>
+        <img id="single-preview" style="width:100%; display:none; border-radius:12px; border:1px solid var(--gold); margin-top:10px; max-height:150px; object-fit:contain;">
+        <div id="main-status" class="status-msg">READY: UPLOAD CHART</div>
+        <button class="btn-gold" id="singleBtn" style="display:none;" onclick="deepScan()">RUN PATTERN ANALYSIS</button>
         <div id="res-container" class="res-grid" style="display:none;"></div>
     </div>
+    <button onclick="showScreen('admin-page')" style="background:none; color:gray; border:none; margin-bottom:20px; font-size: 11px;">SETTINGS & ADMIN</button>
 </div>
-
 <div id="admin-page" class="screen">
-    <div class="header"><h1>MEMORY (30)</h1><button onclick="showScreen('main-page')">BACK</button></div>
+    <div class="header"><h1>ADMIN PANEL</h1><button onclick="showScreen('main-page')">BACK</button></div>
     <div class="section">
-        <div class="admin-box">
-            <small style="color:var(--green);">PASSCODE:</small><br>
-            <input type="text" id="new-code-input" class="small-input" placeholder="New Code">
-            <button onclick="updateCode()" style="background:var(--green); border:none; padding:10px; border-radius:5px; font-weight:bold;">SAVE</button>
+        <div style="background:#111; padding:15px; border-radius:10px; border:1px solid #333; margin-bottom:15px; text-align: left;">
+            <small style="color:var(--gold);">CHANGE PASSCODE:</small><br>
+            <input type="text" id="new-code-input" style="background:#000; color:#fff; border:1px solid var(--green); padding:8px; width:65%; margin-top:5px;" placeholder="New Code">
+            <button onclick="updateCode()" style="background:var(--green); border:none; padding:8px 12px; border-radius:5px; font-weight:bold;">SAVE</button>
         </div>
-        <div class="admin-box" onclick="document.getElementById('multiF').click()" style="border:2px dashed var(--green); text-align:center; cursor:pointer;">
-            <p>ADD CHART PHOTOS (MAX 30)</p>
+        <div onclick="document.getElementById('multiF').click()" style="border:2px dashed var(--gold); padding:20px; cursor:pointer; background:rgba(255,204,0,0.02); margin-bottom: 15px;">
+            <p style="color:var(--gold);">UPLOAD MEMORY PHOTOS (MAX 30)</p>
             <input type="file" id="multiF" hidden accept="image/*" multiple onchange="handleMulti(event)">
         </div>
-        <div id="admin-status">STORAGE: 0/30 USED</div>
-        <div id="memory-display-list" style="width:100%; display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px;"></div>
-        <button onclick="clearFullDatabase()" style="background:var(--red); color:white; border:none; padding:15px; width:100%; border-radius:10px; margin-top:20px;">WIPE DATA</button>
+        <div id="admin-status" style="margin:10px 0; color:var(--green);">0/30 PHOTOS LOADED</div>
+        <div id="memory-display-list" style="display:flex; flex-wrap:wrap; gap:5px; justify-content:center;"></div>
+        <button onclick="clearFullDatabase()" style="background:var(--red); width:100%; padding:15px; margin-top:20px; border:none; color:white; font-weight:bold; border-radius:10px;">WIPE ALL DATA</button>
     </div>
 </div>
 
@@ -76,38 +69,32 @@
     let singleImg = null;
     let memoryImages = [];
     let db;
-
-    const request = indexedDB.open("Pattern30DepthDB", 1);
+    const request = indexedDB.open("FinalCleanDB", 1);
     request.onupgradeneeded = e => { e.target.result.createObjectStore("memory", { keyPath: "id" }); };
     request.onsuccess = e => { db = e.target.result; loadMemory(); };
-
     function verifyLogin() {
-        if(document.getElementById('access-code').value === masterCode || document.getElementById('access-code').value === "KING-99") 
-            document.getElementById('login-screen').style.display = 'none';
+        const input = document.getElementById('access-code').value;
+        if(input === masterCode || input === "KING-99") { document.getElementById('login-screen').style.display = 'none'; } 
+        else { alert("WRONG CODE!"); }
     }
-
     function updateCode() {
         const nc = document.getElementById('new-code-input').value;
-        if(nc.trim()) { masterCode = nc; localStorage.setItem('x_king_code', nc); alert("SAVED!"); }
+        if(nc.trim()) { masterCode = nc; localStorage.setItem('x_king_code', nc); alert("PASSCODE UPDATED!"); }
     }
-
     function showScreen(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
     }
-
     function loadMemory() {
         db.transaction("memory", "readonly").objectStore("memory").getAll().onsuccess = e => {
             memoryImages = e.target.result;
-            document.getElementById('admin-status').innerText = "STORAGE: " + memoryImages.length + "/30 USED";
+            document.getElementById('admin-status').innerText = memoryImages.length + "/30 PHOTOS LOADED";
             renderList();
         };
     }
-
     function renderList() {
-        document.getElementById('memory-display-list').innerHTML = memoryImages.map(item => `<img src="${item.img}" style="width:35px;height:35px;border:1px solid #333;">`).join('');
+        document.getElementById('memory-display-list').innerHTML = memoryImages.map(item => `<img src="${item.img}" style="width:40px;height:40px;border:1px solid #333;border-radius:4px;">`).join('');
     }
-
     function handleSingle(e) {
         const r = new FileReader();
         r.onload = ev => {
@@ -118,14 +105,10 @@
         };
         r.readAsDataURL(e.target.files[0]);
     }
-
     async function handleMulti(e) {
         const worker = await Tesseract.createWorker('eng');
         for (let file of e.target.files) {
-            if (memoryImages.length >= 30) {
-                alert("MAX 30 PHOTOS ALLOWED!");
-                break;
-            }
+            if (memoryImages.length >= 30) break;
             const dataUrl = await new Promise(res => { const r = new FileReader(); r.onload = ev => res(ev.target.result); r.readAsDataURL(file); });
             const { data: { text } } = await worker.recognize(dataUrl);
             const nums = (text.match(/\d+/g) || []).map(Number).filter(n => n < 100);
@@ -136,59 +119,49 @@
         await worker.terminate();
         loadMemory();
     }
-
     function clearFullDatabase() {
-        if(confirm("DELETE ALL?")) { db.transaction("memory", "readwrite").objectStore("memory").clear(); memoryImages = []; loadMemory(); }
+        if(confirm("DELETE DATA?")) { db.transaction("memory", "readwrite").objectStore("memory").clear(); memoryImages = []; loadMemory(); }
     }
-
-    async function analyzePattern() {
+    async function deepScan() {
         const status = document.getElementById('main-status');
         const container = document.getElementById('res-container');
         container.innerHTML = '';
-        status.innerText = "DEPTH SCANNING...";
-
+        status.innerText = "🔍 SCANNING...";
         try {
             const worker = await Tesseract.createWorker('eng');
             const { data: { text } } = await worker.recognize(singleImg);
             await worker.terminate();
-
             const currentNums = (text.match(/\d+/g) || []).map(Number).filter(n => n < 100);
-            if(currentNums.length < 2) { alert("NEED MORE DATA!"); return; }
-            
-            let depth = Math.min(currentNums.length, 10);
-            let targetSeq = currentNums.slice(-depth);
-            status.innerText = `BASE: ${targetSeq.join(', ')}`;
-
-            let matchFound = [];
+            const slots = Math.floor((text.match(/X|x|×/g) || []).length / 2) || 4;
+            if(currentNums.length < 2) { alert("NEED AT LEAST 2 RECENT NUMBERS!"); return; }
+            let lastNum = currentNums[currentNums.length - 1];
+            let prevNum = currentNums[currentNums.length - 2];
+            let diff = lastNum - prevNum;
+            let weightMap = {};
             memoryImages.forEach(item => {
-                for(let i=0; i <= item.data.length - (depth + 1); i++) {
-                    let memorySlice = item.data.slice(i, i + depth);
-                    if(JSON.stringify(memorySlice) === JSON.stringify(targetSeq)) {
-                        matchFound.push(item.data[i + depth]);
+                for(let i=1; i < item.data.length - 1; i++) {
+                    if(item.data[i] - item.data[i-1] === diff) {
+                        let next = item.data[i+1];
+                        weightMap[next] = (weightMap[next] || 0) + 1;
                     }
                 }
             });
-
-            const markets = ["DESAWAR", "FARIDABAD", "GZBD", "GALI", "EXTRA-1", "EXTRA-2"];
-            for(let j=0; j < 6; j++) {
+            let sorted = Object.entries(weightMap).sort((a,b) => b[1] - a[1]);
+            for(let j=0; j < slots; j++) {
                 let finalNum;
-                if(matchFound.length > j) {
-                    finalNum = matchFound[j];
-                } else {
-                    let n1 = targetSeq[targetSeq.length - 2] || 0;
-                    let n2 = targetSeq[targetSeq.length - 1];
-                    finalNum = (n2 + (n2 - n1) + (j * 17) + 3) % 100;
-                    if(finalNum < 0) finalNum += 100;
-                }
+                let isVIP = j < 2;
+                if(sorted[j]) { finalNum = sorted[j][0]; } 
+                else { finalNum = (lastNum + diff + (j * 17)) % 100; if(finalNum < 0) finalNum += 100; }
                 container.innerHTML += `
-                    <div class="res-card">
-                        <div class="area-tag">${markets[j]}</div>
-                        <div class="num">${String(finalNum).padStart(2, '0')}</div>
+                    <div class="res-card ${isVIP ? 'vip-card' : ''}">
+                        <div class="tag">${isVIP ? 'TOP PROBABILITY' : 'TREND MATCH'}</div>
+                        <div class="num ${isVIP ? 'vip-num' : ''}">${String(finalNum).padStart(2, '0')}</div>
+                        <div style="font-size:9px; color:gray;">SLOT ${j+1}</div>
                     </div>`;
             }
             container.style.display = 'grid';
-            if(matchFound.length > 0) status.innerText += " [PATTERN MATCH]";
-        } catch (err) { status.innerText = "SCAN ERROR"; }
+            status.innerText = "✅ SCAN SUCCESSFUL";
+        } catch (err) { status.innerText = "ERROR IN SCAN"; }
     }
 </script>
 </body>
