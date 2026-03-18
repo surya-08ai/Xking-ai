@@ -3,121 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>X KING AI | CHART ANALYZER</title>
+    <title>X KING AI | FREE ACCESS</title>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <style>
         :root { --gold: #ffcc00; --dark: #000; --card: #111; --green: #00ff41; }
         body { font-family: 'Arial Black', sans-serif; background: var(--dark); color: white; margin: 0; display: flex; justify-content: center; min-height: 100vh; user-select: none; }
         .x-app { width: 100%; max-width: 450px; background: var(--card); border: 2px solid var(--gold); position: relative; min-height: 100vh; display: flex; flex-direction: column; }
-        .header { text-align: center; padding: 25px 10px; border-bottom: 2px solid var(--gold); background: #000; cursor: pointer; }
+        .header { text-align: center; padding: 25px 10px; border-bottom: 2px solid var(--gold); background: #000; }
         .logo { font-size: 40px; color: var(--gold); margin: 0; text-shadow: 0 0 10px var(--gold); pointer-events: none; }
-        .section { padding: 20px; display: none; text-align: center; animation: fadeIn 0.3s; }
-        .active { display: block; }
+        .section { padding: 20px; text-align: center; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
         .btn-gold { background: var(--gold); color: #000; border: none; padding: 18px; width: 95%; border-radius: 10px; font-weight: 900; cursor: pointer; text-transform: uppercase; margin-top: 10px; font-size: 16px; transition: 0.3s; }
         .btn-gold:disabled { background: #555; color: #aaa; cursor: not-allowed; }
-        .input-box { background: #000; border: 1px solid #444; color: var(--gold); padding: 15px; width: 85%; border-radius: 8px; font-size: 18px; margin-bottom: 15px; text-align: center; outline: none; }
-        .qr-display { width: 220px; height: 220px; background: white; margin: 15px auto; border-radius: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 3px solid var(--gold); }
-        .qr-display img { width: 100%; height: 100%; object-fit: contain; }
         .res-card { margin-top: 25px; border: 1px solid var(--gold); padding: 20px; border-radius: 15px; background: #000; position: relative;}
         .num { font-size: 55px; color: var(--gold); font-weight: bold; text-shadow: 0 0 15px var(--gold); }
-        #loader { display: none; color: var(--gold); font-size: 12px; margin-top: 10px; }
+        #loader { display: none; color: var(--gold); font-size: 12px; margin-top: 10px; font-family: sans-serif; }
         .chart-id { font-size: 8px; color: #333; position: absolute; bottom: 5px; right: 10px; font-family: monospace;}
+        .status-bar { color: var(--green); font-size: 10px; margin-bottom: 15px; text-align: left; display: flex; justify-content: space-between; font-family: sans-serif; }
     </style>
 </head>
 <body>
 
 <div class="x-app">
-    <div class="header" onclick="adminTrigger()">
+    <div class="header">
         <h1 class="logo">X KING</h1>
-        <div style="font-size: 9px; color: #444; letter-spacing: 2px;">IDENTIFICATION AI SYSTEM</div>
+        <div style="font-size: 9px; color: #444; letter-spacing: 2px;">PREMIUM AI SYSTEM</div>
     </div>
 
-    <div id="sec-pay" class="section active">
-        <h2 style="color:var(--gold); margin-bottom:5px;">ACTIVATE ACCESS</h2>
-        <p style="font-size: 11px; color:#777;">स्कैन करें और पेमेंट के बाद UTR नंबर डालें</p>
-        <div class="qr-display" id="qr-container">
-            <p style="color:black; font-size:10px; padding:20px;">Owner: Set QR URL in Admin</p>
-        </div>
-        <p style="font-size: 20px; font-weight: bold; margin: 5px 0;">FEE: <span id="display-price">₹99</span></p>
-        <div style="background:#151515; padding:15px; border-radius:15px; border:1px solid #333; margin-top:10px;">
-            <input type="number" id="utr-input" class="input-box" placeholder="ENTER 12 DIGIT UTR NO.">
-            <button class="btn-gold" onclick="verifyUTR()">UNLOCK SYSTEM</button>
-        </div>
-    </div>
-
-    <div id="sec-ai" class="section">
-        <div style="color:var(--green); font-size:10px; margin-bottom:15px; text-align:left; display:flex; justify-content:space-between;">
-            <span>● AI SECURE CONNECTION [ACTIVE]</span>
-            <span style="color:#555; cursor:pointer;" onclick="location.reload()">LOGOUT</span>
+    <div class="section">
+        <div class="status-bar">
+            <span>● SYSTEM ONLINE [UNLIMITED ACCESS]</span>
+            <span style="color:#555;">V2.0</span>
         </div>
         
-        <div style="border:2px dashed #444; padding:30px; border-radius:15px; cursor:pointer; background:#0a0a0a;" onclick="document.getElementById('fIn').click()">
-            <span id="up-t" style="color:#aaa; font-size:14px;">📸 अपलोड यूनिक चार्ट फोटो</span>
+        <div style="border:2px dashed #444; padding:40px 20px; border-radius:15px; cursor:pointer; background:#0a0a0a;" onclick="document.getElementById('fIn').click()">
+            <div id="up-t">
+                <div style="font-size: 30px; margin-bottom: 10px;">📸</div>
+                <span style="color:#aaa; font-size:14px;">चार्ट फोटो यहाँ अपलोड करें</span>
+            </div>
             <input type="file" id="fIn" hidden accept="image/*" onchange="preview(event)">
             <img id="p-img" style="width:100%; display:none; border-radius:10px; border:1px solid #333;">
         </div>
 
-        <div id="loader">🧠 AI ANALYZING CHART... PLEASE WAIT...</div>
-        <button class="btn-gold" id="goBtn" style="display:none; margin-top:20px;" onclick="runUniqueAI()">SCAN & IDENTIFY</button>
+        <div id="loader">
+            <div style="margin-bottom: 10px;">⚡ ANALYZING PIXELS...</div>
+            <div style="width: 100%; background: #222; height: 4px; border-radius: 2px;">
+                <div style="width: 60%; background: var(--gold); height: 100%; border-radius: 2px;"></div>
+            </div>
+        </div>
+
+        <button class="btn-gold" id="goBtn" style="display:none; margin-top:20px;" onclick="runUniqueAI()">START SCAN</button>
         
         <div id="res-box" class="res-card" style="display:none;">
-            <div style="color:#777; font-size:12px; margin-bottom:10px;">CHART RESULT</div>
+            <div style="color:#777; font-size:12px; margin-bottom:10px; letter-spacing: 2px;">AI PREDICTION</div>
             <div style="display:flex; justify-content:space-around; align-items:center;">
                 <div><div id="r1" class="num">--</div></div>
             </div>
-            <div class="chart-id" id="cid">ID: --</div>
+            <div class="chart-id" id="cid">CHART ID: --</div>
         </div>
+        
+        <p style="font-size: 9px; color: #333; margin-top: 20px;">AI मॉडल फोटो के आधार पर स्थिर परिणाम जेनरेट करता है।</p>
     </div>
 </div>
 
 <script>
-    // System Config
-    let settings = JSON.parse(localStorage.getItem('x_king_config')) || {
-        qr: "", price: "99", status: "locked"
-    };
-
-    // Current Photo Data
     let currentPhotoHash = null;
 
-    window.onload = function() {
-        document.getElementById('display-price').innerText = "₹" + settings.price;
-        if(settings.qr) document.getElementById('qr-container').innerHTML = `<img src="${settings.qr}">`;
-        
-        // If already unlocked, skip payment
-        if(settings.status === "unlocked") { showSec('sec-ai'); }
-    }
-
-    // PAYMENT LOGIC
-    function verifyUTR() {
-        let utr = document.getElementById('utr-input').value.trim();
-        if(utr.length < 10) { alert("❌ गलत UTR! सही 12-अंकों का नंबर डालें।"); return; }
-        
-        let usedUTRs = JSON.parse(localStorage.getItem('used_utrs')) || [];
-        if(usedUTRs.includes(utr)) { alert("⚠️ यह UTR पहले ही इस्तेमाल हो चुका है!"); return; }
-
-        usedUTRs.push(utr);
-        localStorage.setItem('used_utrs', JSON.stringify(usedUTRs));
-        
-        settings.status = "unlocked";
-        localStorage.setItem('x_king_config', JSON.stringify(settings));
-
-        alert("✅ पेमेंट वेरीफाई! सिस्टम अनलॉक हो गया है।");
-        showSec('sec-ai');
-    }
-
-    function showSec(id) {
-        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-    }
-
-    // PHOTO PREVIEW & HASHING (This ensures uniqueness)
+    // फोटो चुनने के बाद का फंक्शन
     function preview(e) {
         const file = e.target.files[0];
         const reader = new FileReader();
         const btn = document.getElementById('goBtn');
-        const loader = document.getElementById('loader');
 
         if(file) {
             btn.style.display = 'none';
@@ -129,75 +86,50 @@
                 document.getElementById('p-img').style.display = 'block';
                 document.getElementById('up-t').style.display = 'none';
 
-                // **नया लॉजिक**: फोटो का डिजिटल फिंगरप्रिंट (Hash) बनाना
-                // यह CryptoJS लाइब्रेरी का उपयोग करता है।
+                // फोटो का Unique Hash बनाना
                 currentPhotoHash = CryptoJS.SHA256(imgData).toString();
                 
-                // आईडी का छोटा हिस्सा दिखाएं (टेस्टिंग के लिए)
-                document.getElementById('cid').innerText = "CHART ID: " + currentPhotoHash.substring(0, 10);
+                // आईडी अपडेट करना
+                document.getElementById('cid').innerText = "CHART ID: " + currentPhotoHash.substring(0, 12).toUpperCase();
                 
-                btn.innerText = "START AI SCAN";
+                btn.innerText = "GET RESULT";
                 btn.style.display = 'block';
             };
             reader.readAsDataURL(file);
         }
     }
 
-    // UNIQUE AI LOGIC (No Randomness)
+    // AI गणना (Hashing based results)
     async function runUniqueAI() {
         const btn = document.getElementById('goBtn');
         const loader = document.getElementById('loader');
         
-        if(!currentPhotoHash) { alert("कृपया फोटो दोबारा अपलोड करें।"); return; }
+        if(!currentPhotoHash) return;
 
         btn.disabled = true;
         btn.style.display = 'none';
         loader.style.display = 'block';
         document.getElementById('res-box').style.display = 'none';
 
-        // Fake Processing Time (असली महसूस कराने के लिए)
-        await new Promise(r => setTimeout(r, 2500)); 
+        // 2 सेकंड का बनावटी लोडिंग टाइम
+        await new Promise(r => setTimeout(r, 2000)); 
 
         try {
-            // **मुख्य लॉजिक**: हम फोटो के UNIQUE HASH को एक नंबर में बदल रहे हैं।
-            // हम हैश के पहले 8 अक्षरों को लेते हैं और उन्हें एक पूर्णांक (integer) में बदलते हैं।
+            // फोटो हैश को नंबर में बदलकर स्थिर परिणाम निकालना
             let hashInt = parseInt(currentPhotoHash.substring(0, 8), 16);
-            
-            // अब हम उस बड़े नंबर को 100 से विभाजित करके 00-99 के बीच का 'परिणाम' निकालते हैं।
-            // यह गणितीय रूप से निश्चित है: एक ही हैश हमेशा एक ही परिणाम देगा।
-            let resultNumber = hashInt % 100;
+            let resultNumber = hashInt % 100; // 00 से 99 के बीच नंबर
 
-            // परिणाम दिखाएं
             document.getElementById('r1').innerText = String(resultNumber).padStart(2, '0');
             document.getElementById('res-box').style.display = 'block';
 
         } catch(e) { 
-            alert("AI Error: फोटो साफ़ नहीं है या तकनीकी समस्या है।"); 
+            alert("Error: फोटो स्कैन नहीं हो पाई।"); 
         } finally {
             loader.style.display = 'none';
             btn.disabled = false;
             btn.style.display = 'block';
             btn.innerText = "SCAN AGAIN";
         }
-    }
-
-    // Simple Admin Access (7 clicks on header) - Keep for setup
-    let clicks = 0;
-    function adminTrigger() {
-        clicks++;
-        if(clicks >= 7) {
-            let p = prompt("ENTER OWNER CODE:");
-            if(p === "0000" || p === "RESET-X") {
-                let qr = prompt("Enter new QR Image URL:", settings.qr);
-                let pr = prompt("Enter price:", settings.price);
-                if(qr) settings.qr = qr;
-                if(pr) settings.price = pr;
-                localStorage.setItem('x_king_config', JSON.stringify(settings));
-                alert("Settings Saved!"); location.reload();
-            }
-            clicks = 0;
-        }
-        setTimeout(() => { clicks = 0; }, 3000);
     }
 </script>
 </body>
