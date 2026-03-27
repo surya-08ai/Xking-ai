@@ -3,132 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X King AI - Online Pattern Cloud</title>
+    <title>X King AI - Multi-XX Scanner</title>
     <style>
         :root { --neon: #00f2ff; --bg: #050505; --card: #111; --gold: #ffcc00; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 0; text-align: center; }
         
         /* Navbar */
-        .navbar { background: #000; padding: 15px; text-align: center; border-bottom: 2px solid var(--neon); box-shadow: 0 0 20px rgba(0,242,255,0.3); }
-        .navbar h1 { margin: 0; color: var(--neon); font-size: 22px; text-transform: uppercase; letter-spacing: 2px; }
+        .navbar { background: #000; padding: 15px; border-bottom: 2px solid var(--neon); box-shadow: 0 0 20px rgba(0,242,255,0.3); }
+        .navbar h1 { margin: 0; color: var(--neon); font-size: 20px; text-transform: uppercase; letter-spacing: 2px; }
 
         .container { padding: 15px; max-width: 500px; margin: auto; }
-        .status-bar { background: #222; padding: 8px 15px; border-radius: 20px; font-size: 11px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #333; }
-        .dot { height: 8px; width: 8px; background: #0f0; border-radius: 50%; display: inline-block; margin-right: 5px; box-shadow: 0 0 10px #0f0; }
-
-        .card { background: var(--card); border-radius: 15px; padding: 20px; margin-bottom: 20px; border: 1px solid #222; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-        h3 { margin: 0 0 15px 0; color: var(--neon); font-size: 16px; display: flex; align-items: center; }
-        h3::before { content: '⚡'; margin-right: 8px; }
+        .box { background: var(--card); border-radius: 15px; padding: 20px; margin-bottom: 20px; border: 1px solid #222; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        h3 { margin: 0 0 15px 0; color: var(--neon); font-size: 16px; }
 
         /* Inputs */
         .btn-upload { display: block; background: #1a1a1a; border: 1px dashed var(--neon); padding: 20px; border-radius: 12px; text-align: center; cursor: pointer; color: #888; transition: 0.3s; }
-        .btn-upload:active { background: #222; transform: scale(0.98); }
         input[type="file"] { display: none; }
 
-        button { background: linear-gradient(135deg, var(--neon), #0066ff); color: #000; border: none; padding: 15px; width: 100%; border-radius: 10px; font-weight: bold; font-size: 16px; margin-top: 20px; cursor: pointer; text-transform: uppercase; }
+        button { background: linear-gradient(135deg, var(--neon), #0066ff); color: #000; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; font-size: 14px; margin-top: 20px; cursor: pointer; text-transform: uppercase; }
         button:disabled { background: #333; color: #666; }
 
-        /* Output Canvas */
+        /* Output */
         #resultCanvas { max-width: 100%; border-radius: 12px; margin-top: 20px; border: 2px solid var(--gold); display: none; }
-        
-        .report-box { display: none; margin-top: 20px; }
-        .report-item { background: #1a1a1a; padding: 12px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid var(--gold); display: flex; justify-content: space-between; }
-        .label { font-size: 12px; color: #888; }
-        .val { font-weight: bold; color: var(--gold); font-size: 18px; }
-
-        .footer { font-size: 9px; color: #444; text-align: center; margin-top: 30px; padding: 20px; line-height: 1.5; }
+        .report-box { display: none; margin-top: 20px; text-align: left;}
+        .report-item { background: #1a1a1a; padding: 10px; border-radius: 8px; margin-bottom: 8px; border-left: 3px solid var(--gold); font-size: 13px;}
+        .val { font-weight: bold; color: var(--gold); }
     </style>
 </head>
 <body>
 
 <div class="navbar">
-    <h1>X KING AI <span style="font-size: 10px; vertical-align: middle; color: var(--gold);">ONLINE v6.0</span></h1>
+    <h1>X KING AI <span style="font-size: 10px; color: var(--gold);">MULTI-SCAN</span></h1>
 </div>
 
 <div class="container">
-    <div class="status-bar">
-        <span><span class="dot"></span> सिस्टम ऑनलाइन: <b>क्लाउड एक्टिव</b></span>
-        <span id="dbCount">डेटा: 0</span>
+    <div class="box">
+        <h3>1. पैटर्न लर्निंग (पुराना डेटा)</h3>
+        <p style="font-size: 11px; color: #888; margin-bottom: 10px;">सिस्टम को सिखाने के लिए पुरानी फोटोस अपलोड करें।</p>
+        <input type="file" id="trainFiles" multiple accept="image/*">
+        <div id="dbStatus" style="font-size: 12px; margin-top: 10px; color: #4caf50;">डेटा: 0 ट्रेंड्स रिकॉर्डेड</div>
     </div>
 
-    <div class="card">
-        <h3>पैटर्न लर्निंग डेटाबेस</h3>
-        <label class="btn-upload">
-            <span>📁 पुरानी फोटोस अपलोड करें</span>
-            <input type="file" id="trainFiles" multiple accept="image/*">
-        </label>
-        <p style="font-size: 10px; color: #666; margin-top: 10px; text-align: center;">(नोट: यह डेटा आपके फोन के सुरक्षित क्लाउड स्टोरेज में सेव रहेगा)</p>
-        <button onclick="clearDatabase()" style="background: #333; color: #ff4444; font-size: 11px; padding: 5px; margin-top: 10px;">डेटाबेस क्लियर करें</button>
-    </div>
-
-    <div class="card">
-        <h3>लाइव चार्ट एनालिसिस</h3>
-        <label class="btn-upload" style="border-color: var(--gold);">
-            <span>📷 आज का 'XX' चार्ट चुनें</span>
-            <input type="file" id="predictFile" accept="image/*">
-        </label>
-        <button id="analyzeBtn" disabled>ट्रेंड एनालिसिस शुरू करें</button>
+    <div class="box">
+        <h3>2. आज का चार्ट (XX वाला)</h3>
+        <p style="font-size: 11px; color: #888; margin-bottom: 10px;">वह फोटो अपलोड करें जहाँ 'XX' को बदलना है।</p>
+        <input type="file" id="predictFile" accept="image/*">
+        <button id="analyzeBtn" disabled>XX स्कैन और जनरेट शुरू करें</button>
     </div>
 
     <canvas id="resultCanvas"></canvas>
 
     <div class="report-box" id="report">
-        <h3 style="color: var(--gold);">AI प्रेडिक्शन रिपोर्ट</h3>
+        <h3 style="color: var(--gold); text-align: center;">AI प्रेडिक्शन रिपोर्ट</h3>
         <div id="resultsContent"></div>
-    </div>
-
-    <div class="footer">
-        यह एक एडवांस पैटर्न रिकग्निशन सिस्टम है। <br>
-        सट्टा जोखिम भरा है, यह AI केवल ऐतिहासिक डेटा के आधार पर चाल (Trend) बताता है।
     </div>
 </div>
 
 <script>
-    let trendMemory = JSON.parse(localStorage.getItem('xking_db')) || [];
-    updateDBUI();
+    let trendDatabase = []; // पुराना डेटा
+    let xxLocations = [];   // XX की संभावित जगहें
 
     const trainFiles = document.getElementById('trainFiles');
     const predictFile = document.getElementById('predictFile');
     const analyzeBtn = document.getElementById('analyzeBtn');
-    const dbCountText = document.getElementById('dbCount');
+    const dbStatus = document.getElementById('dbStatus');
+    const reportBox = document.getElementById('report');
 
-    // --- डेटाबेस अपडेट और सेव ---
+    // --- डेटाबेस ट्रेनिंग ---
     trainFiles.onchange = (e) => {
         let files = e.target.files;
         for(let i=0; i<files.length; i++) {
             // सिमुलेशन: नंबर निकालकर मेमोरी में डालना
-            let mockNum = Math.floor(Math.random() * 90) + 10;
-            trendMemory.push(mockNum);
+            trendDatabase.push(Math.floor(Math.random() * 90) + 10);
         }
-        localStorage.setItem('xking_db', JSON.stringify(trendMemory));
-        updateDBUI();
-        alert("डेटाबेस अपडेट हो गया है! अब आप कहीं भी इसका उपयोग कर सकते हैं।");
+        dbStatus.innerText = "डेटा: " + trendDatabase.length + " ट्रेंड्स रिकॉर्डेड";
     };
-
-    function updateDBUI() {
-        dbCountText.innerText = "डेटा: " + trendMemory.length;
-    }
-
-    function clearDatabase() {
-        if(confirm("क्या आप सारा पुराना डेटा डिलीट करना चाहते हैं?")) {
-            localStorage.removeItem('xking_db');
-            trendMemory = [];
-            updateDBUI();
-        }
-    }
 
     // --- लाइव एनालिसिस शुरू करना ---
     predictFile.onchange = () => {
-        if(trendMemory.length < 5) {
-            alert("कृपया पहले कम से कम 5-10 पुरानी फोटो अपलोड करें!");
+        if(trendDatabase.length < 5) {
+            alert("कृपया पहले कम से कम 5 पुरानी फोटो अपलोड करें!");
             return;
         }
         analyzeBtn.disabled = false;
     };
 
     analyzeBtn.onclick = () => {
-        analyzeBtn.innerText = "क्लाउड प्रोसेसिंग...";
+        analyzeBtn.innerText = "XX स्कैन किया जा रहा है...";
         analyzeBtn.disabled = true;
+        reportBox.style.display = "none";
 
         const file = predictFile.files[0];
         const reader = new FileReader();
@@ -141,10 +104,11 @@
                 canvas.style.display = "block";
                 ctx.drawImage(img, 0, 0);
 
+                // गहरे स्कैन का सिमुलेशन (XX ढूंढना)
                 setTimeout(() => {
-                    generateFinalPrediction(ctx, img.width, img.height);
+                    scanForXX(ctx, img.width, img.height);
                     analyzeBtn.disabled = false;
-                    analyzeBtn.innerText = "ट्रेंड एनालिसिस शुरू करें";
+                    analyzeBtn.innerText = "XX स्कैन और जनरेट शुरू करें";
                 }, 2000);
             };
             img.src = ev.target.result;
@@ -152,42 +116,59 @@
         reader.readAsDataURL(file);
     };
 
-    function generateFinalPrediction(ctx, w, h) {
-        // ट्रेंड लॉजिक: आखिरी 3 नंबरों की चाल
-        let last3 = trendMemory.slice(-3);
-        let gap = last3[2] - last3[1];
+    // --- XX ढूंढने का सिमुलेशन लॉजिक ---
+    function scanForXX(ctx, w, h) {
+        // यह मानकर कि फोटो में 2 XX की जगहें हैं (जैसे Gali और Desawar)
+        // हम फोटो के निचले 30% हिस्से को ग्रिड में बाँटेंगे
+        xxLocations = [
+            { x: w * 0.55, y: h * 0.78, type: "Gali ZONE" },
+            { x: w * 0.78, y: h * 0.78, type: "Desawar ZONE" }
+        ];
+
+        // असल OCR के बिना, हम सिर्फ 2 फिक्स जगहों पर जनरेट करेंगे।
+        // अगर आपको ज्यादा XX चाहिए, तो इस एरे में और ऑब्जेक्ट्स जोड़ें।
+
+        let generatedNumbers = [];
+
+        // फोटो पर जनरेट करना
+        ctx.fillStyle = "#ffcc00"; // Gold Color
+        ctx.font = "bold 38px Arial";
         
-        let p1 = (last3[2] + gap) % 100; if(p1 < 10) p1 += 15;
-        let p2 = getRashi(last3[2]);
-        let p3 = (last3[2] + 1) % 100;
-
-        let predictions = [p1, p2, p3];
-
-        // फोटो पर ड्रा करना
-        ctx.fillStyle = "#ffcc00"; // Gold
-        ctx.font = "bold 40px Arial";
-        predictions.forEach((n, i) => {
-            let startX = w * 0.55 + (i * 95);
-            let startY = h * 0.78;
-            ctx.fillRect(startX, startY - 45, 85, 55);
+        xxLocations.forEach((loc, i) => {
+            // हर XX के लिए एक अलग नंबर जनरेट करना (ट्रेंड के आधार पर)
+            let n = getTrendPrediction(i); 
+            generatedNumbers.push({ num: n, type: loc.type });
+            
+            // XX की जगह पर बॉक्स और नंबर बनाना
+            ctx.shadowBlur = 10; ctx.shadowColor = "rgba(0,0,0,0.5)";
+            ctx.fillRect(loc.x, loc.y - 45, 85, 55);
+            ctx.shadowBlur = 0;
             ctx.fillStyle = "#000";
-            ctx.fillText(n, startX + 18, startY);
+            ctx.fillText(n, loc.x + 18, loc.y);
             ctx.fillStyle = "#ffcc00";
         });
 
         // रिपोर्ट दिखाना
-        document.getElementById('report').style.display = "block";
-        document.getElementById('resultsContent').innerHTML = `
-            <div class="report-item"><span class="label">चाल (Trend) नंबर:</span> <span class="val">${p1}</span></div>
-            <div class="report-item"><span class="label">राशि (Family) नंबर:</span> <span class="val">${p2}</span></div>
-            <div class="report-item"><span class="label">सपोर्ट (Mirror) नंबर:</span> <span class="val">${p3}</span></div>
-        `;
+        reportBox.style.display = "block";
+        const resultsContent = document.getElementById('resultsContent');
+        resultsContent.innerHTML = "";
+        generatedNumbers.forEach(item => {
+            resultsContent.innerHTML += `<div class="report-item"><b>${item.type}:</b> <span class="val">${item.num}</span> (प्रत्याशित)</div>`;
+        });
     }
 
-    function getRashi(n) {
-        const map = {"0":"5","1":"6","2":"7","3":"8","4":"9","5":"0","6":"1","7":"2","8":"3","9":"4"};
-        let s = n.toString(); if(s.length == 1) s = "0" + s;
-        return parseInt(map[s[0]] + map[s[1]]);
+    // --- ट्रेंड के आधार पर नंबर जनरेट करना ---
+    function getTrendPrediction(seed) {
+        // आखिरी 3 नंबरों की चाल
+        let last3 = trendDatabase.slice(-3);
+        if(last3.length < 3) return Math.floor(Math.random() * 90) + 10;
+        
+        let gap = last3[2] - last3[1];
+        
+        // हर 'XX' के लिए थोड़ा अलग ट्रेंड नंबर (seed का उपयोग करके)
+        let n = (last3[2] + gap + seed) % 100;
+        if(n < 10) n += 15;
+        return n;
     }
 </script>
 
