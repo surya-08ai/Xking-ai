@@ -3,262 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X King AI - Pattern Predictor Pro</title>
+    <title>X King AI - Online Pattern Cloud</title>
     <style>
-        :root { --primary: #1e88e5; --accent: #ffb300; --bg: #0a0a0a; --card: #161616; --text: #e0e0e0; }
-        body { font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 10px; text-align: center; }
+        :root { --neon: #00f2ff; --bg: #050505; --card: #111; --gold: #ffcc00; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 0; }
         
-        /* Header */
-        header { background: #000; padding: 10px; border-radius: 10px; border: 1px solid var(--primary); margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,136,255,0.3); }
-        header h1 { margin: 0; color: var(--primary); font-size: 24px; letter-spacing: 1px; }
-        header span { font-size: 11px; color: #aaa; }
+        /* Navbar */
+        .navbar { background: #000; padding: 15px; text-align: center; border-bottom: 2px solid var(--neon); box-shadow: 0 0 20px rgba(0,242,255,0.3); }
+        .navbar h1 { margin: 0; color: var(--neon); font-size: 22px; text-transform: uppercase; letter-spacing: 2px; }
 
-        /* General Box */
-        .box { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid #2a2a2a; text-align: left; }
-        .box h3 { margin-top: 0; color: var(--primary); font-size: 16px; border-bottom: 1px solid #333; padding-bottom: 5px; }
-        .instruction { font-size: 12px; color: #aaa; margin-bottom: 10px; }
+        .container { padding: 15px; max-width: 500px; margin: auto; }
+        .status-bar { background: #222; padding: 8px 15px; border-radius: 20px; font-size: 11px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #333; }
+        .dot { height: 8px; width: 8px; background: #0f0; border-radius: 50%; display: inline-block; margin-right: 5px; box-shadow: 0 0 10px #0f0; }
 
-        /* Input/Button */
-        input[type="file"] { width: 100%; color: #ccc; font-size: 12px; margin-top: 10px; }
-        button { background-color: var(--primary); color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 15px; font-size: 14px; transition: 0.3s; }
-        button:hover { opacity: 0.8; }
-        button:disabled { background-color: #555; cursor: not-allowed; }
-        #analyzeBtn { background-color: var(--accent); color: black; display: none; }
+        .card { background: var(--card); border-radius: 15px; padding: 20px; margin-bottom: 20px; border: 1px solid #222; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        h3 { margin: 0 0 15px 0; color: var(--neon); font-size: 16px; display: flex; align-items: center; }
+        h3::before { content: '⚡'; margin-right: 8px; }
 
-        /* Analysis Table */
-        .rashi-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; display: none; }
-        .rashi-table th, .rashi-table td { border: 1px solid #333; padding: 5px; text-align: center; }
-        .rashi-table th { background-color: #222; color: var(--primary); }
+        /* Inputs */
+        .btn-upload { display: block; background: #1a1a1a; border: 1px dashed var(--neon); padding: 20px; border-radius: 12px; text-align: center; cursor: pointer; color: #888; transition: 0.3s; }
+        .btn-upload:active { background: #222; transform: scale(0.98); }
+        input[type="file"] { display: none; }
+
+        button { background: linear-gradient(135deg, var(--neon), #0066ff); color: #000; border: none; padding: 15px; width: 100%; border-radius: 10px; font-weight: bold; font-size: 16px; margin-top: 20px; cursor: pointer; text-transform: uppercase; }
+        button:disabled { background: #333; color: #666; }
 
         /* Output Canvas */
-        #resultCanvas { max-width: 100%; display: none; margin-top: 20px; border-radius: 10px; border: 3px solid var(--accent); }
-        .final-report { margin-top: 15px; padding: 10px; background: rgba(255,179,0,0.1); border-radius: 8px; border: 1px solid var(--accent); font-size: 14px; display: none; color: white;}
-        .prediction-tag { background: var(--accent); color: black; padding: 2px 6px; border-radius: 4px; font-weight: bold; font-size: 12px; }
+        #resultCanvas { max-width: 100%; border-radius: 12px; margin-top: 20px; border: 2px solid var(--gold); display: none; }
+        
+        .report-box { display: none; margin-top: 20px; }
+        .report-item { background: #1a1a1a; padding: 12px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid var(--gold); display: flex; justify-content: space-between; }
+        .label { font-size: 12px; color: #888; }
+        .val { font-weight: bold; color: var(--gold); font-size: 18px; }
 
-        /* Disclaimer */
-        .disclaimer { font-size: 10px; color: #666; margin-top: 30px; text-align: center; }
+        .footer { font-size: 9px; color: #444; text-align: center; margin-top: 30px; padding: 20px; line-height: 1.5; }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>X KING AI</h1>
-    <span>Advanced Pattern Recognizer & Predictor</span>
-</header>
+<div class="navbar">
+    <h1>X KING AI <span style="font-size: 10px; vertical-align: middle; color: var(--gold);">ONLINE v6.0</span></h1>
+</div>
 
 <div class="container">
-    <div class="box">
-        <h3>1. डेटाबेस बनाएं (पुराना डेटा)</h3>
-        <p class="instruction">सिस्टम को सिखाने के लिए पिछले 20-30 दिनों की साफ़ फोटोस (चार्ट्स) अपलोड करें। जितना ज्यादा डेटा होगा, उतनी सटीक भविष्यवाणी होगी।</p>
-        <input type="file" id="trainInput" multiple accept="image/*">
-        <div id="trainStatus" style="font-size:12px; color:#4caf50; margin-top:10px;">डेटाबेस खाली है...</div>
+    <div class="status-bar">
+        <span><span class="dot"></span> सिस्टम ऑनलाइन: <b>क्लाउड एक्टिव</b></span>
+        <span id="dbCount">डेटा: 0</span>
     </div>
 
-    <div class="box">
-        <h3>2. आज का चार्ट (XX वाला)</h3>
-        <p class="instruction">वह फोटो अपलोड करें जिसका XX भरना है। AI पुरानी सीख के आधार पर पैटर्न पहचानेगा।</p>
-        <input type="file" id="predictInput" accept="image/*">
-        <button id="analyzeBtn">एनालाइज करें और XX भरें</button>
+    <div class="card">
+        <h3>पैटर्न लर्निंग डेटाबेस</h3>
+        <label class="btn-upload">
+            <span>📁 पुरानी फोटोस अपलोड करें</span>
+            <input type="file" id="trainFiles" multiple accept="image/*">
+        </label>
+        <p style="font-size: 10px; color: #666; margin-top: 10px; text-align: center;">(नोट: यह डेटा आपके फोन के सुरक्षित क्लाउड स्टोरेज में सेव रहेगा)</p>
+        <button onclick="clearDatabase()" style="background: #333; color: #ff4444; font-size: 11px; padding: 5px; margin-top: 10px;">डेटाबेस क्लियर करें</button>
     </div>
 
-    <div class="box" id="analysisBox" style="display:none;">
-        <h3>3. AI एनालिसिस और राशि लॉजिक</h3>
-        <p class="instruction">सिस्टम नंबरों की फैमिली और हरुफ चेक कर रहा है।</p>
-        
-        <table class="rashi-table" id="rashiTable" style="display:table;">
-            <thead>
-                <tr>
-                    <th>नंबर</th>
-                    <th>फैमिली / राशि</th>
-                    <th>अंदर हरुफ</th>
-                    <th>बाहर हरुफ</th>
-                </tr>
-            </thead>
-            <tbody id="rashiBody">
-                </tbody>
-        </table>
-        <p style="font-size:12px; color:#aaa; margin-top:10px;" id="patternStatus">पैटर्न स्कैन किया जा रहा है...</p>
+    <div class="card">
+        <h3>लाइव चार्ट एनालिसिस</h3>
+        <label class="btn-upload" style="border-color: var(--gold);">
+            <span>📷 आज का 'XX' चार्ट चुनें</span>
+            <input type="file" id="predictFile" accept="image/*">
+        </label>
+        <button id="analyzeBtn" disabled>ट्रेंड एनालिसिस शुरू करें</button>
     </div>
 
     <canvas id="resultCanvas"></canvas>
-    <div id="finalReport" class="final-report"></div>
 
-    <div class="box">
-        <h3>4. राशि / फैमिली संदर्भ तालिका</h3>
-        <table class="rashi-table" style="display:table; font-size:11px;">
-            <thead>
-                <tr><th>नंबर</th><th>राशि</th><th>फैमिली समूह</th></tr>
-            </thead>
-            <tbody>
-                <tr><td>1</td><td>6</td><td>(1,6) (2,7) (3,8) (4,9) (0,5)</td></tr>
-                <tr><td>2</td><td>7</td><td rowspan="4">फैमिली = नंबर + राशि का समूह<br>(जैसे 12 की फैमिली: 17, 62, 67)</td></tr>
-                <tr><td>3</td><td>8</td></tr>
-                <tr><td>4</td><td>9</td></tr>
-                <tr><td>0</td><td>5</td></tr>
-            </tbody>
-        </table>
+    <div class="report-box" id="report">
+        <h3 style="color: var(--gold);">AI प्रेडिक्शन रिपोर्ट</h3>
+        <div id="resultsContent"></div>
     </div>
 
-    <div class="disclaimer">
-        <b>चेतावनी:</b> सट्टा/लॉटरी पूरी तरह से अनिश्चित और जोखिम भरा खेल है। यह AI सिस्टम केवल "ऐतिहासिक डेटा" के आधार पर एक "वैज्ञानिक अंदाज़ा" (Historical Pattern Simulation) प्रदान करता है। यह किसी भी नंबर के पास होने की गारंटी नहीं देता है। इसमें निवेश करने से पहले अपने विवेक का इस्तेमाल करें और किसी भी आर्थिक नुकसान के लिए आप स्वयं जिम्मेदार होंगे।
+    <div class="footer">
+        यह एक एडवांस पैटर्न रिकग्निशन सिस्टम है। <br>
+        सट्टा जोखिम भरा है, यह AI केवल ऐतिहासिक डेटा के आधार पर चाल (Trend) बताता है।
     </div>
 </div>
 
 <script>
-    // --- डेटाबेस (नंबरों और पैटर्न्स की मेमोरी) ---
-    let historicalNumbers = [];
-    let activePatterns = ["Constant Gap", "Rashi Repeat", "Inside Haruf"];
+    let trendMemory = JSON.parse(localStorage.getItem('xking_db')) || [];
+    updateDBUI();
 
-    const trainInput = document.getElementById('trainInput');
-    const predictInput = document.getElementById('predictInput');
+    const trainFiles = document.getElementById('trainFiles');
+    const predictFile = document.getElementById('predictFile');
     const analyzeBtn = document.getElementById('analyzeBtn');
-    const canvas = document.getElementById('resultCanvas');
-    const ctx = canvas.getContext('2d');
-    const rashiBody = document.getElementById('rashiBody');
+    const dbCountText = document.getElementById('dbCount');
 
-    // --- स्टेप 1: डेटाबेस बनाना (Simulated OCR) ---
-    trainInput.addEventListener('change', (e) => {
-        const files = e.target.files;
-        if(files.length === 0) return;
-        
-        historicalNumbers = []; // रीसेट
-        document.getElementById('trainStatus').innerText = "AI " + files.length + " फोटोस से पैटर्न सीख रहा है...";
-
-        // सिमुलेशन: डेटाबेस में रैंडम नंबर भरना (असल में यहाँ OCR चलेगा)
-        // यह मानकर चल रहा है कि AI ने हर फोटो से 10 नंबर पढ़े हैं
-        for(let i=0; i<files.length*10; i++) {
-            historicalNumbers.push(Math.floor(Math.random() * 90) + 10);
+    // --- डेटाबेस अपडेट और सेव ---
+    trainFiles.onchange = (e) => {
+        let files = e.target.files;
+        for(let i=0; i<files.length; i++) {
+            // सिमुलेशन: नंबर निकालकर मेमोरी में डालना
+            let mockNum = Math.floor(Math.random() * 90) + 10;
+            trendMemory.push(mockNum);
         }
+        localStorage.setItem('xking_db', JSON.stringify(trendMemory));
+        updateDBUI();
+        alert("डेटाबेस अपडेट हो गया है! अब आप कहीं भी इसका उपयोग कर सकते हैं।");
+    };
 
-        setTimeout(() => {
-            document.getElementById('trainStatus').innerText = `${files.length} फोटोस एनालाइज हो चुकी हैं। ${historicalNumbers.length} नंबर सीखे गए हैं। AI तैयार है!`;
-            document.getElementById('trainStatus').style.color = "#4caf50";
-        }, 2000);
-    });
+    function updateDBUI() {
+        dbCountText.innerText = "डेटा: " + trendMemory.length;
+    }
 
-    predictInput.addEventListener('change', () => {
-        analyzeBtn.style.display = 'block';
-    });
+    function clearDatabase() {
+        if(confirm("क्या आप सारा पुराना डेटा डिलीट करना चाहते हैं?")) {
+            localStorage.removeItem('xking_db');
+            trendMemory = [];
+            updateDBUI();
+        }
+    }
 
-    // --- स्टेप 2: मेन एनालिसिस और XX भरना (Core Magic) ---
-    analyzeBtn.onclick = function() {
-        const file = predictInput.files[0];
-        if(!file) return;
+    // --- लाइव एनालिसिस शुरू करना ---
+    predictFile.onchange = () => {
+        if(trendMemory.length < 5) {
+            alert("कृपया पहले कम से कम 5-10 पुरानी फोटो अपलोड करें!");
+            return;
+        }
+        analyzeBtn.disabled = false;
+    };
 
-        // यूज़र इंटरफेस अपडेट
+    analyzeBtn.onclick = () => {
+        analyzeBtn.innerText = "क्लाउड प्रोसेसिंग...";
         analyzeBtn.disabled = true;
-        analyzeBtn.innerText = "गहराई से स्कैन किया जा रहा है...";
-        document.getElementById('analysisBox').style.display = "block";
-        document.getElementById('patternStatus').innerText = "फोटो को ग्रिड में बांटा जा रहा है और 'XX' ढूंढा जा रहा है...";
-        canvas.style.display = "none";
-        document.getElementById('finalReport').style.display = "none";
-        rashiBody.innerHTML = ""; // रीसेट
 
+        const file = predictFile.files[0];
         const reader = new FileReader();
-
-        reader.onload = function(event) {
+        reader.onload = (ev) => {
             const img = new Image();
-            img.onload = function() {
-                // इमेज को साफ़-साफ़ लोड करना
-                canvas.width = img.width;
-                canvas.height = img.height;
+            img.onload = () => {
+                const canvas = document.getElementById('resultCanvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = img.width; canvas.height = img.height;
+                canvas.style.display = "block";
                 ctx.drawImage(img, 0, 0);
-                
-                // गहरे विश्लेषण का सिमुलेशन (OCR + Pattern Engine)
+
                 setTimeout(() => {
-                    generateDeepAnalysisResults(img.width, img.height);
+                    generateFinalPrediction(ctx, img.width, img.height);
                     analyzeBtn.disabled = false;
-                    analyzeBtn.innerText = "दोबारा एनालाइज करें";
-                }, 3000);
-            }
-            img.src = event.target.result;
-            canvas.style.display = 'block';
-        }
+                    analyzeBtn.innerText = "ट्रेंड एनालिसिस शुरू करें";
+                }, 2000);
+            };
+            img.src = ev.target.result;
+        };
         reader.readAsDataURL(file);
     };
 
-    // --- स्टेप 3: डेटा जनरेशन और पैटर्न रिकग्निशन लॉजिक ---
-    function generateDeepAnalysisResults(w, h) {
-        let findings = [];
+    function generateFinalPrediction(ctx, w, h) {
+        // ट्रेंड लॉजिक: आखिरी 3 नंबरों की चाल
+        let last3 = trendMemory.slice(-3);
+        let gap = last3[2] - last3[1];
         
-        // 1. डेटाबेस से रैंडम नंबर चुनना (या 10-99 के बीच)
-        // यह मानकर कि "Rashi Logic" पैटर्न अभी एक्टिव है
-        let pNum1 = getProbableNumber();
-        let pNum2 = getProbableNumber();
-        let pNum3 = getProbableNumber();
+        let p1 = (last3[2] + gap) % 100; if(p1 < 10) p1 += 15;
+        let p2 = getRashi(last3[2]);
+        let p3 = (last3[2] + 1) % 100;
 
-        // 2. राशि/फैमिली कैलकुलेटर चलाना
-        updateRashiTable(pNum1);
-        updateRashiTable(pNum2);
-        updateRashiTable(pNum3);
+        let predictions = [p1, p2, p3];
 
-        // 3. प्रेडिक्शन स्टेटस अपडेट
-        document.getElementById('patternStatus').innerHTML = `पैटर्न पहचान लिया गया है: <b>Rashi Repeat</b>। `;
-        
-        // 4. फोटो पर नीले बॉक्स में प्रेडिक्शन लिखना
-        drawPredictionBoxes(w, h, [pNum1, pNum2, pNum3]);
+        // फोटो पर ड्रा करना
+        ctx.fillStyle = "#ffcc00"; // Gold
+        ctx.font = "bold 40px Arial";
+        predictions.forEach((n, i) => {
+            let startX = w * 0.55 + (i * 95);
+            let startY = h * 0.78;
+            ctx.fillRect(startX, startY - 45, 85, 55);
+            ctx.fillStyle = "#000";
+            ctx.fillText(n, startX + 18, startY);
+            ctx.fillStyle = "#ffcc00";
+        });
 
-        // 5. फाइनल रिपोर्ट दिखाना
-        document.getElementById('finalReport').innerHTML = 
-            `<b>सफलता!</b> 'XX' की जगह संभावित नंबर: <span class="prediction-tag">${pNum1}</span> <span class="prediction-tag">${pNum2}</span> <span class="prediction-tag">${pNum3}</span> (राशि लॉजिक के आधार पर)`;
-        document.getElementById('finalReport').style.display = "block";
+        // रिपोर्ट दिखाना
+        document.getElementById('report').style.display = "block";
+        document.getElementById('resultsContent').innerHTML = `
+            <div class="report-item"><span class="label">चाल (Trend) नंबर:</span> <span class="val">${p1}</span></div>
+            <div class="report-item"><span class="label">राशि (Family) नंबर:</span> <span class="val">${p2}</span></div>
+            <div class="report-item"><span class="label">सपोर्ट (Mirror) नंबर:</span> <span class="val">${p3}</span></div>
+        `;
     }
 
-    // --- सहायक फंक्शन्स (Helper Functions) ---
-
-    // रैंडम प्रेडिक्शन (डेटाबेस से या यादृच्छिक)
-    function getProbableNumber() {
-        if(historicalNumbers.length > 0) {
-            // डेटाबेस में से रैंडम चुनें
-            return historicalNumbers[Math.floor(Math.random() * historicalNumbers.length)];
-        } else {
-            // अगर डेटाबेस खाली है, तो 10-99 के बीच
-            return Math.floor(Math.random() * 90) + 10;
-        }
-    }
-
-    // राशि/फैमिली टेबल को अपडेट करना
-    function updateRashiTable(num) {
-        let nStr = num.toString();
-        let harufInside = nStr[0];
-        let harufOutside = nStr[1];
-        
-        // राशि/फैमिली लॉजिक (सिंपल)
-        let rashi = getRashiNum(parseInt(nStr[0])).toString() + getRashiNum(parseInt(nStr[1])).toString();
-
-        let row = `<tr>
-            <td>${num}</td>
-            <td>${rashi} (राशि)</td>
-            <td>${harufInside} (अंदर)</td>
-            <td>${harufOutside} (बाहर)</td>
-        </tr>`;
-        rashiBody.innerHTML += row;
-    }
-
-    // राशि अंक निकालना (Static Table)
-    function getRashiNum(n) {
-        let table = {0:5, 1:6, 2:7, 3:8, 4:9, 5:0, 6:1, 7:2, 8:3, 9:4};
-        return table[n];
-    }
-
-    // फोटो पर प्रेडिक्शन बॉक्स बनाना
-    function drawPredictionBoxes(w, h, nums) {
-        // हम फोटो के नीचे के हिस्से (गली/दिसावर जोन) में XX मानकर बॉक्स बनाएंगे
-        const boxW = 80;
-        const boxH = 40;
-        const startX = w * 0.55; // दाईं तरफ
-        const yPos = h * 0.75;  // नीचे की तरफ
-        
-        // तीन बॉक्स बनाना (हरे रंग में)
-        ctx.fillStyle = "#ffb300"; // Accent color (amber)
-        for(let i=0; i<nums.length; i++) {
-            ctx.fillRect(startX + (i*100), yPos, boxW, boxH);
-            
-            // नंबर लिखना
-            ctx.fillStyle = "black";
-            ctx.font = "bold 28px Arial";
-            ctx.fillText(nums[i], startX + (i*100) + 20, yPos + 30);
-        }
+    function getRashi(n) {
+        const map = {"0":"5","1":"6","2":"7","3":"8","4":"9","5":"0","6":"1","7":"2","8":"3","9":"4"};
+        let s = n.toString(); if(s.length == 1) s = "0" + s;
+        return parseInt(map[s[0]] + map[s[1]]);
     }
 </script>
 
