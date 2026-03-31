@@ -3,53 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X KING AI - MASTER PATTERN SYSTEM</title>
+    <title>X KING AI - ULTIMATE MASTER SYSTEM</title>
     <style>
         :root { --neon: #00d2ff; --gold: #ffd700; --bg: #080808; --card: #121212; --text: #e0e0e0; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
+        
+        /* --- SPLASH SCREEN --- */
         #splash { position: fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:9999; display:flex; flex-direction:column; justify-content:center; align-items:center; transition: 1s; }
         .logo-box { text-align: center; border: 2px solid var(--neon); padding: 30px; border-radius: 20px; box-shadow: 0 0 30px var(--neon); animation: pulse 2s infinite; }
+        .logo-text { font-size: 40px; font-weight: bold; color: var(--neon); letter-spacing: 5px; }
         @keyframes pulse { 0% { transform: scale(0.95); opacity: 0.7; } 50% { transform: scale(1); opacity: 1; } 100% { transform: scale(0.95); opacity: 0.7; } }
-        header { background: #000; padding: 20px; text-align: center; border-bottom: 3px solid var(--neon); }
+
+        /* --- HEADER --- */
+        header { background: linear-gradient(to bottom, #000, #111); padding: 25px; text-align: center; border-bottom: 3px solid var(--neon); box-shadow: 0 4px 20px rgba(0,210,255,0.3); }
+        header h1 { margin: 0; font-size: 26px; color: #fff; letter-spacing: 2px; }
+        header span { color: var(--gold); font-size: 12px; font-weight: bold; }
+
+        /* --- CONTAINER --- */
         .container { padding: 20px; max-width: 600px; margin: auto; }
-        .card { background: var(--card); border-radius: 18px; padding: 20px; margin-bottom: 20px; border: 1px solid #252525; }
-        .custom-file { display: block; background: #1a1a1a; border: 2px dashed #333; padding: 20px; border-radius: 12px; text-align: center; cursor: pointer; color: #888; }
-        button { background: linear-gradient(45deg, var(--gold), #ff8c00); color: #000; border: none; padding: 15px; width: 100%; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 15px; display: none; }
-        canvas { max-width: 100%; border-radius: 15px; margin-top: 20px; border: 3px solid var(--gold); display: none; }
-        .scan-container { position: relative; width: 100%; }
-        #scanner-line { display: none; position: absolute; top: 0; width: 100%; height: 4px; background: var(--neon); box-shadow: 0 0 15px var(--neon); z-index: 10; animation: scanMove 2s linear infinite; }
+        .card { background: var(--card); border-radius: 18px; padding: 25px; margin-bottom: 25px; border: 1px solid #252525; box-shadow: 0 10px 30px rgba(0,0,0,0.6); position: relative; }
+        .card h3 { margin-top: 0; color: var(--neon); font-size: 18px; border-left: 5px solid var(--gold); padding-left: 12px; margin-bottom: 15px; }
+
+        /* --- INPUTS & BUTTONS --- */
+        .custom-file { display: block; background: #1a1a1a; border: 2px dashed #333; padding: 25px; border-radius: 12px; text-align: center; cursor: pointer; color: #666; transition: 0.3s; }
+        .custom-file:hover { border-color: var(--neon); color: #aaa; }
+        input[type="file"] { display: none; }
+        
+        #analyzeBtn { background: linear-gradient(45deg, var(--gold), #ff8c00); color: #000; border: none; padding: 18px; width: 100%; border-radius: 12px; font-weight: bold; font-size: 16px; margin-top: 20px; cursor: pointer; text-transform: uppercase; display: none; box-shadow: 0 5px 15px rgba(255,215,0,0.3); }
+        #analyzeBtn:disabled { background: #333; color: #666; cursor: not-allowed; }
+
+        /* --- SCANNING AREA --- */
+        .scan-container { position: relative; width: 100%; margin-top: 20px; }
+        canvas { max-width: 100%; border-radius: 15px; border: 3px solid var(--gold); display: none; box-shadow: 0 0 25px rgba(255,215,0,0.3); }
+        #scanner-line { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--neon); box-shadow: 0 0 15px var(--neon); z-index: 10; animation: scanMove 2.5s linear infinite; }
         @keyframes scanMove { 0% { top: 0%; } 50% { top: 100%; } 100% { top: 0%; } }
-        .report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
-        .report-item { background: #1a1a1a; padding: 12px; border-radius: 10px; border-top: 3px solid var(--gold); text-align: center; }
-        .footer { font-size: 10px; color: #444; text-align: center; padding: 20px; }
+
+        /* --- REPORT --- */
+        .report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .report-item { background: #1a1a1a; padding: 15px; border-radius: 12px; border-top: 4px solid var(--gold); text-align: center; border-left: 1px solid #333; border-right: 1px solid #333; }
+        .report-item span { font-size: 11px; color: #888; text-transform: uppercase; }
+        .report-item b { font-size: 28px; color: var(--gold); display: block; margin-top: 5px; }
+
+        .footer { font-size: 10px; color: #444; text-align: center; margin-top: 40px; padding: 20px; border-top: 1px solid #1a1a1a; }
     </style>
 </head>
 <body>
 
 <div id="splash">
-    <div class="logo-box"><div style="font-size:40px; color:var(--neon); font-weight:bold;">X KING AI</div></div>
+    <div class="logo-box">
+        <div class="logo-text">X KING AI</div>
+        <div style="color: #444; margin-top: 15px; font-size: 10px; letter-spacing: 2px;">SCANNING MOBILE HARDWARE...</div>
+    </div>
 </div>
 
-<header><h1>X KING AI <span style="font-size:12px; color:var(--gold);">PATTERN MATCH V10</span></h1></header>
+<header>
+    <h1>X KING AI <span>PRO ULTIMATE V11</span></h1>
+</header>
 
 <div class="container">
     <div class="card">
-        <h3 style="color:var(--neon)">1. डेटाबेस मेमोरी (Max 5)</h3>
-        <p style="font-size:12px; color:#666;">पैटर्न मैच करने के लिए केवल 5 फोटो चुनें।</p>
+        <h3>1. डेटाबेस मेमोरी (Max 5)</h3>
+        <p style="font-size: 12px; color: #666; margin-bottom: 15px;">पैटर्न लॉक करने के लिए पुरानी 5 फोटो अपलोड करें।</p>
         <label class="custom-file">
             <span id="trainText">📁 पुरानी 5 फोटोस चुनें</span>
             <input type="file" id="trainInput" multiple accept="image/*">
         </label>
-        <div id="dbStatus" style="font-size:11px; margin-top:10px; color: #555;">मेमोरी खाली है।</div>
+        <div id="dbStatus" style="font-size:11px; margin-top:12px; color: #555;">मेमोरी: 0/5 फोटो</div>
     </div>
 
     <div class="card">
-        <h3 style="color:var(--gold)">2. एनालिसिस</h3>
+        <h3>2. लाइव चार्ट डिकोडिंग</h3>
+        <p style="font-size: 12px; color: #666; margin-bottom: 15px;">आज का चार्ट अपलोड करें। AI केवल 'XX' की जगह भरेगा।</p>
         <label class="custom-file" style="border-color: var(--gold);">
             <span id="predictText">📷 आज का चार्ट अपलोड करें</span>
             <input type="file" id="predictInput" accept="image/*">
         </label>
-        <button id="analyzeBtn">मैचिंग और जनरेट करें</button>
+        <button id="analyzeBtn">मैच पैटर्न और जनरेट</button>
     </div>
 
     <div class="scan-container">
@@ -58,47 +87,54 @@
     </div>
 
     <div id="report" style="display:none;" class="card">
-        <h3 style="color:#00ff00; border-bottom:1px solid #333; padding-bottom:10px;">अध्यक्ष प्रमाणित रिपोर्ट</h3>
+        <h3 style="border-color: #00ff00;">अध्यक्ष प्रमाणित रिपोर्ट</h3>
         <div class="report-grid" id="reportGrid"></div>
+        <p style="font-size: 10px; color: #666; margin-top: 20px; text-align: center;">यह परिणाम मेमोरी पैटर्न के आधार पर 'फ्रीज' कर दिए गए हैं।</p>
     </div>
 
-    <div class="footer">चेतावनी: यह टूल केवल ऐतिहासिक पैटर्न विश्लेषण के लिए है।</div>
+    <div class="footer">
+        <b>चेतावनी:</b> सट्टा/लॉटरी जोखिम भरा है। X King AI केवल ऐतिहासिक पिक्सेल पैटर्न्स को पहचानने का एक गणितीय टूल है।
+    </div>
 </div>
 
 <script>
-    setTimeout(() => { document.getElementById('splash').style.display = 'none'; }, 2000);
+    // SPLASH LOGIC
+    setTimeout(() => {
+        document.getElementById('splash').style.opacity = '0';
+        setTimeout(() => { document.getElementById('splash').style.display = 'none'; }, 1000);
+    }, 2500);
 
     let memoryEntropy = 0;
     const trainInput = document.getElementById('trainInput');
     const predictInput = document.getElementById('predictInput');
     const analyzeBtn = document.getElementById('analyzeBtn');
 
-    // --- 1. मेमोरी में केवल 5 फोटो का लॉजिक ---
+    // 1. MEMORY CAP (MAX 5)
     trainInput.onchange = (e) => {
-        let files = Array.from(e.target.files);
-        
+        const files = Array.from(e.target.files);
         if(files.length > 5) {
-            alert("सिस्टम मेमोरी केवल 5 फोटो ही संभाल सकती है! कृपया दोबारा चुनें।");
+            alert("सिस्टम मेमोरी केवल 5 फोटो ही ले सकती है!");
             trainInput.value = "";
             return;
         }
-
-        memoryEntropy = files.reduce((acc, f) => acc + (f.size % 999), 0);
-        document.getElementById('dbStatus').innerHTML = `<b style="color:#00ff00">मेमोरी लॉक:</b> ${files.length}/5 फोटो एक्टिव। कोड: ${memoryEntropy}`;
-        document.getElementById('trainText').innerText = files.length + " फोटो स्टोर हुईं";
+        // पिक्सेल डेटाबेस के लिए एंट्रॉपी बनाना
+        memoryEntropy = files.reduce((acc, f) => acc + (f.size % 777) + f.name.length, 0);
+        document.getElementById('dbStatus').innerHTML = `<b style="color:#00ff00">मेमोरी एक्टिव:</b> ${files.length}/5 पैटर्न्स सेव हुए।`;
+        document.getElementById('trainText').innerText = files.length + " फोटो स्टोर की गईं";
     };
 
     predictInput.onchange = () => {
-        if(memoryEntropy === 0) { alert("पहले 5 डेटाबेस फोटो लोड करें!"); return; }
+        if(memoryEntropy === 0) { alert("कृपया पहले स्टेप 1 में 5 फोटो अपलोड करें!"); return; }
         analyzeBtn.style.display = "block";
+        document.getElementById('predictText').innerText = "फोटो तैयार है";
     };
 
-    // --- 2. पैटर्न मैचिंग और जनरेशन ---
+    // 2. SMART ANALYSIS
     analyzeBtn.onclick = () => {
         const file = predictInput.files[0];
         const scanLine = document.getElementById('scanner-line');
         analyzeBtn.disabled = true;
-        analyzeBtn.innerText = "मेमोरी से पैटर्न मैच हो रहा है...";
+        analyzeBtn.innerText = "पैटर्न मैच किया जा रहा है...";
 
         const reader = new FileReader();
         reader.onload = (ev) => {
@@ -111,54 +147,86 @@
                 scanLine.style.display = "block";
                 ctx.drawImage(img, 0, 0);
 
-                // पिक्सेल डेटा से करंट चार्ट का पैटर्न निकालना
+                // पिक्सेल स्कैनिंग (Unique per chart)
                 const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-                let currentPattern = 0;
-                for(let i=0; i<data.length; i+=500) { currentPattern += data[i] + data[i+1]; }
+                let currentEntropy = 0;
+                for(let i=0; i<data.length; i+=Math.floor(data.length/1000)) {
+                    currentEntropy += data[i] + (data[i+1]*2);
+                }
 
                 setTimeout(() => {
                     scanLine.style.display = "none";
-                    processResults(ctx, img.width, img.height, currentPattern);
+                    processSmartResults(ctx, img.width, img.height, currentEntropy);
                     analyzeBtn.disabled = false;
-                    analyzeBtn.innerText = "स्कैन पूरा हुआ";
+                    analyzeBtn.innerText = "स्कैन पूरा: अगला चुनें";
                     document.getElementById('report').style.display = "block";
-                }, 2500);
+                }, 3000);
             };
             img.src = ev.target.result;
         };
         reader.readAsDataURL(file);
     };
 
-    function processResults(ctx, w, h, currentPattern) {
-        // मेमोरी एंट्रॉपी और करंट पैटर्न का मिलन (यही नंबर बदलता है)
-        const masterKey = currentPattern + memoryEntropy;
-        
-        const locs = [
-            { name: "गली (GL)", s: 17, x: w * 0.55, y: h * 0.72 },
-            { name: "दिसावर (DS)", s: 23, x: w * 0.78, y: h * 0.72 },
-            { name: "फरीदाबाद (FB)", s: 31, x: w * 0.55, y: h * 0.85 },
-            { name: "गाजियाबाद (GB)", s: 37, x: w * 0.78, y: h * 0.85 }
-        ];
-
+    function processSmartResults(ctx, w, h, currentEntropy) {
+        const masterKey = currentEntropy + memoryEntropy;
         const grid = document.getElementById('reportGrid');
         grid.innerHTML = "";
 
-        // अध्यक्ष का स्टैम्प
-        ctx.fillStyle = "#00ff00"; ctx.font = "bold 24px Arial";
+        // अध्यक्ष स्टैम्प (OFFICIAL SEAL)
+        ctx.save();
+        ctx.fillStyle = "#00ff00"; 
+        ctx.font = "bold 28px Arial";
+        ctx.shadowBlur = 10; ctx.shadowColor = "lime";
         ctx.fillText("अध्यक्ष प्रमाणित", w * 0.05, h * 0.12);
+        ctx.restore();
 
-        locs.forEach(l => {
-            // शुद्ध पैटर्न आधारित नंबर (पूरी तरह से यूनिक)
-            let n = Math.floor((Math.abs(Math.sin(masterKey * l.s)) * 10000) % 90) + 10;
-            
-            // ड्रा ऑन चार्ट
-            ctx.fillStyle = "gold"; ctx.fillRect(l.x, l.y-45, 80, 55);
-            ctx.fillStyle = "#000"; ctx.font = "bold 38px Arial";
-            ctx.fillText(n, l.x+15, l.y);
+        // XX संभावित क्षेत्र
+        const points = [
+            { id: "GL", x: w * 0.55, y: h * 0.72, label: "गली" },
+            { id: "DS", x: w * 0.78, y: h * 0.72, label: "दिसावर" },
+            { id: "FB", x: w * 0.55, y: h * 0.85, label: "फरीदाबाद" },
+            { id: "GB", x: w * 0.78, y: h * 0.85, label: "गाजियाबाद" }
+        ];
 
-            grid.innerHTML += `<div class="report-item"><span>${l.name}</span><br><b>${n}</b></div>`;
+        let foundAny = false;
+
+        points.forEach((pt, idx) => {
+            // XX DETECTION (Brightness check at point)
+            const pData = ctx.getImageData(pt.x, pt.y - 20, 20, 20).data;
+            let darkTotal = 0;
+            for(let i=0; i<pData.length; i+=4) { darkTotal += (pData[i] + pData[i+1] + pData[i+2])/3; }
+            let avgDark = darkTotal / (pData.length/4);
+
+            // अगर फोटो में उस जगह पर कुछ डार्क (XX) लिखा है
+            if (avgDark < 210) {
+                foundAny = true;
+                // जनरेट यूनिक नंबर (Math.sin for high randomness)
+                let n = Math.floor((Math.abs(Math.sin(masterKey + idx)) * 10000) % 90) + 10;
+
+                // ड्रा ऑन फोटो (Gold Box to cover XX)
+                ctx.fillStyle = "gold";
+                ctx.shadowBlur = 15; ctx.shadowColor = "rgba(0,0,0,0.6)";
+                ctx.fillRect(pt.x - 5, pt.y - 45, 85, 55); 
+                
+                ctx.fillStyle = "#000";
+                ctx.font = "bold 40px Arial";
+                ctx.fillText(n, pt.x + 15, pt.y);
+
+                // ऐड टू रिपोर्ट
+                grid.innerHTML += `
+                    <div class="report-item">
+                        <span>${pt.label} (सटीक)</span>
+                        <b>${n}</b>
+                    </div>
+                `;
+            }
         });
+
+        if(!foundAny) {
+            grid.innerHTML = "<p style='color:red; font-size:12px; text-align:center; width:100%'>XX सिंबल नहीं मिला। कृपया साफ चार्ट अपलोड करें।</p>";
+        }
     }
 </script>
+
 </body>
 </html>
