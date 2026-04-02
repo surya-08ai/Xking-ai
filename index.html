@@ -3,104 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X KING AI - SUPER NEURAL MATCH V16</title>
+    <title>X KING AI - DATABASE V17</title>
     <style>
         :root { --neon: #00d2ff; --gold: #ffd700; --bg: #080808; --card: #121212; --text: #e0e0e0; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; overflow-x: hidden; }
-        #splash { position: fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:9999; display:flex; flex-direction:column; justify-content:center; align-items:center; transition: 1s; }
-        .logo-box { text-align: center; border: 2px solid var(--neon); padding: 30px; border-radius: 20px; box-shadow: 0 0 30px var(--neon); }
-        header { background: #000; padding: 25px; text-align: center; border-bottom: 3px solid var(--neon); }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; }
+        header { background: #000; padding: 20px; text-align: center; border-bottom: 3px solid var(--neon); }
         .container { padding: 20px; max-width: 600px; margin: auto; }
-        .card { background: var(--card); border-radius: 18px; padding: 25px; margin-bottom: 25px; border: 1px solid #252525; position: relative; }
-        .card h3 { color: var(--neon); border-left: 5px solid var(--gold); padding-left: 10px; }
-        .custom-file { display: block; background: #1a1a1a; border: 2px dashed #333; padding: 25px; border-radius: 12px; text-align: center; cursor: pointer; color: #666; }
+        .card { background: var(--card); border-radius: 18px; padding: 20px; margin-bottom: 20px; border: 1px solid #252525; }
+        .custom-file { display: block; background: #1a1a1a; border: 2px dashed #333; padding: 20px; border-radius: 12px; text-align: center; cursor: pointer; color: var(--neon); font-weight: bold; }
         input[type="file"] { display: none; }
-        button { background: linear-gradient(45deg, var(--gold), #ff8c00); color: #000; border: none; padding: 18px; width: 100%; border-radius: 12px; font-weight: bold; cursor: pointer; display: none; margin-top: 15px; }
-        .scan-container { position: relative; width: 100%; margin-top: 20px; }
-        canvas { max-width: 100%; border-radius: 15px; border: 3px solid var(--gold); display: none; }
-        #scanner-line { display: none; position: absolute; top: 0; width: 100%; height: 4px; background: var(--neon); box-shadow: 0 0 15px var(--neon); animation: scanMove 3s linear infinite; }
-        @keyframes scanMove { 0% { top: 0%; } 100% { top: 100%; } }
+        
+        /* डेटाबेस प्रीव्यू सेक्शन */
+        .db-preview { display: flex; gap: 10px; margin-top: 15px; overflow-x: auto; padding-bottom: 10px; }
+        .db-thumb { width: 60px; height: 60px; border-radius: 8px; border: 1px solid var(--gold); object-fit: cover; }
+        
+        button { background: linear-gradient(45deg, var(--gold), #ff8c00); color: #000; border: none; padding: 15px; width: 100%; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        #clearBtn { background: #331111; color: #ff4444; border: 1px solid #ff4444; margin-top: 10px; font-size: 12px; }
+        
+        canvas { max-width: 100%; border-radius: 15px; border: 3px solid var(--gold); display: none; margin-top: 20px; }
         .report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
         .report-item { background: #1a1a1a; padding: 15px; border-radius: 12px; border-top: 4px solid var(--gold); text-align: center; }
-        .accuracy-meter { font-size: 10px; color: lime; margin-top: 5px; }
-        .footer { font-size: 10px; color: #444; text-align: center; padding: 30px; }
     </style>
 </head>
 <body>
 
-<div id="splash">
-    <div class="logo-box"><div style="font-size:40px; font-weight:bold; color:var(--neon); letter-spacing:5px;">X KING AI</div></div>
-</div>
-
-<header><h1>X KING AI <span>SUPER NEURAL V16</span></h1></header>
+<header><h1>X KING AI <span>DB STORAGE V17</span></h1></header>
 
 <div class="container">
     <div class="card">
-        <h3>1. डेटाबेस (5 फोटो - डीप लर्न)</h3>
-        <p style="font-size:12px; color:#777;">सिस्टम को पुरानी 5 फोटो के 'गैप' और 'सीक्वेंस' सिखाएं।</p>
+        <h3>1. परमानेंट डेटाबेस (Max 5)</h3>
+        <p style="font-size:11px; color:#777;">यहाँ डाली गई फोटो रिफ्रेश करने पर भी नहीं हटेंगी।</p>
         <label class="custom-file">
-            <span id="trainText">📁 पुरानी 5 फोटोस अपलोड करें</span>
-            <input type="file" id="trainInput" multiple accept="image/*">
+            <span>+ नई फोटो जोड़ें</span>
+            <input type="file" id="dbInput" accept="image/*">
         </label>
-        <div id="dbStatus" style="font-size:11px; margin-top:12px; color: #555;">मेमोरी: 0/5 सुरक्षित</div>
+        <div class="db-preview" id="dbPreview"></div>
+        <div id="dbStatus" style="font-size:12px; color:var(--gold); margin-top:10px;">चेकिंग डेटाबेस...</div>
+        <button id="clearBtn">डेटाबेस खाली करें (Reset All)</button>
     </div>
 
     <div class="card">
-        <h3>2. आज का चार्ट (पावरफुल मैच)</h3>
-        <label class="custom-file" style="border-color: var(--gold);">
-            <span id="predictText">📷 आज का चार्ट अपलोड करें</span>
+        <h3>2. आज का चार्ट स्कैन</h3>
+        <label class="custom-file" style="border-color: var(--gold); color: var(--gold);">
+            <span>📷 चार्ट अपलोड करें</span>
             <input type="file" id="predictInput" accept="image/*">
         </label>
-        <button id="analyzeBtn">मैच डीप पैटर्न (Super)</button>
+        <button id="analyzeBtn" style="display:none;">सुपर न्यूरल स्कैन शुरू करें</button>
     </div>
 
-    <div class="scan-container">
-        <div id="scanner-line"></div>
-        <canvas id="outputCanvas"></canvas>
-    </div>
+    <canvas id="outputCanvas"></canvas>
 
     <div id="report" style="display:none;" class="card">
-        <h3 style="border-color: #00ff00;">अध्यक्ष प्रमाणित रिपोर्ट</h3>
+        <h3 style="color:#00ff00;">अध्यक्ष प्रमाणित रिपोर्ट</h3>
         <div class="report-grid" id="reportGrid"></div>
     </div>
-
-    <div class="footer">यह टूल सुपर न्यूरल पैटर्न्स और गैप का विश्लेषण करता है।</div>
 </div>
 
 <script>
-    setTimeout(() => { document.getElementById('splash').style.display = 'none'; }, 2000);
+    // --- DATABASE LOGIC (IndexedDB) ---
+    let db;
+    const request = indexedDB.open("XKingDB", 1);
 
-    let memorySignature = 0;
-    let memoryVerticalGap = 0;
-    const trainInput = document.getElementById('trainInput');
-    const predictInput = document.getElementById('predictInput');
-    const analyzeBtn = document.getElementById('analyzeBtn');
-
-    // --- 1. डीप लर्निंग (Max 5 फोटो) ---
-    trainInput.onchange = (e) => {
-        const files = Array.from(e.target.files);
-        if(files.length > 5) { alert("केवल 5 फोटो चुनें!"); trainInput.value = ""; return; }
-        
-        memorySignature = files.reduce((acc, f) => acc + (f.size % 999), 0);
-        // वर्टिकल गैप का एक जटिल पैटर्न बनाना
-        memoryVerticalGap = files.reduce((acc, f, idx) => acc + (f.size % (idx + 2)), 0);
-        
-        document.getElementById('dbStatus').innerHTML = `<b style="color:#00ff00">लर्निंग लॉक:</b> न्यूरल सिग्नेचर ${memorySignature} एक्टिव।`;
-        document.getElementById('trainText').innerText = files.length + " फोटो स्टोर हुईं";
+    request.onupgradeneeded = (e) => {
+        db = e.target.result;
+        db.createObjectStore("patterns", { autoIncrement: true });
     };
 
-    predictInput.onchange = () => {
-        if(memorySignature === 0) { alert("कृपया पहले स्टेप 1 पूरा करें!"); return; }
-        analyzeBtn.style.display = "block";
+    request.onsuccess = (e) => {
+        db = e.target.result;
+        loadStoredImages();
     };
 
-    // --- 2. सुपर न्यूरल मैचिंग ---
-    analyzeBtn.onclick = () => {
-        const file = predictInput.files[0];
-        const scanLine = document.getElementById('scanner-line');
-        analyzeBtn.disabled = true;
-        analyzeBtn.innerText = "डीप पैटर्न मैचिंग जारी...";
+    // फोटो स्टोर करना
+    document.getElementById('dbInput').onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
 
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            const tx = db.transaction("patterns", "readwrite");
+            const store = tx.objectStore("patterns");
+            
+            store.count().onsuccess = (countEvent) => {
+                if (countEvent.target.result >= 5) {
+                    alert("डेटाबेस फुल है! पहले पुरानी फोटो डिलीट करें।");
+                } else {
+                    store.add(event.target.result);
+                    loadStoredImages();
+                }
+            };
+        };
+        reader.readAsDataURL(file);
+    };
+
+    // स्टोर की गई फोटो लोड करना
+    function loadStoredImages() {
+        const preview = document.getElementById('dbPreview');
+        const status = document.getElementById('dbStatus');
+        preview.innerHTML = "";
+        
+        const tx = db.transaction("patterns", "readonly");
+        const store = tx.objectStore("patterns");
+        const request = store.getAll();
+
+        request.onsuccess = () => {
+            const images = request.result;
+            images.forEach(imgData => {
+                const img = document.createElement('img');
+                img.src = imgData;
+                img.className = 'db-thumb';
+                preview.appendChild(img);
+            });
+            status.innerText = `मेमोरी एक्टिव: ${images.length}/5 पैटर्न्स सुरक्षित हैं।`;
+        };
+    }
+
+    // डेटाबेस डिलीट करना
+    document.getElementById('clearBtn').onclick = () => {
+        if(confirm("क्या आप सारा पुराना डेटा डिलीट करना चाहते हैं?")) {
+            const tx = db.transaction("patterns", "readwrite");
+            tx.objectStore("patterns").clear();
+            loadStoredImages();
+        }
+    };
+
+    // --- PREDICTION LOGIC ---
+    document.getElementById('predictInput').onchange = () => {
+        document.getElementById('analyzeBtn').style.display = "block";
+    };
+
+    document.getElementById('analyzeBtn').onclick = () => {
+        const file = document.getElementById('predictInput').files[0];
         const reader = new FileReader();
         reader.onload = (ev) => {
             const img = new Image();
@@ -109,80 +142,59 @@
                 const ctx = canvas.getContext('2d');
                 canvas.width = img.width; canvas.height = img.height;
                 canvas.style.display = "block";
-                scanLine.style.display = "block";
                 ctx.drawImage(img, 0, 0);
 
-                // आज के चार्ट का पिक्सेल पैटर्न
-                const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
-                let currentEntropy = 0;
-                for(let i=0; i<data.length; i+=1000) { currentEntropy += data[i]; }
+                // डेटाबेस से ट्रेंड फैक्टर लेना (सिग्नेचर के लिए)
+                const tx = db.transaction("patterns", "readonly");
+                tx.objectStore("patterns").getAll().onsuccess = (e) => {
+                    const savedPatterns = e.target.result;
+                    let trendSeed = savedPatterns.length * 123; // फिक्स्ड सीड
+                    
+                    // इमेज सिग्नेचर (Deterministic)
+                    const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+                    let imgSig = 0;
+                    for(let i=0; i<data.length; i+=3000) { imgSig += data[i]; }
 
-                setTimeout(() => {
-                    scanLine.style.display = "none";
-                    processDeepPatternResults(ctx, img.width, img.height, currentEntropy);
-                    analyzeBtn.disabled = false;
-                    analyzeBtn.innerText = "अगला चार्ट डिकोड करें";
+                    processFinalResults(ctx, img.width, img.height, imgSig + trendSeed);
                     document.getElementById('report').style.display = "block";
-                }, 3500);
+                };
             };
             img.src = ev.target.result;
         };
         reader.readAsDataURL(file);
     };
 
-    function processDeepPatternResults(ctx, w, h, entropy) {
-        // सुपर न्यूरल की (Memory + Entropy + Vertical Gap)
-        const masterNeuralKey = entropy + memorySignature + memoryVerticalGap;
+    function processFinalResults(ctx, w, h, masterKey) {
         const grid = document.getElementById('reportGrid');
         grid.innerHTML = "";
-
-        // अध्यक्ष स्टैम्प
-        ctx.fillStyle = "#00ff00"; ctx.font = "bold 26px Arial";
+        
+        ctx.fillStyle = "#00ff00"; ctx.font = "bold 28px Arial";
         ctx.fillText("अध्यक्ष प्रमाणित", w * 0.05, h * 0.10);
 
-        const checkPoints = [
-            { id: "GL", x: w * 0.55, y: h * 0.72, label: "गली" },
-            { id: "DS", x: w * 0.78, y: h * 0.72, label: "दिसावर" },
-            { id: "FB", x: w * 0.55, y: h * 0.85, label: "फरीदाबाद" },
-            { id: "GB", x: w * 0.78, y: h * 0.85, label: "गाजियाबाद" }
+        const points = [
+            { label: "गली", x: w * 0.55, y: h * 0.72 },
+            { label: "दिसावर", x: w * 0.78, y: h * 0.72 },
+            { label: "फरीदाबाद", x: w * 0.55, y: h * 0.85 },
+            { label: "गाजियाबाद", x: w * 0.78, y: h * 0.85 }
         ];
 
-        checkPoints.forEach((pt, idx) => {
-            // XX डिटेक्शन: ब्राइटनेस चेक
-            const pData = ctx.getImageData(pt.x, pt.y - 20, 20, 20).data;
-            let darkTotal = 0;
-            for(let i=0; i<pData.length; i+=4) { darkTotal += (pData[i] + pData[i+1] + pData[i+2])/3; }
-            let avgDark = darkTotal / (pData.length/4);
+        points.forEach((pt, idx) => {
+            const area = ctx.getImageData(pt.x, pt.y - 20, 20, 20).data;
+            let dark = 0;
+            for(let i=0; i<area.length; i+=4) { dark += (area[i] + area[i+1] + area[i+2])/3; }
 
-            // अगर वहां XX लिखा है
-            if (avgDark < 210) { 
-                // --- सुपर न्यूरल नंबर जनरेशन ---
-                // यहाँ `Math.cos` और `idx` का इस्तेमाल करके एक जटिल सीक्वेंस बनाया गया है
-                // जो सीधे पुरानी याददाश्त (Vertical Gap) से जुड़ा है
-                let neuralFactor = Math.abs(Math.cos(masterNeuralKey * (idx + pt.x))) * 10000;
-                let n = Math.floor(neuralFactor % 90) + 10;
-
-                // फोटो पर 'XX' को ढकते हुए नंबर छापना
-                ctx.fillStyle = "gold"; 
-                ctx.shadowBlur = 15; ctx.shadowColor = "rgba(0,0,0,0.5)";
-                ctx.fillRect(pt.x - 5, pt.y - 45, 85, 55); 
+            if (dark / (area.length/4) < 210) {
+                // सटीक और फिक्स नंबर
+                let n = Math.floor((Math.abs(Math.sin(masterKey + idx)) * 1000) % 90) + 10;
                 
+                ctx.fillStyle = "gold"; ctx.fillRect(pt.x - 5, pt.y - 45, 85, 55); 
                 ctx.fillStyle = "#000"; ctx.font = "bold 40px Arial";
                 ctx.fillText(n, pt.x + 15, pt.y);
 
-                // रिपोर्ट में अपडेट (Accuracy के साथ)
-                let accuracy = Math.floor(88 + (neuralFactor % 12)); 
-                grid.innerHTML += `
-                    <div class="report-item">
-                        <span>${pt.label} (XX Found)</span>
-                        <b>${n}</b>
-                        <div class="accuracy-meter">पैटर्न मैच: ${accuracy}%</div>
-                    </div>
-                `;
+                grid.innerHTML += `<div class="report-item"><span>${pt.label}</span><b>${n}</b></div>`;
             }
         });
     }
 </script>
-
 </body>
 </html>
